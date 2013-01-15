@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+
+if (process.argv.length !== 3) {
+    console.log("usage: sys_manage command");
+    console.log("At the moment, the only command is `install`.");
+    process.exit(1);
+}
+
+var fs = require("fs");
+
+var home = function(subpath) {
+    return process.env.HOME + subpath;
+};
+
+var symlinkFile = function(from, to) {
+    fs.symlinkSync(from, to);
+};
+
+var installFiles = function(directory) {
+    var children = fs.readdirSync(directory);
+    console.log(children);
+    for (var thing in children) {
+        if (children[thing].indexOf(".") === 0) continue;
+        console.log("Processing child: " + children[thing]);
+        var stats = fs.statSync(children[thing]);
+        
+        if (!(stats.isFile() || stats.isDirectory())) continue;
+        symlinkFile(children[thing], home("/test/." + children[thing]));
+    }
+};
+
+if (process.argv[2] === "install") {
+    installFiles(process.env.PWD + "/dotfiles");
+}
