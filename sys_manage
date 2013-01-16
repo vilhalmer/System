@@ -13,7 +13,7 @@ for (var i = 2; i < process.argv.length; ++i) {
     var thing = process.argv[i];
 
     if (thing.indexOf("-") === 0) {
-        flags[thing.substring(1)] = (process.argv[i+1].indexOf("-") === 0) ? process.argv[++i] : "";
+        flags[thing.substring(1)] = (process.argv[i+1].indexOf("-") !== 0) ? process.argv[++i] : "";
     } else {
         command = thing;
         break;
@@ -28,6 +28,7 @@ var symlinkFile = function(linkPath, realPath) {
         var linkStats = fs.lstatSync(linkPath);
         if (linkStats.isSymbolicLink()) {
             console.log(linkPath + " is a symbolic link, overwriting.");
+            fs.unlinkSync(linkPath);
          } else {
             console.log(linkPath + " exists! Moving to " + linkPath + ".back…");
             if (fs.existsSync(linkPath + ".back")) {
@@ -43,9 +44,10 @@ var symlinkFile = function(linkPath, realPath) {
 };
 
 var installFiles = function(target) {
+    console.log("Installing into " + target + "…");
     if (!fs.existsSync(target)) fs.mkdirSync(target);
 
-    var children = fs.readdirSync(path("dotfiles"));
+    var children = fs.readdirSync(path.resolve("dotfiles"));
     for (var index in children) {
         var thing = children[index];
 
@@ -64,5 +66,5 @@ var installFiles = function(target) {
 // Actually do something now.
 
 if (command === "install") {
-    installFiles(path(flags["t"] || process.env.HOME));
+    installFiles(path.resolve(flags["t"] || process.env.HOME));
 }
