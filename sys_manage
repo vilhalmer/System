@@ -1,34 +1,68 @@
 #!/usr/bin/env node
 
-if (process.argv.length !== 3) {
-    console.log("usage: sys_manage command");
+if (process.argv.length < 3) {
+    console.log("usage: sys_manage [-f] [-t target_dir] command");
     console.log("At the moment, the only command is `install`.");
     process.exit(1);
 }
 
+var flags = {};
+var command = "";
+
+for (var i = 2; i < process.argv.length; ++i) {
+    var thing = process.argv[i];
+
+    if (thing.indexOf("-") === 0) {
+        flags[thing.substring(1)] = (process.argv[i+1].indexOf("-") === 0) ? process.argv[++i] : "";
+    } else {
+        command = thing;
+        break;
+    }
+}
+
 var fs = require("fs");
+var path = require("path");
 
-var home = function(subpath) {
-    return process.env.HOME + subpath;
+var symlinkFile = function(linkPath, realPath) {
+    if (fs.existsSync(linkPath)) {
+        var linkStats = fs.lstatSync(linkPath);
+        if (linkStats.isSymbolicLink()) {
+            console.log(linkPath + " is a symbolic link, overwriting.");
+         } else {
+            console.log(linkPath + " exists! Moving to " + linkPath + ".back…");
+            if (fs.existsSync(linkPath + ".back")) {
+                console.log("…which also exists. Sigh. Skipping this file, fix it up and re-run to install it.");
+                return;
+            } else {
+                fs.renameSync(linkPath, linkPath + ".back");
+            }
+        }
+    }
+
+    fs.symlinkSync(realPath, linkPath);
 };
 
-var symlinkFile = function(from, to) {
-    fs.symlinkSync(from, to);
-};
+var installFiles = function(target) {
+    if (!fs.existsSync(target)) fs.mkdirSync(target);
 
-var installFiles = function(directory) {
-    var children = fs.readdirSync(directory);
-    console.log(children);
-    for (var thing in children) {
-        if (children[thing].indexOf(".") === 0) continue;
-        console.log("Processing child: " + children[thing]);
-        var stats = fs.statSync(children[thing]);
+    var children = fs.readdirSync(path("dotfiles"));
+    for (var index in children) {
+        var thing = children[index];
+
+        if (thing.indexOf(".") === 0) continue;
+        var realPath = path.resolve("dotfiles", thing);
+        var stats = fs.statSync(realPath);
         
         if (!(stats.isFile() || stats.isDirectory())) continue;
-        symlinkFile(children[thing], home("/test/." + children[thing]));
+
+        var linkPath = path.resolve(target, "." + thing);
+
+        symlinkFile(linkPath, realPath);
     }
 };
 
-if (process.argv[2] === "install") {
-    installFiles(process.env.PWD + "/dotfiles");
+// Actually do something now.
+
+if (command === "install") {
+    installFiles(path(flags["t"] || process.env.HOME));
 }
