@@ -1,18 +1,21 @@
+source $HOME/.profile
+
 HISTFILE=$HOME/.zsh_history
 setopt APPEND_HISTORY
 HISTSIZE=1200
 SAVEHIST=1000
 setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_IGNORE_DUPS
 #setopt EXTENDED_HISTORY
 
 autoload -U colors && colors
 
-PROMPT="%(#.%F{red}ROOT%f.%F{black}%n)%F{black} @ %m : %f%F{yellow}%d%f
-%(#.%F{red}.%F{blue})>> %f"
+PROMPT="%B%(#.%F{red}ROOT%f.%F{black}%n)%F{black} @ %m : %f%b%F{yellow}%d%f
+%(#.%B%F{red}.%F{blue})>> %f%b"
 
 # Display the exit status of the last command as a green/red status light, and
 # print out the code if it's > 0.
-RPROMPT="%(?.%F{green}.%F{red}%? )•%f"
+RPROMPT="%(?.%F{green}.%F{red}%? )%{%G•%}%f"
 
 # Autocompletions
 autoload -Uz compinit
@@ -40,3 +43,7 @@ zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' substitute 1
 zstyle ':completion:*' verbose true
 
+if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ -n "$SSH_TTY" ]; then
+    tmux attach-session -t "$USER" || tmux new-session -s "$USER"
+    exit
+fi
