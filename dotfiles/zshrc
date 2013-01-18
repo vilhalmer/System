@@ -56,3 +56,7 @@ if [[ $#h -gt 0 ]]; then
     zstyle ':completion:*:ssh:*' hosts $h
     zstyle ':completion:*:slogin:*' hosts $h
 fi
+
+# Aliases
+alias tmx='tmux attach-session -t $USER || tmux new-session -s $USER'
+
