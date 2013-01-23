@@ -59,4 +59,5 @@ fi
 
 # Aliases
 alias tmx='tmux attach-session -t $USER || tmux new-session -s $USER'
+alias gccc='gcc -ansi -pedantic' # Required flags for CS1141.
 
