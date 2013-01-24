@@ -62,4 +62,5 @@ alias tmx='tmux attach-session -t $USER || tmux new-session -s $USER'
 alias gccc='gcc -ansi -pedantic' # Required flags for CS1141.
 alias ls='ls -FG'
 alias commit-system='~/Documents/System/commit-system.sh'
+alias pull-system='~/Documents/System/pull-system.sh'
 
