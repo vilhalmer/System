@@ -8,7 +8,6 @@ command=$1
 link () {
     echo "Linking dotfiles..."
     for source in `find $DIR/dotfiles/* -maxdepth 1 -prune`; do
-        echo "SOURCE: $source"
         dest="$HOME/.`basename ${source}`"
 
         if [[ -h $dest ]]; then
@@ -21,8 +20,6 @@ link () {
                 continue
             fi
             mv "$dest" "$dest.back"
-        else
-            echo "Linking $dest."
         fi
 
         ln -s $source $dest
