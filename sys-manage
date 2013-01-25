@@ -35,6 +35,25 @@ link () {
     done
 }
 
+revert() {
+    echo "Resetting dotfiles..."
+    echo "(Note that this will only restore any .back files that you've left in place.)"
+    
+    for source in `find $DIR/dotfiles/* -maxdepth 1 -prune`; do
+        dest="$HOME/.`basename ${source}`"
+        if [[ -h $dest ]]; then
+            echo "Unlinking $dest."
+            unlink $dest
+            if [[ -f "$dest.back" ]]; then
+                echo -e "\t ...reverting to $dest.back."
+                mv "$dest.back" "$dest"
+            fi
+        fi
+    done
+
+    echo "Dotfiles reverted."
+}
+
 install () {
     echo "This doesn't work yet, but it will automatically install homebrew and such."
 }
