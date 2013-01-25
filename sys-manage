@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
 # Bash for maximum portability.
 
-DIR="$( cd "$( dirname "$0" )" && pwd )"
+# Apparently this bit of code figures out where the script lives.
+# http://stackoverflow.com/a/246128/264895
+
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 command=$1
 
@@ -30,5 +39,36 @@ install () {
     echo "This doesn't work yet, but it will automatically install homebrew and such."
 }
 
+push () {
+    if [[ -z $2 ]]; then
+        echo "You probably want a commit message on there."
+        exit 1
+    fi
+
+    cd $DIR
+    git status
+    echo
+    echo "Commit message: $@"
+    
+    echo "So, everything look good?"
+    while true; do
+        read yn
+        case $yn in
+            [yY]* ) break;;
+            [nN]* ) exit;;
+            * ) echo "Please answer y or n.";;
+        esac
+    done
+    echo "Committing and pushing..."
+
+    git add -A && git commit -m "$@" && git push origin master
+}
+
+pull () {
+    cd $DIR
+    echo "Pulling latest System configuration..."
+    git pull origin master
+}
+
 # Note that this is a really dumb way to run the command, but I'm lazy. It'll get changed as soon as it annoys me.
-$command
+$command $2
