@@ -25,10 +25,12 @@ link () {
         elif [[ -f $dest ]]; then
             echo "$dest exists, moving to $dest.back."
             if [[ -f "$dest.back" ]]; then
-                echo "...which also exists. Sigh. Skipping this one, re-run to try again."
+                echo "    ...which also exists. Sigh. Skipping this one, re-run to try again."
                 continue
             fi
             mv "$dest" "$dest.back"
+        else
+            echo "Linking $dest."
         fi
 
         ln -s $source $dest
@@ -45,7 +47,7 @@ revert() {
             echo "Unlinking $dest."
             unlink $dest
             if [[ -f "$dest.back" ]]; then
-                echo -e "\t ...reverting to $dest.back."
+                echo "    ...reverting to $dest.back."
                 mv "$dest.back" "$dest"
             fi
         fi
