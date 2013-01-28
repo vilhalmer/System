@@ -62,3 +62,11 @@ alias tmx='tmux attach-session -t $USER || tmux new-session -s $USER'
 alias gccc='gcc -ansi -pedantic' # Required flags for CS1141.
 alias ls='ls -FG'
 
+# Functions
+cdls () {
+    if [[ -z $2 ]]; then
+        cd $1 && ls
+    else
+        cd $2 && ls $1
+    fi
+}
