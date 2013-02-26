@@ -6,4 +6,6 @@ set shiftwidth=4
 set softtabstop=4
 
 set formatoptions=1
+syntax on
 set lbr
+command RealTabs %s-^\(    \)\+-	

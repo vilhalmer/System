@@ -1,2 +1,15 @@
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+
+#if [ -f ~/.force-shell ] && [ "$SHELL" != "$(cat $HOME/.force-shell)" ]; then
+#    real_shell=`cat $HOME/.force-shell`
+#    echo "Forcing shell: $real_shell."
+#    exec `$real_shell` SHELL=$real_shell && exit
+#fi
+
+if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ -n "$SSH_TTY" ]; then
+    if [ "$(which tmux >/dev/null)" -eq 0 ]; then
+        tmux attach-session -t "$USER" || tmux new-session -s "$USER"
+        exit
+    fi
+fi

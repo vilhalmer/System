@@ -43,11 +43,6 @@ zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' substitute 1
 zstyle ':completion:*' verbose true
 
-if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ -n "$SSH_TTY" ]; then
-    tmux attach-session -t "$USER" || tmux new-session -s "$USER"
-    exit
-fi
-
 h=()
 if [[ -r ~/.ssh/config ]]; then
     h=($h ${${${(@M)${(f)"$(cat ~/.ssh/config)"}:#Host *}#Host }:#*[*?]*})
