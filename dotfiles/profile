@@ -8,7 +8,8 @@ export LANG=en_US.UTF-8
 #fi
 
 if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ -n "$SSH_TTY" ]; then
-    if [ "$(which tmux >/dev/null)" -eq 0 ]; then
+    which tmux >/dev/null
+    if [ $? -eq 0 ]; then
         tmux attach-session -t "$USER" || tmux new-session -s "$USER"
         exit
     fi
