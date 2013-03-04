@@ -7,7 +7,7 @@ export LANG=en_US.UTF-8
 #    exec `$real_shell` SHELL=$real_shell && exit
 #fi
 
-if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ -n "$SSH_TTY" ]; then
+if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ -n "$SSH_TTY" ] && [ -z "$NO_TMUX" ]; then
     which tmux >/dev/null 2>/dev/null
     if [ $? -eq 0 ]; then
         tmux attach-session -t "$USER" || tmux new-session -s "$USER"
