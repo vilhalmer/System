@@ -10,7 +10,7 @@ setopt HIST_IGNORE_DUPS
 
 autoload -U colors && colors
 
-PROMPT="%B%(#.%F{red}ROOT%f.%F{black}%n)%F{black} @ %m : %f%b%F{yellow}%d%f
+PROMPT="%B%(#.%F{red}ROOT%f.%F{black}%n)%F{black} @ %m : %f%b%F{yellow}%d%f %1(j.%F{cyan}# %j%f.)
 %(#.%B%F{red}.%F{blue})>> %f%b"
 
 # Display the exit status of the last command as a green/red status light, and
