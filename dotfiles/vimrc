@@ -9,4 +9,10 @@ set formatoptions=1r
 syntax on
 set lbr
 
+set incsearch
+set ignorecase
+set smartcase
+set hlsearch
+nmap \q :nohlsearch<CR>
+
 command RealTabs %s-^\(    \)\+-	
