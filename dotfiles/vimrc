@@ -1,18 +1,39 @@
-set autoindent
+set hidden
+set nocompatible
+set wildmenu
+
+" Detect filetypes.
+filetype on
+filetype plugin on
+filetype indent on
+
+" Make everything pretty.
+set formatoptions+=1r
+syntax on
+set lbr
 set number
 
+" Make editing actually usable.
+set autoindent
 set expandtab
 set shiftwidth=4
 set softtabstop=4
 
-set formatoptions=1r
-syntax on
-set lbr
-
+" Make searching awesome.
 set incsearch
 set ignorecase
 set smartcase
 set hlsearch
 nmap \q :nohlsearch<CR>
 
+" This is good for Makefiles, but that's about it:
 command RealTabs %s-^\(    \)\+-	
+
+" Tabline config (hi = hilight):
+hi TabLineFill ctermfg=7 ctermbg=7
+hi TabLine cterm=bold ctermfg=7
+hi TabLineSel cterm=bold
+set showtabline=2
+
+" Shortcut to source vimrc.
+nmap <silent> \sv :so $MYVIMRC<cr>
