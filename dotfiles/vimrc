@@ -2,6 +2,9 @@ set hidden
 set nocompatible
 set wildmenu
 
+" Much easier to reach.
+let mapleader=","
+
 " Detect filetypes.
 filetype on
 filetype plugin on
@@ -25,7 +28,7 @@ set incsearch
 set ignorecase
 set smartcase
 set hlsearch
-nmap \q :nohlsearch<CR>
+nmap <Leader>q :nohlsearch<CR>
 
 " This is good for Makefiles, but that's about it:
 command RealTabs %s-^\(    \)\+-	
@@ -36,5 +39,9 @@ hi TabLine cterm=bold ctermfg=7
 hi TabLineSel cterm=bold
 set showtabline=2
 
-" Shortcut to source vimrc.
-nmap <silent> \sv :so $MYVIMRC<cr>
+"" Shortcuts
+
+" Source vimrc:
+nmap <silent> <Leader>sv :so $MYVIMRC<cr>
+" Expand braces of method:
+nmap <Leader>o i<CR><Esc>O<Tab> 
