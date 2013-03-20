@@ -39,9 +39,13 @@ hi TabLine cterm=bold ctermfg=7
 hi TabLineSel cterm=bold
 set showtabline=2
 
-"" Shortcuts
+" Mappings
 
 " Source vimrc:
 nmap <silent> <Leader>sv :so $MYVIMRC<cr>
 " Expand braces of method:
 nmap <Leader>o i<CR><Esc>O<Tab> 
+
+" Fix navigation over line wraps: (from http://statico.github.com/vim.html)
+nmap j gj
+nmap k gk
