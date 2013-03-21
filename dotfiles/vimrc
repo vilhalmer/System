@@ -28,7 +28,6 @@ set incsearch
 set ignorecase
 set smartcase
 set hlsearch
-nmap <Leader>q :nohlsearch<CR>
 
 " This is good for Makefiles, but that's about it:
 command RealTabs %s-^\(    \)\+-	
@@ -43,8 +42,14 @@ set showtabline=2
 
 " Source vimrc:
 nmap <silent> <Leader>sv :so $MYVIMRC<cr>
-" Expand braces of method:
-nmap <Leader>o i<CR><Esc>O<Tab> 
+
+" Auto-expand braces (This still isn't perfect, because I both have to do it
+" quickly, to avoid interfering with auto-insertion, and it causes a noticable
+" pause while it waits for me to MAYBE do it. But better than it was.)
+inoremap {<CR> {<CR>}<Esc>O<TAB>
+
+" Toggle match hilighing.
+nmap <Leader>q :nohlsearch<CR>
 
 " Fix navigation over line wraps: (from http://statico.github.com/vim.html)
 nmap j gj
