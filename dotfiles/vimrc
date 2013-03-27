@@ -54,3 +54,6 @@ nmap <Leader>q :nohlsearch<CR>
 " Fix navigation over line wraps: (from http://statico.github.com/vim.html)
 nmap j gj
 nmap k gk
+
+" Always center lines when jumping to line number (thanks to https://twitter.com/mattboehm/status/316602303312429056):
+nnoremap gg ggz.
