@@ -5,6 +5,9 @@ set wildmenu
 " Much easier to reach.
 let mapleader=","
 
+" NERDTree stuff:
+let g:NERDTreeWinSize = 40
+
 " Detect filetypes.
 filetype on
 filetype plugin on
