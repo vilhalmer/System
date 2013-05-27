@@ -1,3 +1,5 @@
+typeset -U PATH # Prevents duplicate PATH entries. zsh only, so it's set prior to sourcing anything that might set PATH.
+
 source $HOME/.profile
 
 HISTFILE=$HOME/.zsh_history
