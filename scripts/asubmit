@@ -2,6 +2,35 @@
 # This script automatically zips (when appropriate), uploads, and submits assignments.
 # (Note to the reader: This script is probably useless to you, unless you happen to attend Michigan Tech and would like a faster way to submit your programming assignments.)
 
+# Follow these comments to learn how to use this:
+# As you will learn if you run `asubmit --help` (or any incorrect arguments, actually), this script has two modes:
+# argument-based, and manfest-based. In argument-based mode, you pass the submission information at the command line. Run it as
+# `asubmit --help` to see the arguments it wants.
+#
+# However, the much cooler mode is manifest-based. In this mode, you can simply run `asubmit` and it will do everything by itself.
+# This is especially helpful when you realize you have five minutes left to submit your assignment, and don't feel like typing
+# everything yourself. To use this mode, you need to create a file called "submit-manifest", in the top-level of the directory for
+# the project. The contents of the file should look like this:
+#
+# class-name
+# section-name
+# program-name
+# this is a list of files to submit
+#
+# The list of files is simply space-delimited, and can include relative paths. Wildcards are allowed, so you can do something like
+# *.c to submit all of the C source files in the directory. You probably don't want to use * to select EVERYTHING, because that will
+# include the submit-manifest file, etc. (It probably wouldn't hurt anything, but it's better to know EXACTLY what you're submitting.)
+# The class-name, etc, are the same things that you would select if you were running `submit` yourself.
+#
+# Finally, this script has bugs and annoyances. At the moment, you will have to type your password twice during the process, assuming
+# that you aren't using an RSA key to log into the server, and have ssh-agent remembering your passphrase. (If you aren't, you should
+# be, it's quite nice.) (Also, if you're using an RSA key with no passphrase, shame on you.)
+#
+# If weird things happen, by all means fix it up and let me know. I used this successfully for all of 2013-spring, but that doesn't
+# mean it's perfect. In that vein, I take no responsibility for this not working and causing you to submit an assignment
+# incorrectly. Verify that it's actually working the first few times you use it, though it SHOULD alert you if something isn't right.
+# Pay close attention to the output. Have fun!
+
 # Set the login variable to username@server, whatever you usually use to log into the school systems.
 # It's "colossus" at the moment because I have a host alias set up in .ssh/config that provides the correct info.
 login="colossus" 
