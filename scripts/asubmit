@@ -4,10 +4,10 @@
 
 # Follow these comments to learn how to use this:
 # As you will learn if you run `asubmit --help` (or any incorrect arguments, actually), this script has two modes:
-# argument-based, and manfest-based. In argument-based mode, you pass the submission information at the command line. Run it as
+# argument-mode, and manfest-mode. In argument-mode, you pass the submission information at the command line. Run it as
 # `asubmit --help` to see the arguments it wants.
 #
-# However, the much cooler mode is manifest-based. In this mode, you can simply run `asubmit` and it will do everything by itself.
+# However, the much cooler mode is manifest-mode. In this mode, you can simply run `asubmit` and it will do everything by itself.
 # This is especially helpful when you realize you have five minutes left to submit your assignment, and don't feel like typing
 # everything yourself. To use this mode, you need to create a file called "submit-manifest", in the top-level of the directory for
 # the project. The contents of the file should look like this:
@@ -21,6 +21,8 @@
 # *.c to submit all of the C source files in the directory. You probably don't want to use * to select EVERYTHING, because that will
 # include the submit-manifest file, etc. (It probably wouldn't hurt anything, but it's better to know EXACTLY what you're submitting.)
 # The class-name, etc, are the same things that you would select if you were running `submit` yourself.
+# 
+# To run in manifest-mode, just move into the directory that contains "submit-manifest" and run `asubmit`. Then enjoy the magic.
 #
 # Finally, this script has bugs and annoyances. At the moment, you will have to type your password twice during the process, assuming
 # that you aren't using an RSA key to log into the server, and have ssh-agent remembering your passphrase. (If you aren't, you should
