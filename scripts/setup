@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# This script simplifies the initial cloning and installation of my System repo.
+
+echo "Installing System into $(pwd)..."
+
+git clone git://github.com/vilhalmer/System.git
+echo
+echo "Installed!"
+echo "Use \`System/sys-manage link\` to perform initial setup."

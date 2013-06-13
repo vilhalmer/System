@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# This script automatically zips (when appropriate), uploads, and submits assignments.
+# (Note to the reader: This script is probably useless to you, unless you happen to attend Michigan Tech and would like a faster way to submit your programming assignments.)
+
+# Set the login variable to username@server, whatever you usually use to log into the school systems.
+# It's "colossus" at the moment because I have a host alias set up in .ssh/config that provides the correct info.
+login="colossus" 
+
+unzip=0
+
+if [ "$1" == "-z" ]; then
+    unzip=1
+    shift
+fi
+
+if [ $# -lt 4 ] && [ $# -gt 0 ]; then
+    echo "Usage: $(basename $0) [-z] [class section program file1 file2 ...]"
+    echo "If no arguments are provided, the script looks for a submit-manifest file and follows the instructions within."
+    echo "Adding -z will leave the program in its zipped state when submitting."
+    exit
+fi
+
+if [ $# -eq 0 ] && [ ! -f "submit-manifest" ]; then
+    echo "Could not find submit-manifest. Exiting."
+    exit 1;
+fi
+
+if [ $# -eq 0 ]; then
+    manifest=( $(cat submit-manifest) )
+    class=${manifest[0]}
+    section=${manifest[1]}
+    program=${manifest[2]}
+    files=${manifest[@]:3}
+else
+
+    class="$1"
+    section="$2"
+    program="$3"
+    files="${@:4}"
+fi
+
+echo "Submitting $program"
+
+curDir=$(basename $(pwd))
+for file in $files; do
+    fileString="$fileString $curDir/$file"
+done
+
+if [ $unzip -eq 1 ]; then
+    command="cd ~/$class && submit $class.$section $program $program.zip"
+else
+    command="cd ~/$class && unzip -o $program.zip && cd $curDir && submit $class.$section $program $files"
+fi
+
+cd ..
+zip -r $program.zip $fileString || { echo "Failed to zip files!"; exit 1; }
+
+scp $program.zip $login:~/$class || { echo "Failed to upload files!"; exit 2; }
+rm $program.zip || { echo "Failed to remove temporary zip file. (What?) Deal with it yourself, moving on."; }
+ssh $login -t "$command" || { echo "Failed to do, erm, everything else."; exit 3; }
