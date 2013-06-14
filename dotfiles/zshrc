@@ -12,6 +12,15 @@ setopt HIST_IGNORE_DUPS
 
 autoload -U colors && colors
 
+# vim mode
+set -o vi # This is already achieved by exporting EDITOR=vim, but best to be explicit.
+
+# These force vim-style behavior, rather than vi-style. Screw vi.
+bindkey "^?" backward-delete-char
+bindkey "^W" backward-kill-word
+bindkey "^H" backward-delete-char
+bindkey "^U" kill-line
+
 PROMPT="%B%(#.%F{red}ROOT%f.%F{black}%n)%F{black} @ %m : %f%b%F{yellow}%d%f %1(j.%F{cyan}⎇  %j%f.)
 %(#.%B%F{red}.%F{blue})>> %f%b"
 
