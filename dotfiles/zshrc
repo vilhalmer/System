@@ -56,9 +56,20 @@ fi
 
 # Aliases
 alias tmx='tmux attach-session -t $USER || tmux new-session -s $USER'
-alias ls='ls -FG'
 alias fsl='fossil-colorized'
 alias ffsl='fossil-overview'
+
+# Colorful ls!
+if [ $(uname) = "Linux" ]; then
+    # Linux
+    alias ls='ls -F --color=auto'
+    export LS_COLORS='di=33:fi=0:ln=35:pi=34:so=36:bd=37;47:cd=37:or=37:mi=0:ex=31'
+else
+    # OS X   
+    alias ls='ls -FG'
+    export LSCOLORS=dxfxgxexbxchcxBxBxdhDh
+    export CLICOLOR=1
+fi
 
 # Functions
 
