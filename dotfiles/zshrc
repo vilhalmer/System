@@ -67,6 +67,7 @@ fi
 alias tmx='tmux attach-session -t $USER || tmux new-session -s $USER'
 alias fsl='fossil-colorized'
 alias ffsl='fossil-overview'
+alias src='source $HOME/.zshrc'
 
 # Colorful ls!
 if [ $(uname) = "Linux" ]; then
