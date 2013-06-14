@@ -68,6 +68,7 @@ alias tmx='tmux attach-session -t $USER || tmux new-session -s $USER'
 alias fsl='fossil-colorized'
 alias ffsl='fossil-overview'
 alias src='source $HOME/.zshrc'
+alias xcode='open *.xcodeproj' # Stolen from http://www.codeography.com/2009/10/28/open-xcode-project-from-the-command-line.html
 
 # Colorful ls!
 if [ $(uname) = "Linux" ]; then
