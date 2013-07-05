@@ -9,6 +9,7 @@ SAVEHIST=1000
 setopt HIST_EXPIRE_DUPS_FIRST
 setopt HIST_IGNORE_DUPS
 #setopt EXTENDED_HISTORY
+setopt HIST_IGNORE_SPACE
 
 autoload -U colors && colors
 
@@ -64,7 +65,7 @@ if [[ $#h -gt 0 ]]; then
 fi
 
 # Aliases
-alias tmx='tmux attach-session -t $USER || tmux new-session -s $USER'
+alias tmx='tmux new-session -A -s $USER'
 alias fsl='fossil' # Changed until I fix the problem with blocking interactive-input from fossil-colorized.
 alias ffsl='fossil-overview'
 alias src='source $HOME/.zshrc'
