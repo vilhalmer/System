@@ -68,6 +68,7 @@ fi
 alias tmx='tmux new-session -A -s $USER'
 alias fsl='fossil' # Changed until I fix the problem with blocking interactive-input from fossil-colorized.
 alias ffsl='fossil-overview'
+alias fsltmx='tmux new-session -A -s fossil' # Create or connect to my fossil session.
 alias src='source $HOME/.zshrc'
 alias xcode='open *.xcodeproj' # Stolen from http://www.codeography.com/2009/10/28/open-xcode-project-from-the-command-line.html
 
