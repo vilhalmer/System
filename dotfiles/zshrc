@@ -16,10 +16,10 @@ autoload -U colors && colors
 set -o emacs # I just cannot get used to vim bindings on the shell, they're clunky. Disabling since EDITOR would set it.
 
 # These force vim-style behavior, rather than vi-style. Screw vi.
-bindkey "^?" backward-delete-char
-bindkey "^W" backward-kill-word
-bindkey "^H" backward-delete-char
-bindkey "^U" kill-line
+#bindkey "^?" backward-delete-char
+#bindkey "^W" backward-kill-word
+#bindkey "^H" backward-delete-char
+#bindkey "^U" kill-line
 
 PROMPT="%B%(#.%F{red}ROOT%f.%F{black}%n)%F{black} @ %m : %f%b%F{yellow}%d%f %1(j.%F{cyan}⎇  %j%f.)
 %(#.%B%F{red}.%F{blue})>> %f%b"
