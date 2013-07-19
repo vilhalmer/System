@@ -13,8 +13,7 @@ setopt HIST_IGNORE_SPACE
 
 autoload -U colors && colors
 
-# vim mode
-set -o vi # This is already achieved by exporting EDITOR=vim, but best to be explicit.
+set -o emacs # I just cannot get used to vim bindings on the shell, they're clunky. Disabling since EDITOR would set it.
 
 # These force vim-style behavior, rather than vi-style. Screw vi.
 bindkey "^?" backward-delete-char
