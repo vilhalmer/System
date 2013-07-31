@@ -10,7 +10,12 @@ export EDITOR=vim
 #    exec `$real_shell` SHELL=$real_shell && exit
 #fi
 
-if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ -n "$SSH_TTY" ] && [ -z "$NO_TMUX" ]; then
+if [ -n "$SSH_CONNECTION" ] && \
+   [ -z "$TMUX" ] && \
+   [ -n "$SSH_TTY" ] && \
+   [ -z "$NO_TMUX" ] && \
+   [ "$TERM" != "mobile" ];
+then
     if [ -n "$TMUX_SESSION" ]; then
         session="$TMUX_SESSION"
     else
@@ -19,7 +24,12 @@ if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ] && [ -n "$SSH_TTY" ] && [ -z "$NO_
 
     which tmux >/dev/null 2>/dev/null
     if [ $? -eq 0 ]; then
-        tmux attach-session -t "$session" || tmux new-session -s "$session"
+        tmux new-session -A -s "$session" # Create or attach to existing session.
         exit
     fi
+fi
+
+# The "mobile" terminal type apparently exists, and is incredibly dumb. Therefore, switch back to something sane.
+if [ "$TERM" = "mobile" ]; then
+    export TERM=xterm-256color
 fi
