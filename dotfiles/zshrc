@@ -93,13 +93,6 @@ fi
 
 # Functions
 
-function chpwd() {
-    fossil status > /dev/null 2>&1
-    if [ "$?" -eq 0 ]; then
-        fossil-overview
-    fi
-}
-
 cdls () {
     if [[ -z $2 ]]; then
         cd $1 && ls
