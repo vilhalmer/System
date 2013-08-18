@@ -74,6 +74,8 @@ alias how='how-formed.sh --strict' # hehehehehehehehehe
 alias grab='brew install'
 alias toss='brew uninstall'
 
+alias gitmx='tmux new-session -A -s git-status'
+
 # Fossil aliases (disabled)
 #alias fsl='fossil' # Changed until I fix the problem with blocking interactive-input from fossil-colorized.
 #alias ffsl='fossil-overview'
