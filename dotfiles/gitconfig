@@ -1,2 +1,11 @@
 [user]
 	email = vil@unsquared.co
+	name = vilhalmer
+[core]
+	editor = vim
+	excludesfile = $HOME/.gitignore
+[alias]
+	ci = commit
+	co = checkout
+	unstage = reset HEAD --
+	last = log -1 HEAD
