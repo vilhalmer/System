@@ -3,7 +3,7 @@
 	name = vilhalmer
 [core]
 	editor = vim
-	excludesfile = $HOME/.gitignore
+	excludesfile = ~/.gitignore
 [alias]
 	ci = commit
 	co = checkout
