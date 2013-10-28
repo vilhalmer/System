@@ -10,6 +10,7 @@ setopt HIST_EXPIRE_DUPS_FIRST
 setopt HIST_IGNORE_DUPS
 #setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_SPACE
+setopt PROMPT_SUBST
 
 autoload -U colors && colors
 
@@ -20,13 +21,6 @@ set -o emacs # I just cannot get used to vim bindings on the shell, they're clun
 #bindkey "^W" backward-kill-word
 #bindkey "^H" backward-delete-char
 #bindkey "^U" kill-line
-
-PROMPT="%B%(#.%F{red}ROOT%f.%F{black}%n)%F{black} @ %m : %f%b%F{yellow}%d%f %1(j.%F{cyan}⎇  %j%f.)
-%(#.%B%F{red}.%F{blue})>> %f%b"
-
-# Display the exit status of the last command as a green/red status light, and
-# print out the code if it's > 0.
-RPROMPT="%(?.%F{green}.%F{red}%? )%{%G•%}%f"
 
 # Autocompletions
 autoload -Uz compinit
@@ -103,3 +97,46 @@ cdls () {
     fi
 }
 
+build_prompt () {
+    if $(git branch 1> /dev/null 2>&1); then
+        # We're in a git repo, so activate the special prompt.
+        git_name=$(git config user.name)
+        repo_name=$(basename $(git rev-parse --show-toplevel))
+        branch=$(git rev-parse --abbrev-ref HEAD)
+
+        subpath=$(git rev-parse --show-prefix)
+        [ -n "$subpath" ] && subpath="/$subpath" # Only display a slash if we're actually in a subdirectory.
+
+        count_status=""
+
+        git_status=$(git status --short)
+        added_staged=$(echo "$git_status" | grep "^A" | wc -l | sed -e 's/^[ \t]*//')
+        [ $added_staged -ne 0 ] && count_status="$count_status %F{green}+$added_staged"
+
+        modified_staged=$(echo "$git_status" | grep "^M\|^R" | wc -l | sed -e 's/^[ \t]*//')
+        [ $modified_staged -ne 0 ] && count_status="$count_status %F{yellow}~$modified_staged"
+
+        deleted_staged=$(echo "$git_status" | grep "^D" | wc -l | sed -e 's/^[ \t]*//')
+        [ $deleted_staged -ne 0 ] && count_status="$count_status %F{red}-$deleted_staged"
+
+        all_staged=$()
+
+        branch="%F{blue}$branch"
+
+        PROMPT="%B%F{black}$git_name ± %f%b%F{yellow}$repo_name%f%B%F{black}$subpath ⋋ %b$branch%F{black} [%b$count_status %F{black}]
+%(#.%B%F{red}.%F{blue})>> %f%b"
+    else
+        PROMPT="%B%(#.%F{red}ROOT%f.%F{black}%n)%F{black} @ %m : %f%b%F{yellow}%d%f %1(j.%F{cyan}⎇  %j%f.)
+%(#.%B%F{red}.%F{blue})>> %f%b"
+    fi
+}
+
+precmd () {
+    build_prompt
+}
+
+# Right-hand prompt is always the same:
+
+# Display the exit status of the last command as a green/red status light, and
+# print out the code if it's > 0.
+RPROMPT="%(?.%F{green}.%F{red}%? )%{%G•%}%f"
