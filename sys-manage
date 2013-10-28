@@ -16,8 +16,8 @@ command=$1
 
 link () {
     echo "Linking dotfiles..."
-    for source in `find $DIR/dotfiles/* -maxdepth 1 -prune`; do
-        dest="$HOME/.`basename ${source}`"
+    for file in `find $DIR/dotfiles/* -maxdepth 1 -prune`; do
+        dest="$HOME/.`basename ${file}`"
 
         if [[ -h $dest ]]; then
             echo "$dest is a symbolic link, overwriting."
@@ -33,7 +33,7 @@ link () {
             echo "Linking $dest."
         fi
 
-        ln -s $source $dest
+        ln -s $file $dest
     done
 }
 
@@ -41,8 +41,8 @@ revert() {
     echo "Resetting dotfiles..."
     echo "(Note that this will only restore any .back files that you've left in place.)"
     
-    for source in `find $DIR/dotfiles/* -maxdepth 1 -prune`; do
-        dest="$HOME/.`basename ${source}`"
+    for file in `find $DIR/dotfiles/* -maxdepth 1 -prune`; do
+        dest="$HOME/.`basename ${file}`"
         if [[ -h $dest ]]; then
             echo "Unlinking $dest."
             unlink $dest
@@ -54,6 +54,30 @@ revert() {
     done
 
     echo "Dotfiles reverted."
+}
+
+import () {
+    if [[ "$#" -eq 0 ]]; then
+        echo "This command takes one or more arguments, the files you wish to import."
+        echo "You want to import everything? No you don't. Type them out, dammit."
+    else
+        echo "Importing dotfiles..."
+    fi
+
+    for file in "$@"; do
+        target="$HOME/.${file}"
+        if [[ -h $target ]]; then
+            echo "$target is already a symlink. Skipping."
+        elif [[ -f $target ]]; then
+            echo "Importing $target."
+            mv "$target" "$DIR/dotfiles/$file"
+            ln -s "$DIR/dotfiles/$file" "$target"
+        fi
+    done
+}
+
+export () {
+    echo "Haven't gotten this far yet, dealing with bash burnt me out after import last time."
 }
 
 install () {
@@ -96,4 +120,4 @@ pull () {
 }
 
 # Note that this is a really dumb way to run the command, but I'm lazy. It'll get changed as soon as it annoys me.
-$command "$2"
+$command "${@:2}"
