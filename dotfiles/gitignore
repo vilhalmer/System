@@ -1,0 +1,27 @@
+# General
+.DS_Store
+*.swp
+
+# Build artifacts
+build/
+
+# Xcode
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+profile
+*.moved-aside
+DerivedData
+xcdebugger/
+
+# Discard userdata EXCEPT schemes (these don't work)
+#xcuserdata/
+#!xcuserdata/**/xcschemes/*
+
+# Ignore Xcode's UserInterfaceState
+UserInterfaceState.xcuserstate
