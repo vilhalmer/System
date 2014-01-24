@@ -1,5 +1,6 @@
 # General
 .DS_Store
+.AppleDouble
 *.swp
 
 # Build artifacts
