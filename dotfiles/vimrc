@@ -19,6 +19,13 @@ syntax on
 set lbr
 set number
 
+" Wrapping stuff
+set nowrap
+set linebreak
+set sidescroll=5
+set listchars+=precedes:<
+set listchars+=extends:>
+
 " Make editing actually usable.
 set autoindent
 set expandtab
@@ -34,7 +41,7 @@ set smartcase
 set hlsearch
 
 " This is good for Makefiles, but that's about it:
-command RealTabs %s-^\(    \)\+-	
+command! RealTabs %s-^\(    \)\+-	
 
 " Tabline config (hi = hilight):
 hi TabLineFill ctermfg=7 ctermbg=7
@@ -45,15 +52,17 @@ set showtabline=2
 " Mappings
 
 " Source vimrc:
-nmap <silent> <Leader>sv :so $MYVIMRC<cr>
+nmap <silent> <Leader>sv :so $MYVIMRC<CR>
+
+" Toggles
+nnoremap <Leader>th :set hlsearch! hlsearch?<CR>
+nnoremap <Leader>tt :set expandtab! expandtab?<CR>
+nnoremap <Leader>tw :set wrap! wrap?<CR>
 
 " Auto-expand braces (This still isn't perfect, because I both have to do it
 " quickly, to avoid interfering with auto-insertion, and it causes a noticable
 " pause while it waits for me to MAYBE do it. But better than it was.)
-inoremap {<CR> {<CR>}<Esc>O<TAB>
-
-" Toggle match hilighing.
-nmap <Leader>q :nohlsearch<CR>
+"inoremap {<CR> {<CR>}<Esc>O<TAB>
 
 " Fix navigation over line wraps: (from http://statico.github.com/vim.html)
 nmap j gj
