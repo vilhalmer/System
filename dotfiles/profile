@@ -4,6 +4,8 @@ export LANG=en_US.UTF-8
 export PATH=$PATH:$HOME/System/scripts
 export EDITOR=vim
 
+stty -ixon # Keep Ctrl-s from freezing the terminal
+
 #if [ -f ~/.force-shell ] && [ "$SHELL" != "$(cat $HOME/.force-shell)" ]; then
 #    real_shell=`cat $HOME/.force-shell`
 #    echo "Forcing shell: $real_shell."
