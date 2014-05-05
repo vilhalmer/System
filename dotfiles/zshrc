@@ -69,6 +69,7 @@ alias grab='brew install'
 alias toss='brew uninstall'
 
 alias gitmx='tmux new-session -A -s git-status'
+alias cups-pipsqueak='open "http://localhost:2000" && ssh pipsqueak -L 2000:pipsqueak:631 -N'
 
 # Fossil aliases (disabled)
 #alias fsl='fossil' # Changed until I fix the problem with blocking interactive-input from fossil-colorized.
