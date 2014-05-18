@@ -58,7 +58,7 @@ nmap <silent> <Leader>sv :so $MYVIMRC<CR>
 nnoremap <Leader>th :set hlsearch! hlsearch?<CR>
 nnoremap <Leader>tt :set expandtab! expandtab?<CR>
 nnoremap <Leader>tw :set wrap! wrap?<CR>
-nnoremap <Leader>tr :call numberToggle()<CR>
+nnoremap <Leader>tr :call NumberToggle()<CR>
 nnoremap <Leader>tp :set paste! paste?<CR>
 
 " Auto-expand braces (This still isn't perfect, because I both have to do it
@@ -77,7 +77,8 @@ nnoremap gg ggz.
 
 function! NumberToggle() " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
     if (&relativenumber == 1)
-        set number
+        set norelativenumber
+        set number " Necessary for now to support both vim 7.3 and 7.4.
     else
         set relativenumber
     endif
