@@ -49,7 +49,7 @@ hi TabLine cterm=bold ctermfg=7
 hi TabLineSel cterm=bold
 set showtabline=2
 
-" Mappings
+""""" Mappings """""
 
 " Source vimrc:
 nmap <silent> <Leader>sv :so $MYVIMRC<CR>
@@ -58,6 +58,8 @@ nmap <silent> <Leader>sv :so $MYVIMRC<CR>
 nnoremap <Leader>th :set hlsearch! hlsearch?<CR>
 nnoremap <Leader>tt :set expandtab! expandtab?<CR>
 nnoremap <Leader>tw :set wrap! wrap?<CR>
+nnoremap <Leader>tr :call numberToggle()<CR>
+nnoremap <Leader>tp :set paste! paste?<CR>
 
 " Auto-expand braces (This still isn't perfect, because I both have to do it
 " quickly, to avoid interfering with auto-insertion, and it causes a noticable
@@ -70,3 +72,14 @@ nmap k gk
 
 " Always center lines when jumping to line number (thanks to https://twitter.com/mattboehm/status/316602303312429056):
 nnoremap gg ggz.
+
+""""" Functions """""
+
+function! NumberToggle() " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
+    if (&relativenumber == 1)
+        set number
+    else
+        set relativenumber
+    endif
+endfunc
+
