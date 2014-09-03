@@ -57,6 +57,9 @@ if [[ $#h -gt 0 ]]; then
     zstyle ':completion:*:slogin:*' hosts $h
 fi
 
+# Sensitive environment variables (so they aren't stored in the public repo)
+source "$HOME/.mac_addr"
+
 # General aliases
 alias tmx='tmux new-session -A -s $USER'
 alias src='source $HOME/.zshrc'
@@ -103,7 +106,8 @@ build_prompt () {
         # We're in a git repo, so activate the special prompt.
         git_name=$(git config user.name)
         repo_name=$(basename $(git rev-parse --show-toplevel))
-        branch=$(git rev-parse --abbrev-ref HEAD)
+        branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
+        [[ "$branch" == "HEAD" ]] && branch="(new repo)"
 
         subpath=$(git rev-parse --show-prefix)
         [ -n "$subpath" ] && subpath="/$subpath" # Only display a slash if we're actually in a subdirectory.
