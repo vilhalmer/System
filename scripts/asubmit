@@ -78,14 +78,14 @@ for file in $files; do
 done
 
 if [ $unzip -eq 1 ]; then
-    command="cd ~/$class && submit $class.$section $program $program.zip"
+    command="submit $class.$section $program $program.zip && rm $program.zip"
 else
-    command="cd ~/$class && unzip -o $program.zip && cd $curDir && submit $class.$section $program $files"
+    command="unzip -d submit-temp -o -j $program.zip && cd submit-temp && submit $class.$section $program * && cd .. && rm -rf submit-temp && rm $program.zip"
 fi
 
 cd ..
-zip -r $program.zip $fileString || { echo "Failed to zip files!"; exit 1; }
+zip -r "$program.zip" $fileString || { echo "Failed to zip files!"; exit 1; }
 
-scp $program.zip $login:~/$class || { echo "Failed to upload files!"; exit 2; }
-rm $program.zip || { echo "Failed to remove temporary zip file. (What?) Deal with it yourself, moving on."; }
+scp "$program.zip" "$login:~/$program.zip" || { echo "Failed to upload files!"; exit 2; }
+rm "$program.zip" || { echo "Failed to remove temporary zip file. (What?) Deal with it yourself, moving on."; }
 ssh $login -t "$command" || { echo "Failed to do, erm, everything else."; exit 3; }
