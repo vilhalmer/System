@@ -112,23 +112,38 @@ build_prompt () {
         subpath=$(git rev-parse --show-prefix)
         [ -n "$subpath" ] && subpath="/$subpath" # Only display a slash if we're actually in a subdirectory.
 
-        count_status=""
+        unstage_status=""
+        stage_status=""
 
         git_status=$(git status --short)
+
+        untracked=$(echo "$git_status" | grep "^??" | wc -l | sed -e 's/^[ \t]*//')
+        [ $untracked -ne 0 ] && unstage_status="$unstage_status %F{magenta}+$untracked"
+
+        modified_unstaged=$(echo "$git_status" | grep "^.M" | wc -l | sed -e 's/^[ \t]*//')
+        [ $modified_unstaged -ne 0 ] && unstage_status="$unstage_status %F{magenta}~$modified_unstaged"
+
+        deleted_unstaged=$(echo "$git_status" | grep "^.D" | wc -l | sed -e 's/^[ \t]*//')
+        [ $deleted_unstaged -ne 0 ] && unstage_status="$unstage_status %F{magenta}-$deleted_unstaged"
+       
         added_staged=$(echo "$git_status" | grep "^A" | wc -l | sed -e 's/^[ \t]*//')
-        [ $added_staged -ne 0 ] && count_status="$count_status %F{green}+$added_staged"
+        [ $added_staged -ne 0 ] && stage_status="$stage_status %F{green}+$added_staged"
 
         modified_staged=$(echo "$git_status" | grep "^M\|^R" | wc -l | sed -e 's/^[ \t]*//')
-        [ $modified_staged -ne 0 ] && count_status="$count_status %F{yellow}~$modified_staged"
+        [ $modified_staged -ne 0 ] && stage_status="$stage_status %F{yellow}~$modified_staged"
 
         deleted_staged=$(echo "$git_status" | grep "^D" | wc -l | sed -e 's/^[ \t]*//')
-        [ $deleted_staged -ne 0 ] && count_status="$count_status %F{red}-$deleted_staged"
+        [ $deleted_staged -ne 0 ] && stage_status="$stage_status %F{red}-$deleted_staged"
+
+        divider=""
+        [[ -n $unstage_status ]] && [[ -n $stage_status ]] && divider="%F{black} //"
+        [[ -z $unstage_status ]] && [[ -z $stage_status ]] && divider="%B%F{black} ✓%b"
 
         all_staged=$()
 
         branch="%F{blue}$branch"
 
-        PROMPT="%B%F{black}$git_name ± %f%b%F{yellow}$repo_name%f%B%F{black}$subpath ⋋ %b$branch%F{black} [%b$count_status %F{black}]
+        PROMPT="%B%F{black}$git_name ± %f%b%F{yellow}$repo_name%f%B%F{black}$subpath ⋋ %b$branch%B%F{black} [%b$unstage_status$divider$stage_status %B%F{black}]%b
 %(#.%B%F{red}.%F{blue})>> %f%b"
     else
         PROMPT="%B%(#.%F{red}ROOT%f.%F{black}%n)%F{black} @ %m : %f%b%F{yellow}%d%f %1(j.%F{cyan}⎇  %j%f.)
