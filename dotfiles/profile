@@ -36,3 +36,12 @@ if [ "$TERM" = "mobile" ]; then
     export TERM=xterm-256color
     clear # Yay even more hacky. This fixes the visual corruption that happens right after mobile connect.
 fi
+
+eval $(ssh-agent)
+
+function cleanup {
+    echo "Killing SSH-Agent"
+    kill -9 $SSH
+}
+
+trap cleanup EXIT
