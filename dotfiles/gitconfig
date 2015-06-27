@@ -9,3 +9,4 @@
 	co = checkout
 	unstage = reset HEAD --
 	last = log -1 HEAD
+    uncommit = reset --soft HEAD~1
