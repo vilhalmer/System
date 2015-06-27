@@ -58,7 +58,7 @@ if [[ $#h -gt 0 ]]; then
 fi
 
 # Sensitive environment variables (so they aren't stored in the public repo)
-source "$HOME/.mac_addr"
+[[ -f "$HOME/.mac_addr" ]] && source "$HOME/.mac_addr"
 
 # General aliases
 alias tmx='tmux new-session -A -s $USER'
