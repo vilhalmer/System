@@ -129,8 +129,8 @@ build_prompt () {
         [ $deleted_staged -ne 0 ] && stage_status="$stage_status %F{red}-$deleted_staged"
 
         divider=""
-        [[ -n $unstage_status ]] && [[ -n $stage_status ]] && divider="%F{black} //"
-        [[ -z $unstage_status ]] && [[ -z $stage_status ]] && divider="%B%F{black} ✓%b"
+        [[ -n $unstage_status ]] && [[ -n $stage_status ]] && divider="%B%F{black} //%f%b"
+        [[ -z $unstage_status ]] && [[ -z $stage_status ]] && divider="%B%F{black} ✓%f%b"
 
         all_staged=$()
 
