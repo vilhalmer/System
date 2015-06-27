@@ -37,3 +37,4 @@ if [ "$TERM" = "mobile" ]; then
     clear # Yay even more hacky. This fixes the visual corruption that happens right after mobile connect.
 fi
 
+. ~/.nvm/nvm.sh
