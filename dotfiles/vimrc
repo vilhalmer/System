@@ -53,6 +53,10 @@ set showtabline=2
 
 """"" Mappings """""
 
+" Command-T
+nnoremap <silent> <Leader>. :CommandT<CR>
+nnoremap <silent> <Leader>, :CommandTBuffer<CR>
+
 " Source vimrc:
 nmap <silent> <Leader>sv :so $MYVIMRC<CR>
 
