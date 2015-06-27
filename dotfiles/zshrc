@@ -63,7 +63,7 @@ fi
 # General aliases
 alias tmx='tmux new-session -A -s $USER'
 alias src='source $HOME/.zshrc'
-alias xcode='open *.xcodeproj' # Stolen from http://www.codeography.com/2009/10/28/open-xcode-project-from-the-command-line.html
+alias xcode='open *.xcworkspace || open *.xcodeproj' # Stolen from http://www.codeography.com/2009/10/28/open-xcode-project-from-the-command-line.html
 
 # Homebrew aliases for funsies: (Hat tip @jwisser)
 alias grab='brew install'
