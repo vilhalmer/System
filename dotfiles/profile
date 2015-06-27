@@ -38,3 +38,6 @@ if [ "$TERM" = "mobile" ]; then
 fi
 
 [ -f ~/.nvm/nvm.sh ] && . ~/.nvm/nvm.sh
+
+#THIS MUST BE AT THE END OF THE FILE FOR GVM TO WORK!!!
+[[ -s "~/.gvm/bin/gvm-init.sh" ]] && source "/Users/vil/.gvm/bin/gvm-init.sh"
