@@ -7,9 +7,6 @@ set wildmenu
 " Much easier to reach.
 let mapleader=","
 
-" NERDTree stuff:
-let g:NERDTreeWinSize = 40
-
 " Detect filetypes.
 filetype on
 filetype plugin on
@@ -58,7 +55,7 @@ nnoremap <silent> <Leader>. :CommandT<CR>
 nnoremap <silent> <Leader>, :CommandTBuffer<CR>
 
 " Source vimrc:
-nmap <silent> <Leader>sv :so $MYVIMRC<CR>
+nmap <silent> <Leader>sv :so $MYVIMRC<CR> :echo "Sourced" $MYVIMRC<CR>
 
 " Toggles
 nnoremap <Leader>th :set hlsearch! hlsearch?<CR>
@@ -66,6 +63,9 @@ nnoremap <Leader>tt :set expandtab! expandtab?<CR>
 nnoremap <Leader>tw :set wrap! wrap?<CR>
 nnoremap <Leader>tr :call NumberToggle()<CR>
 nnoremap <Leader>tp :set paste! paste?<CR>
+
+" Black-hole characters deleted with x
+noremap x "_x
 
 " Auto-expand braces (This still isn't perfect, because I both have to do it
 " quickly, to avoid interfering with auto-insertion, and it causes a noticable
@@ -90,3 +90,11 @@ function! NumberToggle() " http://jeffkreeftmeijer.com/2012/relative-line-number
     endif
 endfunc
 
+""""" Plugin configuration """""
+
+" localvimrc:
+let g:localvimrc_sandbox = 0
+let g:localvimrc_ask = 0
+
+" NERDTree:
+let g:NERDTreeWinSize = 40
