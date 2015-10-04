@@ -132,8 +132,6 @@ build_prompt () {
         [[ -n $unstage_status ]] && [[ -n $stage_status ]] && divider="%B%F{black} //%f%b"
         [[ -z $unstage_status ]] && [[ -z $stage_status ]] && divider="%B%F{black} ✓%f%b"
 
-        all_staged=$()
-
         branch="%F{blue}$branch"
 
         PROMPT="%B%F{black}$git_name ± %f%b%F{yellow}$repo_name%f%B%F{black}$subpath ⋋ %b$branch%B%F{black} [%b$unstage_status$divider$stage_status %B%F{black}]%b
