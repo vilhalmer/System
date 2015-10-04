@@ -94,13 +94,15 @@ cdls () {
     fi
 }
 
+count_git_items () {
+    echo "$1" | awk "{c+=gsub(/$2/,\"\")} END{print c+0}"
+}
+
 build_prompt () {
     if $(git branch 1> /dev/null 2>&1); then
         # We're in a git repo, so activate the special prompt.
         git_name=$(git config user.name)
         repo_name=$(basename $(git rev-parse --show-toplevel))
-        branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
-        [[ "$branch" == "HEAD" ]] && branch="(new repo)"
 
         subpath=$(git rev-parse --show-prefix)
         [ -n "$subpath" ] && subpath="/$subpath" # Only display a slash if we're actually in a subdirectory.
@@ -108,24 +110,26 @@ build_prompt () {
         unstage_status=""
         stage_status=""
 
-        git_status=$(git status --short)
+        git_status=$(git status --short --branch)
 
-        untracked=$(echo "$git_status" | grep "^??" | wc -l | sed -e 's/^[ \t]*//')
+        branch=$(echo "$git_status" | grep "^##" | cut -f 2- -d ' ')
+
+        untracked=$(count_git_items $git_status "^\?\?")
         [ $untracked -ne 0 ] && unstage_status="$unstage_status %F{magenta}+$untracked"
 
-        modified_unstaged=$(echo "$git_status" | grep "^.M" | wc -l | sed -e 's/^[ \t]*//')
+        modified_unstaged=$(count_git_items $git_status "^.M")
         [ $modified_unstaged -ne 0 ] && unstage_status="$unstage_status %F{magenta}~$modified_unstaged"
 
-        deleted_unstaged=$(echo "$git_status" | grep "^.D" | wc -l | sed -e 's/^[ \t]*//')
+        deleted_unstaged=$(count_git_items $git_status "^.D")
         [ $deleted_unstaged -ne 0 ] && unstage_status="$unstage_status %F{magenta}-$deleted_unstaged"
        
-        added_staged=$(echo "$git_status" | grep "^A" | wc -l | sed -e 's/^[ \t]*//')
+        added_staged=$(count_git_items $git_status "^A")
         [ $added_staged -ne 0 ] && stage_status="$stage_status %F{green}+$added_staged"
 
-        modified_staged=$(echo "$git_status" | grep "^M\|^R" | wc -l | sed -e 's/^[ \t]*//')
+        modified_staged=$(count_git_items $git_status "^[MR]")
         [ $modified_staged -ne 0 ] && stage_status="$stage_status %F{yellow}~$modified_staged"
 
-        deleted_staged=$(echo "$git_status" | grep "^D" | wc -l | sed -e 's/^[ \t]*//')
+        deleted_staged=$(count_git_items $git_status "^D")
         [ $deleted_staged -ne 0 ] && stage_status="$stage_status %F{red}-$deleted_staged"
 
         divider=""
