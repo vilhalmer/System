@@ -10,7 +10,7 @@ let mapleader=","
 " Detect filetypes.
 filetype on
 filetype plugin on
-"filetype indent on
+filetype indent on
 
 " Make everything pretty.
 set formatoptions+=1r
