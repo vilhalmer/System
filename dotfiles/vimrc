@@ -1,4 +1,13 @@
-execute pathogen#infect()
+call plug#begin('~/.vim/plugged')
+
+Plug 'wincent/command-t'
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'rust-lang/rust.vim'
+Plug 'embear/vim-localvimrc'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'Townk/vim-autoclose'
+
+call plug#end()
 
 set hidden
 set nocompatible
