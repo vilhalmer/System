@@ -48,6 +48,9 @@ set ignorecase
 set smartcase
 set hlsearch
 
+" Sync the unnamed register with the system clipboard.
+set clipboard^=unnamed
+
 " This is good for Makefiles, but that's about it:
 command! RealTabs %s-^\(    \)\+-	
 
