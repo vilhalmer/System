@@ -28,6 +28,9 @@ Plug 'keith/tmux.vim'
 
 call plug#end()
 
+" Silence the intro message.
+set shortmess+=I
+
 " Let me open new files without saving first.
 set hidden
 
@@ -75,6 +78,7 @@ command! RealTabs %s-^\(    \)\+-
 " Unite
 nnoremap <silent> <Leader>. :Unite -no-split -start-insert -auto-preview file_rec buffer<CR>
 nnoremap <silent> <Leader>, :Unite -no-split -start-insert -auto-preview buffer<CR>
+nnoremap <silent> <Leader>/ :Unite grep:.<CR>
 
 " Source vimrc:
 nmap <silent> <Leader>sv :so $MYVIMRC<CR> :echo "Sourced" $MYVIMRC<CR>
