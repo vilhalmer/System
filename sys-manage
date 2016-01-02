@@ -14,26 +14,42 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 command=$1
 
+if [[ -z "$XDG_CONFIG_HOME" ]]; then
+    echo "XDG_CONFIG_HOME unset, assuming '$HOME/.config'."
+    XDG_CONFIG_HOME="$HOME/.config"
+fi
+
 link () {
     echo "Linking dotfiles..."
+
+    if [[ ! -e "$XDG_CONFIG_HOME" ]]; then
+        echo "Creating XDG_CONFIG_HOME ($XDG_CONFIG_HOME)."
+        mkdir -p "$XDG_CONFIG_HOME"
+    fi
+
     for file in `find $DIR/dotfiles/* -maxdepth 1 -prune`; do
-        dest="$HOME/.`basename ${file}`"
+        if [[ -d $file ]]; then
+            dest="$XDG_CONFIG_HOME/$(basename "${file}")" # Directories go under XDG_CONFIG_HOME
+        else
+            dest="$HOME/.$(basename "${file}")" # Other files are linked as hidden, directly into $HOME
+        fi
 
         if [[ -h $dest ]]; then
-            echo "$dest is a symbolic link, overwriting."
+            echo "'$dest' is a symbolic link, overwriting."
+            echo "   (was linked to '$(readlink "$dest")'.)"
             rm "$dest"
-        elif [[ -f $dest ]]; then
-            echo "$dest exists, moving to $dest.back."
+        elif [[ -e $dest ]]; then
+            echo "'$dest' exists, moving to '$dest.back'."
             if [[ -f "$dest.back" ]]; then
                 echo "    ...which also exists. Sigh. Skipping this one, re-run to try again."
                 continue
             fi
             mv "$dest" "$dest.back"
         else
-            echo "Linking $dest."
+            echo "Linking '$dest'."
         fi
 
-        ln -s $file $dest
+        ln -s "$file" "$dest"
     done
 }
 
@@ -42,10 +58,16 @@ revert() {
     echo "(Note that this will only restore any .back files that you've left in place.)"
     
     for file in `find $DIR/dotfiles/* -maxdepth 1 -prune`; do
-        dest="$HOME/.`basename ${file}`"
+        if [[ -d $file ]]; then
+            dest="$XDG_CONFIG_HOME/$(basename "${file}")" # Directories go under XDG_CONFIG_HOME
+        else
+            dest="$HOME/.$(basename "${file}")" # Other files are linked as hidden, directly into $HOME
+        fi
+
         if [[ -h $dest ]]; then
             echo "Unlinking $dest."
             unlink $dest
+
             if [[ -f "$dest.back" ]]; then
                 echo "    ...reverting to $dest.back."
                 mv "$dest.back" "$dest"
@@ -58,18 +80,19 @@ revert() {
 
 import () {
     if [[ "$#" -eq 0 ]]; then
-        echo "This command takes one or more arguments, the files you wish to import."
+        echo "This command takes one or more arguments, the configurations you wish to import."
         echo "You want to import everything? No you don't. Type them out, dammit."
     else
         echo "Importing dotfiles..."
     fi
 
     for file in "$@"; do
-        target="$HOME/.${file}"
-        if [[ -h $target ]]; then
+        target="$XDG_CONFIG_HOME/${file}"
+
+        if [[ -h "$target" ]]; then
             echo "$target is already a symlink. Skipping."
-        elif [[ -f $target ]]; then
-            echo "Importing $target."
+        elif [[ -e "$target" ]]; then
+            echo "Importing '$target'."
             mv "$target" "$DIR/dotfiles/$file"
             ln -s "$DIR/dotfiles/$file" "$target"
         fi
@@ -88,36 +111,11 @@ configure () {
     chsh -s $(which zsh)
 }
 
-push () {
-    if [[ -z $1 ]]; then
-        echo "You probably want a commit message on there."
-        exit 1
-    fi
-
-    cd $DIR
-    git status
-    echo
-    echo "Commit message: $1"
-    
-    echo "So, everything look good?"
-    while true; do
-        read yn
-        case $yn in
-            [yY]* ) break;;
-            [nN]* ) exit;;
-            * ) echo "Please answer y or n.";;
-        esac
-    done
-    echo "Committing and pushing..."
-
-    git add -A && git commit -m "$1" && git push origin master
-}
-
 pull () {
     cd $DIR
     echo "Pulling latest System configuration..."
     git pull origin master
 }
 
-# Note that this is a really dumb way to run the command, but I'm lazy. It'll get changed as soon as it annoys me.
+# Note that this is a really terrible way to run the command, but I'm lazy. It'll get changed as soon as it annoys me.
 $command "${@:2}"

@@ -3,10 +3,9 @@
 	name = vilhalmer
 [core]
 	editor = vim
-	excludesfile = ~/.gitignore
 [alias]
 	ci = commit
 	co = checkout
 	unstage = reset HEAD --
 	last = log -1 HEAD
-    uncommit = reset --soft HEAD~1
+	uncommit = reset --soft HEAD~1

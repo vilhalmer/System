@@ -1,4 +1,21 @@
-call plug#begin('~/.vim/plugged')
+if !has("nvim")
+    " Make vim Classic™ behave as similarly as possible.
+    " Also provide some bindings for actions which aren't necessary in nvim.
+
+	set directory=$XDG_DATA_HOME/nvim/swap//
+	set backupdir=.,$XDG_DATA_HOME/nvim/backup
+	set viminfo+=n$XDG_DATA_HOME/nvim/shada/viminfo
+	set runtimepath=$XDG_CONFIG_HOME/nvim,$VIMRUNTIME,$XDG_DATA_HOME/nvim/after,$XDG_CONFIG_HOME/nvim/after
+
+	set nocompatible
+	set wildmenu
+	set incsearch
+	set hlsearch
+
+	nnoremap <Leader>tp :set paste! paste?<CR>
+endif
+
+call plug#begin(expand('$MYVIMRC:h/plugged'))
 
 Plug 'wincent/command-t'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
@@ -9,9 +26,8 @@ Plug 'Townk/vim-autoclose'
 
 call plug#end()
 
+" Let me open new files without saving first.
 set hidden
-set nocompatible
-set wildmenu
 
 " Much easier to reach.
 let mapleader=","
@@ -22,13 +38,14 @@ filetype plugin on
 filetype indent on
 
 " Make everything pretty.
-set formatoptions+=1r
+set formatoptions+=rwan1
 syntax on
 set lbr
 set number
 
 " Wrapping stuff
-set nowrap
+set breakindent
+set breakindentopt=shift:2
 set linebreak
 set sidescroll=5
 set listchars+=precedes:<
@@ -42,11 +59,9 @@ set softtabstop=4
 set tabstop=4
 set backspace=2
 
-" Make searching awesome.
-set incsearch
+" Improve searching.
 set ignorecase
 set smartcase
-set hlsearch
 
 " Sync the unnamed register with the system clipboard.
 set clipboard^=unnamed
@@ -73,16 +88,10 @@ nmap <silent> <Leader>sv :so $MYVIMRC<CR> :echo "Sourced" $MYVIMRC<CR>
 nnoremap <Leader>th :set hlsearch! hlsearch?<CR>
 nnoremap <Leader>tt :set expandtab! expandtab?<CR>
 nnoremap <Leader>tw :set wrap! wrap?<CR>
-nnoremap <Leader>tr :call NumberToggle()<CR>
-nnoremap <Leader>tp :set paste! paste?<CR>
+nnoremap <Leader>tr :set relativenumber! relativenumber?<CR>
 
 " Black-hole characters deleted with x
 noremap x "_x
-
-" Auto-expand braces (This still isn't perfect, because I both have to do it
-" quickly, to avoid interfering with auto-insertion, and it causes a noticable
-" pause while it waits for me to MAYBE do it. But better than it was.)
-"inoremap {<CR> {<CR>}<Esc>O<TAB>
 
 " Fix navigation over line wraps: (from http://statico.github.com/vim.html)
 nmap j gj
@@ -91,22 +100,10 @@ nmap k gk
 " Always center lines when jumping to line number (thanks to https://twitter.com/mattboehm/status/316602303312429056):
 nnoremap gg ggz.
 
-""""" Functions """""
-
-function! NumberToggle() " http://jeffkreeftmeijer.com/2012/relative-line-numbers-in-vim-for-super-fast-movement/
-    if (&relativenumber == 1)
-        set norelativenumber
-        set number " Necessary for now to support both vim 7.3 and 7.4.
-    else
-        set relativenumber
-    endif
-endfunc
-
-""""" Plugin configuration """""
-
 " localvimrc:
 let g:localvimrc_sandbox = 0
 let g:localvimrc_ask = 0
 
 " NERDTree:
 let g:NERDTreeWinSize = 40
+
