@@ -24,6 +24,7 @@ Plug 'embear/vim-localvimrc'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'Townk/vim-autoclose'
 Plug 'Shougo/unite.vim'
+Plug 'keith/tmux.vim'
 
 call plug#end()
 
