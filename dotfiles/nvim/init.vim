@@ -11,18 +11,19 @@ if !has("nvim")
 	set wildmenu
 	set incsearch
 	set hlsearch
+    set linebreak
 
 	nnoremap <Leader>tp :set paste! paste?<CR>
 endif
 
 call plug#begin(expand('$MYVIMRC:h/plugged'))
 
-Plug 'wincent/command-t'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'rust-lang/rust.vim'
 Plug 'embear/vim-localvimrc'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'Townk/vim-autoclose'
+Plug 'Shougo/unite.vim'
 
 call plug#end()
 
@@ -40,7 +41,6 @@ filetype indent on
 " Make everything pretty.
 set formatoptions+=rwan1
 syntax on
-set lbr
 set number
 
 " Wrapping stuff
@@ -77,9 +77,9 @@ set showtabline=2
 
 """"" Mappings """""
 
-" Command-T
-nnoremap <silent> <Leader>. :CommandT<CR>
-nnoremap <silent> <Leader>, :CommandTBuffer<CR>
+" Unite
+nnoremap <silent> <Leader>. :Unite -no-split -start-insert -auto-preview file_rec buffer<CR>
+nnoremap <silent> <Leader>, :Unite -no-split -start-insert -auto-preview buffer<CR>
 
 " Source vimrc:
 nmap <silent> <Leader>sv :so $MYVIMRC<CR> :echo "Sourced" $MYVIMRC<CR>
@@ -99,6 +99,11 @@ nmap k gk
 
 " Always center lines when jumping to line number (thanks to https://twitter.com/mattboehm/status/316602303312429056):
 nnoremap gg ggz.
+
+""""" Plugin config """""
+
+" Unite
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
 
 " localvimrc:
 let g:localvimrc_sandbox = 0
