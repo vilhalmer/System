@@ -43,7 +43,9 @@ filetype plugin on
 filetype indent on
 
 " Make everything pretty.
-set formatoptions+=rwan1
+set formatoptions+=rwn1
+set formatoptions-=t
+set formatoptions-=c
 syntax on
 set number
 
@@ -78,7 +80,7 @@ command! RealTabs %s-^\(    \)\+-
 " Unite
 nnoremap <silent> <Leader>. :Unite -no-split -start-insert -auto-preview file_rec buffer<CR>
 nnoremap <silent> <Leader>, :Unite -no-split -start-insert -auto-preview buffer<CR>
-nnoremap <silent> <Leader>/ :Unite grep:.<CR>
+"nnoremap <silent> <Leader>/ :Unite grep:.<CR> " This won't work until Shougo rewrites Unite for neovim.
 
 " Source vimrc:
 nmap <silent> <Leader>sv :so $MYVIMRC<CR> :echo "Sourced" $MYVIMRC<CR>
@@ -103,6 +105,15 @@ nnoremap gg ggz.
 
 " Unite
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
+
+augroup UniteOverrides
+    autocmd!
+    autocmd FileType unite call s:unite_settings()
+augroup end
+
+function! s:unite_settings()
+    imap <buffer> <ESC> <Plug>(unite_exit)
+endfunction
 
 " localvimrc:
 let g:localvimrc_sandbox = 0
