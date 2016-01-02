@@ -115,10 +115,13 @@ function! s:unite_settings()
     imap <buffer> <ESC> <Plug>(unite_exit)
 endfunction
 
-" localvimrc:
+" localvimrc
 let g:localvimrc_sandbox = 0
 let g:localvimrc_ask = 0
 
-" NERDTree:
+" NERDTree
 let g:NERDTreeWinSize = 40
+
+" vim-plug
+let g:plug_window = 'topleft new'
 
