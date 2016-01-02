@@ -69,12 +69,6 @@ set clipboard^=unnamed
 " This is good for Makefiles, but that's about it:
 command! RealTabs %s-^\(    \)\+-	
 
-" Tabline config (hi = hilight):
-hi TabLineFill ctermfg=7 ctermbg=7
-hi TabLine cterm=bold ctermfg=7
-hi TabLineSel cterm=bold
-set showtabline=2
-
 """"" Mappings """""
 
 " Unite
