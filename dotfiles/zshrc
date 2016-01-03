@@ -57,20 +57,10 @@ if [[ $#h -gt 0 ]]; then
     zstyle ':completion:*:slogin:*' hosts $h
 fi
 
-# Sensitive environment variables (so they aren't stored in the public repo)
-[[ -f "$HOME/.mac_addr" ]] && source "$HOME/.mac_addr"
-
 # General aliases
 alias tmx='tmux new-session -A -s $USER'
 alias src='source $HOME/.zshrc'
 alias xcode='open *.xcworkspace || open *.xcodeproj' # Stolen from http://www.codeography.com/2009/10/28/open-xcode-project-from-the-command-line.html
-
-# Homebrew aliases for funsies: (Hat tip @jwisser)
-alias grab='brew install'
-alias toss='brew uninstall'
-
-alias gitmx='tmux new-session -A -s git-status'
-alias cups-pipsqueak='open "http://localhost:2000" && ssh pipsqueak -L 2000:pipsqueak:631 -N'
 
 # Colorful ls!
 if [ $(uname) = "Linux" ]; then
@@ -158,3 +148,35 @@ precmd () {
 # Display the exit status of the last command as a green/red status light, and
 # print out the code if it's > 0.
 RPROMPT="%(?.%F{green}.%F{red}%? )%{%G•%}%f"
+
+# Finally, stuff to run before the first prompt:
+
+homebrew_updates () {
+    # Calls `brew update` if it's been a day since the last check, then prints any
+    # `brew outdated` packages in a nice format.
+
+    which brew 2&>1 > /dev/null || return # Make sure homebrew's around.
+
+    homebrew_epoch=$(date -jf "%Y-%m-%d" $(brew --version | sed -E 's/.* ([0-9-]+)\)/\1/') "+%s")
+    now=$(date -j "+%s")
+
+    if [[ $[ (now - homebrew_epoch) ] -ne 0 ]]; then
+        echo -e "\x1b[33mUpdating Homebrew, this may take a bit…\x1b[0m"
+        brew update 2&>1 > /dev/null || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
+    fi
+
+    local IFS='
+'
+    outdated=( $(brew outdated --verbose | sed -E 's/([a-zA-Z-]+) \(.* ([0-9.]+)\)/\\x1b[35m\1\\x1b[0m \2/') )
+
+    if [[ -n "$outdated" ]]; then
+        separator=", "
+        outdated="$( printf "${separator}%s" "${outdated[@]}" )"
+        outdated="${outdated:${#separator}}" # remove leading separator
+
+        echo "\x1b[32;1mUpdates available\x1b[0m in Homebrew:"
+        echo -e "    ${outdated[@]}"
+    fi
+}
+
+homebrew_updates
