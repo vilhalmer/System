@@ -161,7 +161,7 @@ homebrew_updates () {
     now=$(date -j "+%s")
 
     if [[ $[ (now - homebrew_epoch) ] -ne 0 ]]; then
-        echo -e "\x1b[33mUpdating Homebrew, this may take a bit…\x1b[0m"
+        echo "\x1b[33mUpdating Homebrew, this may take a bit…\x1b[0m"
         brew update 2&>1 > /dev/null || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
     fi
 
@@ -175,7 +175,7 @@ homebrew_updates () {
         outdated="${outdated:${#separator}}" # remove leading separator
 
         echo "\x1b[32;1mUpdates available\x1b[0m in Homebrew:"
-        echo -e "    ${outdated[@]}"
+        echo "    ${outdated[@]}"
     fi
 }
 
