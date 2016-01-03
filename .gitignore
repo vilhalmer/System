@@ -2,9 +2,6 @@
 *.swp
 .netrw*
 
-# plugged #
-dotfiles/nvim/plugged/
-
 # OS generated files #
 .DS_Store
 .DS_Store?

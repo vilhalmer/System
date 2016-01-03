@@ -1,22 +1,21 @@
-if !has("nvim")
-    " Make vim Classic™ behave as similarly as possible.
-    " Also provide some bindings for actions which aren't necessary in nvim.
+set runtimepath=$XDG_CONFIG_HOME/nvim,$XDG_DATA_HOME/nvim,$VIMRUNTIME
 
-	set directory=$XDG_DATA_HOME/nvim/swap//
-	set backupdir=.,$XDG_DATA_HOME/nvim/backup
-	set viminfo+=n$XDG_DATA_HOME/nvim/shada/viminfo
-	set runtimepath=$XDG_CONFIG_HOME/nvim,$VIMRUNTIME,$XDG_DATA_HOME/nvim/after,$XDG_CONFIG_HOME/nvim/after
+" Install vim-plug if it hasn't been.
 
-	set nocompatible
-	set wildmenu
-	set incsearch
-	set hlsearch
-    set linebreak
+let g:plug_window = 'topleft new'
 
-	nnoremap <Leader>tp :set paste! paste?<CR>
+" This is temporarily a mess until vim-plug#104 is resolved.
+if empty(glob(expand('$XDG_DATA_HOME/nvim/autoload/plug.vim')))
+    echo "Installing vim-plug…"
+    silent exec '!curl -fLo '.expand('$XDG_DATA_HOME/nvim/autoload/plug.vim').' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    echo "Installed. PlugInstall will run automatically, then restart nvim."
+    autocmd VimEnter * PlugInstall
+else
+    autocmd VimEnter * runtime plugins.vim
 endif
 
-call plug#begin(expand('$MYVIMRC:h/plugged'))
+" TODO: Move these into plugins.vim (needs: vim-plug#104)
+call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
 
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'rust-lang/rust.vim'
@@ -101,27 +100,20 @@ nmap k gk
 " Always center lines when jumping to line number (thanks to https://twitter.com/mattboehm/status/316602303312429056):
 nnoremap gg ggz.
 
-""""" Plugin config """""
+if !has("nvim")
+    " Make vim Classic™ behave as similarly as possible.
+    " Also provide some bindings for actions which aren't necessary in nvim.
 
-" Unite
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
+	set directory=$XDG_DATA_HOME/nvim/swap//
+	set backupdir=.,$XDG_DATA_HOME/nvim/backup
+	set viminfo+=n$XDG_DATA_HOME/nvim/shada/viminfo
 
-augroup UniteOverrides
-    autocmd!
-    autocmd FileType unite call s:unite_settings()
-augroup end
+	set nocompatible
+	set wildmenu
+	set incsearch
+	set hlsearch
+    set linebreak
 
-function! s:unite_settings()
-    imap <buffer> <ESC> <Plug>(unite_exit)
-endfunction
-
-" localvimrc
-let g:localvimrc_sandbox = 0
-let g:localvimrc_ask = 0
-
-" NERDTree
-let g:NERDTreeWinSize = 40
-
-" vim-plug
-let g:plug_window = 'topleft new'
+	nnoremap <Leader>tp :set paste! paste?<CR>
+endif
 
