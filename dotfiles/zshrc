@@ -57,12 +57,17 @@ if [[ $#h -gt 0 ]]; then
     zstyle ':completion:*:slogin:*' hosts $h
 fi
 
+is_available () {
+    which $1 2>&1 > /dev/null
+}
+
 # General aliases
 alias tmx='tmux new-session -A -s $USER'
 alias src='source $HOME/.zshrc'
 alias xcode='open *.xcworkspace || open *.xcodeproj' # Stolen from http://www.codeography.com/2009/10/28/open-xcode-project-from-the-command-line.html
+alias keychain='keychain --absolute --dir $XDG_CACHE_HOME/keychain'
 
-which nvim 2&>1 > /dev/null && alias view='nvim -R' # nvim doesn't provide `view`, which means it will run vim unless I override it when nvim is around.
+is_available nvim && alias view='nvim -R' # nvim doesn't provide `view`, which means it will run vim unless I override it when nvim is around.
 
 # Colorful ls!
 if [ $(uname) = "Linux" ]; then
@@ -153,18 +158,20 @@ RPROMPT="%(?.%F{green}.%F{red}%? )%{%G•%}%f"
 
 # Finally, stuff to run before the first prompt:
 
+is_available keychain && eval $(keychain --quiet --eval id_ed25519)
+
 homebrew_updates () {
     # Calls `brew update` if it's been a day since the last check, then prints any
     # `brew outdated` packages in a nice format.
 
-    which brew 2&>1 > /dev/null || return # Make sure homebrew's around.
+    is_available brew || return # Make sure homebrew's around.
 
     homebrew_epoch=$(date -jf "%Y-%m-%d" $(brew --version | sed -E 's/.* ([0-9-]+)\)/\1/') "+%s")
     now=$(date -j "+%s")
 
     if [[ $[ (now - homebrew_epoch) ] -ne 0 ]]; then
         echo "\x1b[33mUpdating Homebrew, this may take a bit…\x1b[0m"
-        brew update 2&>1 > /dev/null || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
+        brew update 2>&1 > /dev/null || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
     fi
 
     local IFS='
