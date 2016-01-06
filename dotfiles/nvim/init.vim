@@ -22,8 +22,10 @@ Plug 'rust-lang/rust.vim'
 Plug 'embear/vim-localvimrc'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'Townk/vim-autoclose'
-Plug 'Shougo/unite.vim'
 Plug 'keith/tmux.vim'
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/deoplete.nvim'
+"Plug 'benekastah/neomake' " Doesn't work well with rustc at the moment, need to investigate.
 
 call plug#end()
 
@@ -75,11 +77,6 @@ set clipboard^=unnamed
 command! RealTabs %s-^\(    \)\+-	
 
 """"" Mappings """""
-
-" Unite
-nnoremap <silent> <Leader>. :Unite -no-split -start-insert -auto-preview file_rec buffer<CR>
-nnoremap <silent> <Leader>, :Unite -no-split -start-insert -auto-preview buffer<CR>
-"nnoremap <silent> <Leader>/ :Unite grep:.<CR> " This won't work until Shougo rewrites Unite for neovim.
 
 " Source vimrc:
 nmap <silent> <Leader>sv :so $MYVIMRC<CR> :echo "Sourced" $MYVIMRC<CR>
