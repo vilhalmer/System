@@ -58,7 +58,7 @@ if [[ $#h -gt 0 ]]; then
 fi
 
 is_available () {
-    which $1 2>&1 > /dev/null
+    which -p $1 2>&1 > /dev/null
 }
 
 # General aliases
@@ -114,22 +114,22 @@ build_prompt () {
         drift=$(echo "$branch_line" | sed -n "s/.*\[.*ahead \(.*\).*\].*/→\1 /p")
         drift="$drift$(echo "$branch_line" | sed -n 's/.*\[.*behind \(.*\).*\].*/←\1 /p')"
 
-        untracked=$(count_git_items $git_status "^\?\?")
+        untracked=$(count_git_items "$git_status" "^\?\?")
         [ $untracked -ne 0 ] && unstage_status="$unstage_status %F{magenta}+$untracked"
 
-        modified_unstaged=$(count_git_items $git_status "^.M")
+        modified_unstaged=$(count_git_items "$git_status" "^.M")
         [ $modified_unstaged -ne 0 ] && unstage_status="$unstage_status %F{magenta}~$modified_unstaged"
 
-        deleted_unstaged=$(count_git_items $git_status "^.D")
+        deleted_unstaged=$(count_git_items "$git_status" "^.D")
         [ $deleted_unstaged -ne 0 ] && unstage_status="$unstage_status %F{magenta}-$deleted_unstaged"
        
-        added_staged=$(count_git_items $git_status "^A")
+        added_staged=$(count_git_items "$git_status" "^A")
         [ $added_staged -ne 0 ] && stage_status="$stage_status %F{green}+$added_staged"
 
-        modified_staged=$(count_git_items $git_status "^[MR]")
+        modified_staged=$(count_git_items "$git_status" "^[MR]")
         [ $modified_staged -ne 0 ] && stage_status="$stage_status %F{yellow}~$modified_staged"
 
-        deleted_staged=$(count_git_items $git_status "^D")
+        deleted_staged=$(count_git_items "$git_status" "^D")
         [ $deleted_staged -ne 0 ] && stage_status="$stage_status %F{red}-$deleted_staged"
 
         divider=""
