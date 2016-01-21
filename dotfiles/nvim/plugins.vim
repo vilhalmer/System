@@ -18,7 +18,9 @@ nnoremap <silent> <Leader>, :Unite -no-split -start-insert -auto-preview buffer<
 
 " deoplete
 
-DeopleteEnable
+if exists("*DeopleteEnable")
+    DeopleteEnable
+endif
 
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 

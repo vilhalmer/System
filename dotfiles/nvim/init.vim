@@ -24,7 +24,14 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'Townk/vim-autoclose'
 Plug 'keith/tmux.vim'
 Plug 'Shougo/unite.vim'
+
+if has('nvim')
+" Some plugins require nvim.
+
 Plug 'Shougo/deoplete.nvim'
+
+endif
+
 "Plug 'benekastah/neomake' " Doesn't work well with rustc at the moment, need to investigate.
 
 call plug#end()
@@ -36,7 +43,7 @@ set shortmess+=I
 set hidden
 
 " Much easier to reach.
-let mapleader=","
+let mapleader=','
 
 " Detect filetypes.
 filetype on
@@ -97,7 +104,7 @@ nmap k gk
 " Always center lines when jumping to line number (thanks to https://twitter.com/mattboehm/status/316602303312429056):
 nnoremap gg ggz.
 
-if !has("nvim")
+if !has('vim')
     " Make vim Classic™ behave as similarly as possible.
     " Also provide some bindings for actions which aren't necessary in nvim.
 
