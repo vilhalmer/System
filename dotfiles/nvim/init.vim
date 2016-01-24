@@ -119,5 +119,8 @@ if !has('vim')
     set linebreak
 
 	nnoremap <Leader>tp :set paste! paste?<CR>
+
+    " neovim will automatically create the swap directory, but vim will not.
+    silent !mkdir -p "$XDG_DATA_HOME/nvim/swap" 
 endif
 
