@@ -41,3 +41,10 @@ if [ "$TERM" = "mobile" ]; then
     clear # Yay even more hacky. This fixes the visual corruption that happens right after mobile connect.
 fi
 
+# Run any site-specific profile scripts.
+if [ -d "$XDG_CONFIG_HOME/profile.d" ]; then
+    find "$XDG_CONFIG_HOME/profile.d" -depth 1 | while read file; do # For every file in profile.d, but not the directory itself.
+        source "${file}"
+    done
+fi
+
