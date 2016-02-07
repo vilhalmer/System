@@ -24,6 +24,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'Townk/vim-autoclose'
 Plug 'keith/tmux.vim'
 Plug 'Shougo/unite.vim'
+Plug 'othree/html5.vim'
 
 if has('nvim')
 " Some plugins require nvim.
@@ -56,10 +57,12 @@ set formatoptions-=t
 set formatoptions-=c
 syntax on
 set number
+set mouse=a
 
 " Wrapping stuff
 set breakindent
-set breakindentopt=shift:2
+set breakindentopt=shift:0
+set showbreak=↪\ 
 set linebreak
 set sidescroll=5
 set listchars+=precedes:<
@@ -104,7 +107,7 @@ nmap k gk
 " Always center lines when jumping to line number (thanks to https://twitter.com/mattboehm/status/316602303312429056):
 nnoremap gg ggz.
 
-if !has('vim')
+if !has('nvim')
     " Make vim Classic™ behave as similarly as possible.
     " Also provide some bindings for actions which aren't necessary in nvim.
 
