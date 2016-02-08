@@ -83,6 +83,11 @@ fi
 
 # Functions
 
+configure () {
+    config_file=$(find -L $HOME/.config -name "$1" -print | head -n 1)
+    [[ -n "$config_file" ]] && $EDITOR "$config_file" || echo "No config file by that name."
+}
+
 cdls () {
     if [[ -z $2 ]]; then
         cd $1 && ls
