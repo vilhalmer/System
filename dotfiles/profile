@@ -43,7 +43,7 @@ fi
 
 # Run any site-specific profile scripts.
 if [ -d "$XDG_CONFIG_HOME/profile.d" ]; then
-    find "$XDG_CONFIG_HOME/profile.d" -depth 1 | while read file; do # For every file in profile.d, but not the directory itself.
+    find "$XDG_CONFIG_HOME/profile.d" -mindepth 1 -maxdepth 1 | while read file; do # For every file in profile.d, but not the directory itself.
         source "${file}"
     done
 fi
