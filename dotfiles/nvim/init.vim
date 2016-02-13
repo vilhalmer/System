@@ -59,6 +59,9 @@ syntax on
 set number
 set mouse=a
 
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
+
 " Wrapping stuff
 set breakindent
 set breakindentopt=shift:0
