@@ -181,7 +181,7 @@ homebrew_updates () {
 
     local IFS='
 '
-    outdated=( $(brew outdated --verbose | sed -E 's/([a-zA-Z-]+) \(.* ([a-zA-Z0-9.-_]+)\)/\\x1b[35m\1\\x1b[0m \2/') )
+    outdated=( $(brew outdated --verbose | sed -E 's/([a-zA-Z-]+) \(.* ([a-zA-Z0-9._\-]+)\)/\\x1b[35m\1\\x1b[0m \2/') )
 
     if [[ -n "$outdated" ]]; then
         separator=", "
