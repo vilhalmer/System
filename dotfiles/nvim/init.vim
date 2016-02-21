@@ -59,6 +59,7 @@ set formatoptions-=c
 syntax on
 set number
 set mouse=a
+set scrolloff=999 " Enable side-scroller editing.
 
 map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
