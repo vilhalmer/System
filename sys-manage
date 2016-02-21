@@ -20,7 +20,7 @@ if [[ -z "$XDG_CONFIG_HOME" ]]; then
 fi
 
 link () {
-    echo "Linking dotfiles..."
+    echo "Linking dotfiles…"
 
     if [[ ! -e "$XDG_CONFIG_HOME" ]]; then
         echo "Creating XDG_CONFIG_HOME ($XDG_CONFIG_HOME)."
@@ -41,7 +41,7 @@ link () {
         elif [[ -e $dest ]]; then
             echo "'$dest' exists, moving to '$dest.back'."
             if [[ -f "$dest.back" ]]; then
-                echo "    ...which also exists. Sigh. Skipping this one, re-run to try again."
+                echo "    …which also exists. Sigh. Skipping this one, re-run to try again."
                 continue
             fi
             mv "$dest" "$dest.back"
@@ -54,7 +54,7 @@ link () {
 }
 
 revert() {
-    echo "Resetting dotfiles..."
+    echo "Resetting dotfiles…"
     echo "(Note that this will only restore any .back files that you've left in place.)"
     
     for file in `find $DIR/dotfiles/* -maxdepth 1 -prune`; do
@@ -69,7 +69,7 @@ revert() {
             unlink $dest
 
             if [[ -f "$dest.back" ]]; then
-                echo "    ...reverting to $dest.back."
+                echo "    …reverting to $dest.back."
                 mv "$dest.back" "$dest"
             fi
         fi
@@ -83,7 +83,7 @@ import () {
         echo "This command takes one or more arguments, the configurations you wish to import."
         echo "You want to import everything? No you don't. Type them out, dammit."
     else
-        echo "Importing dotfiles..."
+        echo "Importing dotfiles…"
     fi
 
     for file in "$@"; do
@@ -113,7 +113,7 @@ configure () {
 
 pull () {
     cd $DIR
-    echo "Pulling latest System configuration..."
+    echo "Pulling latest System configuration…"
     git pull origin master
 }
 
