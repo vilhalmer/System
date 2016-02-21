@@ -25,6 +25,7 @@ Plug 'Townk/vim-autoclose'
 Plug 'keith/tmux.vim'
 Plug 'Shougo/unite.vim'
 Plug 'othree/html5.vim'
+Plug 'mhinz/vim-startify'
 
 if has('nvim')
 " Some plugins require nvim.
