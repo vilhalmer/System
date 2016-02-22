@@ -58,7 +58,7 @@ if [[ $#h -gt 0 ]]; then
 fi
 
 is_available () {
-    which -p $1 2>&1 > /dev/null
+    /usr/bin/which $@ 2>&1 > /dev/null
 }
 
 # General aliases
