@@ -72,16 +72,17 @@ alias keychain='keychain --absolute --dir $XDG_CACHE_HOME/keychain'
 is_available nvim && alias view='nvim -R' # nvim doesn't provide `view`, which means it will run vim unless I override it when nvim is around.
 
 # Colorful ls!
-if [ $(uname) = "Linux" ]; then
-    # Linux
-    alias ls='ls -F --color=auto'
-    export LS_COLORS='di=33:fi=0:ln=35:pi=34:so=36:bd=7;32:cd=32:or=37:mi=0:ex=31'
-else
-    # OS X   
-    alias ls='ls -FG'
-    export LSCOLORS=dxfxgxexbxxccxBxBxdADA
-    export CLICOLOR=1
-fi
+case $flavor in
+    "Linux")
+        alias ls='ls -F --color=auto'
+        export LS_COLORS='di=33:fi=0:ln=35:pi=34:so=36:bd=7;32:cd=32:or=37:mi=0:ex=31'
+        ;;
+    "Darwin")
+        alias ls='ls -FG'
+        export LSCOLORS=dxfxgxexbxxccxBxBxdADA
+        export CLICOLOR=1
+        ;;
+esac
 
 # Functions
 
