@@ -58,7 +58,7 @@ if [[ $#h -gt 0 ]]; then
 fi
 
 is_available () {
-    /usr/bin/which $@ 2>&1 > /dev/null
+    /usr/bin/which $@ > /dev/null 2>&1 
 }
 
 # General aliases
@@ -177,7 +177,7 @@ homebrew_updates () {
 
     if [[ $[ (now - homebrew_epoch) ] -ne 0 ]]; then
         echo "\x1b[33mUpdating Homebrew, this may take a bit…\x1b[0m"
-        brew update 2>&1 > /dev/null || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
+        brew update > /dev/null 2>&1 || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
     fi
 
     local IFS='
