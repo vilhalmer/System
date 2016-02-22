@@ -199,7 +199,7 @@ build_prompt () {
     local up down left right offset top_right
 
     # Add in the "always-on" stuff:
-    PROMPT="$PROMPT%1(j. %F{cyan}⎇  %j%f.)${nl}%(#.%B%F{red}.%F{blue})>> %f%b"
+    PROMPT="$PROMPT%1(j. %F{cyan}⎇ %j%f.)${nl}%(#.%B%F{red}.%F{blue})>> %f%b"
 
     # Set up the right-hand widgets:
     top_right="$(power)"
