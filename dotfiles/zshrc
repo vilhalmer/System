@@ -114,7 +114,38 @@ count_git_items () {
     echo "$1" | awk "{c+=gsub(/$2/,\"\")} END{print c+0}"
 }
 
+power () {
+    segments=5
+
+    level=$(case $flavor in
+        "Darwin") pmset -g batt | tail -1 | cut -f 2 | cut -f 1 -d '%';;
+        *) echo "unknown";;
+    esac)
+
+    [[ -n $1 ]] && level=$1 # Optionally pass a percentage for testing.
+
+    segment=$(echo "scale=2;(($level + (100/$segments) - 1) / (100/$segments))" | bc) # Calculate which segment we're in, rounding up.
+    segment=${segment%.*} # Truncate so bash can understand the number
+    [[ -z $segment ]] && segment=0 # bc doesn't print leading zeroes.
+
+    battery="%F{green}"
+    [[ $level -le 25 ]] && battery="%F{yellow}"
+    [[ $level -le 10 ]] && battery="%F{red}"
+
+    for (( i=0; i < $segment; i++ )); do
+        battery="${battery}▊"
+    done
+    battery="${battery}%F{black}"
+    for (( i=$segment; i < $segments; i++ )); do
+        battery="${battery}▊"
+    done
+
+    echo "$battery%F{white}∎ $level%f"
+}
+
 build_prompt () {
+    local code="$?" # Grab the exit code first thing so we can use it later.
+
     if $(git branch 1> /dev/null 2>&1); then
         # We're in a git repo, so activate the special prompt.
         git_name=$(git config user.name)
@@ -157,25 +188,36 @@ build_prompt () {
 
         branch="%F{blue}$branch"
 
-        PROMPT="%F{white}$git_name ± %f%F{yellow}$repo_name%f%F{white}$subpath ⋋ $branch $drift%F{white}[$unstage_status$divider$stage_status %F{white}]"
+        PROMPT="%F{white}$git_name ± %f%F{yellow}$repo_name%f%F{white}$subpath ⋋ $branch $drift%F{white}[$unstage_status$divider$stage_status %F{white}]%f"
     else
         PROMPT="%(#.%F{red}ROOT%f.%F{white}%n)%F{white} @ %m : %f%F{yellow}%d%f"
     fi
     
+    local nl=$'\n'
+    local up down left right offset top_right
+
     # Add in the "always-on" stuff:
-    PROMPT="$PROMPT %1(j.%F{cyan}⎇  %j%f.)
-%(#.%B%F{red}.%F{blue})>> %f%b"
+    PROMPT="$PROMPT%1(j. %F{cyan}⎇  %j%f.)${nl}%(#.%B%F{red}.%F{blue})>> %f%b"
+
+    # Set up the right-hand widgets:
+    top_right="$(power)"
+
+    up=$'\e[1A'
+    down=$'\e[1B'
+
+    offset=1 # The LED is always in the second-to-last column, otherwise this would be 2.
+    [[ $code > 0 ]] && offset=$(( $offset + ${#code} + 1 )) # +1 for the extra space between the code and dot.
+
+    right=$'\e['$offset'C'
+    left=$'\e['$offset'D'
+
+    # Display the right-aligned widgets, then on the line with the actual prompt, display the last exit code and a status LED:
+    RPROMPT="%{${up}${right}%}${top_right}%{${left}${down}%}%(?.%F{green}.%F{red}%? )%{%G•%}%f"
 }
 
 precmd () {
     build_prompt
 }
-
-# Right-hand prompt is always the same:
-
-# Display the exit status of the last command as a green/red status light, and
-# print out the code if it's > 0.
-RPROMPT="%(?.%F{green}.%F{red}%? )%{%G•%}%f"
 
 # Finally, stuff to run before the first prompt:
 
