@@ -10,7 +10,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
 export TIGRC_USER="$XDG_CONFIG_HOME/tig/tigrc"
-export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/nvim/init.vim" | source $MYVIMRC' 
+export VIMINIT="let \$MYVIMRC=\"$XDG_CONFIG_HOME/nvim/init.vim\" | source \$MYVIMRC"
 # This will override nvim's search path, but does the same thing.
 export HISTFILE="$XDG_DATA_HOME/$(basename $SHELL)/history"
 
