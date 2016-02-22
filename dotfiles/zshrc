@@ -22,6 +22,8 @@ set -o emacs # I just cannot get used to vim bindings on the shell, they're clun
 #bindkey "^H" backward-delete-char
 #bindkey "^U" kill-line
 
+flavor=$(uname)
+
 # Autocompletions
 autoload -Uz compinit
 compinit
@@ -96,6 +98,16 @@ cdls () {
         cd $2 && ls $1
     fi
 }
+
+yank () { # Copy the last command run to the clipboard.
+    last=$(fc -l -1 | sed -E 's/ [0-9]+  //' | tr -d '\n\')
+    case $flavor in
+        "Darwin") printf $last | pbcopy;;
+        "Linux") printf $last | xclip;;
+    esac
+}
+
+# Prompt
 
 count_git_items () {
     echo "$1" | awk "{c+=gsub(/$2/,\"\")} END{print c+0}"
