@@ -117,7 +117,9 @@ count_git_items () {
 power () {
     is_available pmset || return
 
+    # Options:
     segments=5
+    show_percent=false
 
     level=$(case $flavor in
         "Darwin") pmset -g batt | tail -1 | cut -f 2 | cut -f 1 -d '%';;
@@ -142,7 +144,8 @@ power () {
         battery="${battery}▊"
     done
 
-    echo "$battery%F{white}∎ $level%f"
+    detail=$(pmset -g batt | head -1 | grep -s 'AC' > /dev/null && echo "%B%F{yellow}⚡%b" || ($show_percent && echo "$level"))
+    echo "%F{white}$detail%f $battery%F{white}∎%f"
 }
 
 build_prompt () {
