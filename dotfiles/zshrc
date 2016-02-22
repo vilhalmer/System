@@ -152,17 +152,19 @@ build_prompt () {
         [ $deleted_staged -ne 0 ] && stage_status="$stage_status %F{red}-$deleted_staged"
 
         divider=""
-        [[ -n $unstage_status ]] && [[ -n $stage_status ]] && divider="%B%F{black} //%f%b"
-        [[ -z $unstage_status ]] && [[ -z $stage_status ]] && divider="%B%F{black} ✓%f%b"
+        [[ -n $unstage_status ]] && [[ -n $stage_status ]] && divider="%F{white} //%f"
+        [[ -z $unstage_status ]] && [[ -z $stage_status ]] && divider="%F{white} ✓%f"
 
         branch="%F{blue}$branch"
 
-        PROMPT="%B%F{black}$git_name ± %f%b%F{yellow}$repo_name%f%B%F{black}$subpath ⋋ %b$branch $drift%B%F{black}[%b$unstage_status$divider$stage_status %B%F{black}]%b
-%(#.%B%F{red}.%F{blue})>> %f%b"
+        PROMPT="%F{white}$git_name ± %f%F{yellow}$repo_name%f%F{white}$subpath ⋋ $branch $drift%F{white}[$unstage_status$divider$stage_status %F{white}]"
     else
-        PROMPT="%B%(#.%F{red}ROOT%f.%F{black}%n)%F{black} @ %m : %f%b%F{yellow}%d%f %1(j.%F{cyan}⎇  %j%f.)
-%(#.%B%F{red}.%F{blue})>> %f%b"
+        PROMPT="%(#.%F{red}ROOT%f.%F{white}%n)%F{white} @ %m : %f%F{yellow}%d%f"
     fi
+    
+    # Add in the "always-on" stuff:
+    PROMPT="$PROMPT %1(j.%F{cyan}⎇  %j%f.)
+%(#.%B%F{red}.%F{blue})>> %f%b"
 }
 
 precmd () {
