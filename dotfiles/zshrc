@@ -84,7 +84,8 @@ fi
 # Functions
 
 configure () {
-    config_file=$(find -L $XDG_CONFIG_HOME -name "$1" -print | head -n 1)
+    config_file=$(find -L $XDG_CONFIG_HOME -type f -path "*$1" -print | head -n 1)
+    [[ -z "$config_file" ]] && config_file=$(find -L $HOME -mindepth 1 -maxdepth 1 -name "*$1" -print | head -n 1) # Fall back on "classic" dotfiles.
     [[ -n "$config_file" ]] && $EDITOR "$config_file" || echo "No config file by that name."
 }
 
