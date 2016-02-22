@@ -115,6 +115,8 @@ count_git_items () {
 }
 
 power () {
+    is_available pmset || return
+
     segments=5
 
     level=$(case $flavor in
