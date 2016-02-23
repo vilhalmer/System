@@ -92,14 +92,6 @@ configure () {
     [[ -n "$config_file" ]] && $EDITOR "$config_file" || echo "No config file by that name."
 }
 
-cdls () {
-    if [[ -z $2 ]]; then
-        cd $1 && ls
-    else
-        cd $2 && ls $1
-    fi
-}
-
 yank () { # Copy the last command run to the clipboard.
     last=$(fc -l -1 | sed -E 's/ [0-9]+  //' | tr -d '\n\')
     case $flavor in
