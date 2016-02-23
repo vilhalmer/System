@@ -242,8 +242,7 @@ homebrew_updates () {
         brew update > /dev/null 2>&1 || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
     fi
 
-    local IFS='
-'
+    local IFS=$'\n'
     outdated=( $(brew outdated --verbose | sed -E 's/([a-zA-Z0-9_\-]+) \(.* ([a-zA-Z0-9._\-]+)\)/\\x1b[35m\1\\x1b[0m \2/') )
 
     if [[ -n "$outdated" ]]; then
