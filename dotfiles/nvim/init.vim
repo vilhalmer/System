@@ -10,12 +10,12 @@
 
 " First, make sure we know where to store our stuff.
 
-if empty(glob('$XDG_CONFIG_HOME'))
+if !exists('$XDG_CONFIG_HOME')
     let $XDG_CONFIG_HOME=glob('$HOME').'/.config/'
     echo '$XDG_CONFIG_HOME is unset, defaulting to '.glob('$XDG_CONFIG_HOME')
 endif
 
-if empty(glob('$XDG_DATA_HOME'))
+if !exists('$XDG_DATA_HOME')
     let $XDG_DATA_HOME=glob('$HOME').'/.local/share/'
     echo '$XDG_DATA_HOME is unset, defaulting to '.glob('$XDG_DATA_HOME')
 endif
@@ -48,7 +48,7 @@ endif
 """""""""""
 
 " TODO: Move these into plugins.vim (needs: vim-plug#104)
-call plug#begin(glob('$XDG_DATA_HOME/nvim/plugged'))
+call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged')) " Must use expand(), glob returns empty string if the directory doesn't exist. We know the variable is non-empty by now.
 
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'rust-lang/rust.vim'
