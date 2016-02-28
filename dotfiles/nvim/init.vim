@@ -51,20 +51,22 @@ endif
 call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged')) " Must use expand(), glob returns empty string if the directory doesn't exist. We know the variable is non-empty by now.
 
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'rust-lang/rust.vim'
 Plug 'embear/vim-localvimrc'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'Raimondi/delimitMate'
-Plug 'keith/tmux.vim'
 Plug 'Shougo/unite.vim'
-Plug 'othree/html5.vim'
 Plug 'mhinz/vim-startify'
+"Plug 'benekastah/neomake' " Doesn't work well with rustc at the moment, need to investigate.
 
-if has('nvim') " Some plugins require nvim.
-    Plug 'Shougo/deoplete.nvim'
+if has('nvim')
+Plug 'Shougo/deoplete.nvim'
 endif
 
-"Plug 'benekastah/neomake' " Doesn't work well with rustc at the moment, need to investigate.
+" Syntax
+Plug 'rust-lang/rust.vim'
+Plug 'keith/tmux.vim'
+Plug 'othree/html5.vim'
+Plug 'vim-scripts/groovy.vim'
 
 call plug#end()
 
