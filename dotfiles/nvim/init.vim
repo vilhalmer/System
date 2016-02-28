@@ -54,7 +54,7 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'rust-lang/rust.vim'
 Plug 'embear/vim-localvimrc'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'Townk/vim-autoclose'
+Plug 'Raimondi/delimitMate'
 Plug 'keith/tmux.vim'
 Plug 'Shougo/unite.vim'
 Plug 'othree/html5.vim'

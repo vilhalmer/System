@@ -4,10 +4,7 @@
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 
-augroup UniteOverrides
-    autocmd!
-    autocmd FileType unite call s:unite_settings()
-augroup end
+autocmd FileType unite call s:unite_settings()
 
 function! s:unite_settings()
     imap <buffer> <ESC> <Plug>(unite_exit)
