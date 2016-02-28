@@ -152,6 +152,12 @@ nmap k gk
 " (Off for the moment since I have scrolloff set.)
 "nnoremap gg ggz.
 
+" Good navigation in command mode
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <C-b> <S-Left>
+cnoremap <C-f> <S-Right>
+
 """"""""""""""""
 " vim Classic™ "
 """"""""""""""""
