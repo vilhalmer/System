@@ -226,12 +226,14 @@ homebrew_updates () {
 
     is_available brew || return # Make sure homebrew's around.
 
-    homebrew_epoch=$(date -jf "%Y-%m-%d" $(brew --version | sed -E 's/.* ([0-9-]+)\)/\1/') "+%s")
-    now=$(date -j "+%s")
+    update_time_file="$XDG_CACHE_HOME/homebrew_update_time"
 
-    if [[ $[ (now - homebrew_epoch) ] -ne 0 ]]; then
+    # Check if the $update_time_file is more than 1 day old. By redirecting stderr to stout, this
+    # counts the file not existing as the same thing as it being old, thus doing the update.
+    if [[ -n $(find "$update_time_file" -maxdepth 0 -mtime +1d 2>&1) ]]; then
         echo "\x1b[33mUpdating Homebrew, this may take a bit…\x1b[0m"
         brew update > /dev/null 2>&1 || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
+        touch "$update_time_file"
     fi
 
     local IFS=$'\n'
