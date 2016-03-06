@@ -233,7 +233,7 @@ homebrew_updates () {
     if [[ -n $(find "$update_time_file" -maxdepth 0 -mtime +1d 2>&1) ]]; then
         echo "\x1b[33mUpdating Homebrew, this may take a bit…\x1b[0m"
         brew update > /dev/null 2>&1 || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
-        touch "$update_time_file"
+        touch -t "$(date "+%m%d0500")" "$update_time_file"
     fi
 
     local IFS=$'\n'
