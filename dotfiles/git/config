@@ -1,6 +1,7 @@
 [user]
 	email = vil@vil.lv
 	name = vilhalmer
+	signingkey = 6481BDF3
 [core]
 	editor = vim
 [alias]
@@ -11,3 +12,5 @@
 	uncommit = reset --soft HEAD~1
 [push]
 	default = simple
+[commit]
+	gpgsign = true
