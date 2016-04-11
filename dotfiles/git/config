@@ -13,11 +13,17 @@
 	unstage = reset HEAD --
 	uncommit = reset --soft HEAD~1
 
-    unpush = !git push --dry-run -f $(git remote | head -1) +HEAD^:$(git symbolic-ref --short HEAD) \
+    branch-name = "!git symbolic-ref --short HEAD"
+    first-origin = "!git remote | head -1"
+
+    publish = "!git push --set-upstream $(git first-origin) $(git branch-name)"
+    unpublish = "!git push $(git first-origin) :$(git branch-name)"
+
+    unpush = !git push --dry-run -f $(git first-origin) +HEAD^:$(git branch-name) \
         && printf "\"\nThis will put $(git rev-parse --abbrev-ref @{upstream}) at the following commit:\n\n\"" \
         && git log -1 HEAD^ \
         && printf "\"\nIf you really want to do this, do \\`really-unpush\\`.\n\""
-    really-unpush = !git push -f $(git remote | head -1) +HEAD^:$(git symbolic-ref --short HEAD)
+    really-unpush = !git push -f $(git first-origin) +HEAD^:$(git branch-name)
 
 [push]
 	default = simple
