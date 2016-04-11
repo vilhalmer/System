@@ -94,11 +94,8 @@ set formatoptions-=t
 set formatoptions-=c
 syntax on
 set number
-set mouse=a
+set mouse=n " Mouse is for scrolling in normal mode only.
 set scrolloff=999 " Enable side-scroller editing.
-
-map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
 
 " Wrapping stuff
 set showbreak=↪\ 
@@ -159,6 +156,24 @@ cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 cnoremap <C-b> <S-Left>
 cnoremap <C-f> <S-Right>
+
+" Only enable the scroll wheel.
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
+map <LeftMouse> <Nop>
+map <2-LeftMouse> <Nop>
+map <C-LeftMouse> <Nop>
+map <S-LeftMouse> <Nop>
+map <LeftDrag> <Nop>
+map <LeftRelease> <Nop>
+map <MiddleMouse> <Nop>
+map <RightMouse> <Nop>
+map <2-RightMouse> <Nop>
+map <A-RightMouse> <Nop>
+map <S-RightMouse> <Nop>
+map <C-RightMouse> <Nop>
+map <RightDrag> <Nop>
+map <RightRelease> <Nop>
 
 """"""""""""""""
 " vim Classic™ "
