@@ -134,6 +134,9 @@ command! RealTabs %s-^\(    \)\+-
 " Mappings "
 """"""""""""
 
+" Truncate and quit
+command! Tq %d | wq
+
 " Source vimrc
 nmap <silent> <Leader>sv :so $MYVIMRC<CR> :echo "Sourced" $MYVIMRC<CR>
 
