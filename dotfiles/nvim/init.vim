@@ -56,7 +56,9 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'Raimondi/delimitMate'
 Plug 'Shougo/unite.vim'
 Plug 'mhinz/vim-startify'
-"Plug 'benekastah/neomake' " Doesn't work well with rustc at the moment, need to investigate.
+Plug 'scrooloose/syntastic'
+Plug 'ap/vim-css-color'
+Plug 'PeterRincker/vim-argumentative'
 
 if has('nvim')
 Plug 'Shougo/deoplete.nvim'
@@ -67,6 +69,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'keith/tmux.vim'
 Plug 'othree/html5.vim'
 Plug 'vim-scripts/groovy.vim'
+Plug 'nvie/vim-flake8'
 
 call plug#end()
 

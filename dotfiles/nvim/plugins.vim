@@ -30,3 +30,20 @@ let g:localvimrc_ask = 0
 
 let g:NERDTreeWinSize = 40
 
+" Syntastic
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_python_checkers = ['python', 'flake8']
+
+" Startify
+
+let g:startify_change_to_vcs_root = 1
+
