@@ -68,6 +68,7 @@ alias tmx='tmux new-session -A -s $USER'
 alias src='source $HOME/.zshrc'
 alias xcode='open *.xcworkspace || open *.xcodeproj' # Stolen from http://www.codeography.com/2009/10/28/open-xcode-project-from-the-command-line.html
 alias keychain='keychain --absolute --dir $XDG_CACHE_HOME/keychain'
+alias truncate='cut -c 1-$(stty size | cut -f 2 -d " ")'
 
 is_available nvim && alias view='nvim -R' # nvim doesn't provide `view`, which means it will run vim unless I override it when nvim is around.
 
