@@ -2,15 +2,26 @@
 	email = vil@vil.lv
 	name = vilhalmer
 	signingkey = 6481BDF3
+
 [core]
 	editor = vim
+
 [alias]
 	ci = commit --verbose
 	co = checkout
-	unstage = reset HEAD --
 	last = log -1 HEAD
+	unstage = reset HEAD --
 	uncommit = reset --soft HEAD~1
+
+    unpush = !git push --dry-run -f $(git remote | head -1) +HEAD^:$(git symbolic-ref --short HEAD) \
+        && printf "\"\nThis will put $(git rev-parse --abbrev-ref @{upstream}) at the following commit:\n\n\"" \
+        && git log -1 HEAD^ \
+        && printf "\"\nIf you really want to do this, do \\`really-unpush\\`.\n\""
+    really-unpush = !git push -f $(git remote | head -1) +HEAD^:$(git symbolic-ref --short HEAD)
+
 [push]
 	default = simple
+
 [commit]
 	gpgsign = true
+
