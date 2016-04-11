@@ -3,6 +3,7 @@
 " Unite
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
 
 autocmd FileType unite call s:unite_settings()
 
