@@ -59,6 +59,7 @@ Plug 'mhinz/vim-startify'
 Plug 'scrooloose/syntastic'
 Plug 'ap/vim-css-color'
 Plug 'PeterRincker/vim-argumentative'
+Plug 'tweekmonster/braceless.vim'
 
 if has('nvim')
 Plug 'Shougo/deoplete.nvim'

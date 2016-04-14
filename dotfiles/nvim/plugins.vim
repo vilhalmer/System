@@ -48,3 +48,6 @@ let g:syntastic_python_checkers = ['python', 'flake8']
 
 let g:startify_change_to_vcs_root = 1
 
+" Braceless
+
+autocmd FileType python BracelessEnable +indent
