@@ -60,6 +60,7 @@ Plug 'scrooloose/syntastic'
 Plug 'ap/vim-css-color'
 Plug 'PeterRincker/vim-argumentative'
 Plug 'tweekmonster/braceless.vim'
+Plug 'guns/xterm-color-table.vim'
 
 if has('nvim')
 Plug 'Shougo/deoplete.nvim'
@@ -71,6 +72,9 @@ Plug 'keith/tmux.vim'
 Plug 'othree/html5.vim'
 Plug 'vim-scripts/groovy.vim'
 Plug 'nvie/vim-flake8'
+
+" Colors
+Plug 'tomasr/molokai'
 
 call plug#end()
 
@@ -100,6 +104,8 @@ syntax on
 set number
 set mouse=n " Mouse is for scrolling in normal mode only.
 set scrolloff=999 " Enable side-scroller editing.
+
+colorscheme later-this-evening
 
 " Wrapping stuff
 set showbreak=↪\ 
