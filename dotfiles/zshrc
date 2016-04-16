@@ -94,7 +94,7 @@ configure () {
 }
 
 yank () { # Copy the last command run to the clipboard.
-    last="$(fc -l -1 | sed -E 's/ [0-9]+  //' | tr -d '\n\')"
+    last="$(echo -n $(fc -l -1 | sed -E 's/ [0-9]+  //'))"
     case $flavor in
         "Darwin") echo -ne "$last" | pbcopy;;
         "Linux") echo -ne "$last" | xclip;;
