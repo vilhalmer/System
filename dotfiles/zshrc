@@ -101,6 +101,23 @@ yank () { # Copy the last command run to the clipboard.
     esac
 }
 
+current_repo () {
+    repo=$(git rev-parse --show-toplevel 2> /dev/null)
+    [[ -n $repo ]] && echo $(basename "$repo")
+}
+
+chpwd () { # zsh hook, called on each directory change.
+    is_available tmux && [[ -n $TMUX ]] || return
+
+    repo_name=$(current_repo)
+
+    if [[ -n $repo_name ]]; then
+        tmux rename-window -t${TMUX_PANE} "$repo_name"
+    else
+        tmux set-window-option -t${TMUX_PANE} automatic-rename "on" 1>/dev/null
+    fi
+}
+
 # Prompt
 
 count_git_items () {
@@ -144,10 +161,10 @@ power () {
 build_prompt () {
     local code="$?" # Grab the exit code first thing so we can use it later.
 
-    if $(git branch 1> /dev/null 2>&1); then
+    repo_name=$(current_repo)
+    if [[ -n $repo_name ]]; then
         # We're in a git repo, so activate the special prompt.
         git_name=$(git config user.name)
-        repo_name=$(basename $(git rev-parse --show-toplevel))
 
         subpath=$(git rev-parse --show-prefix)
         [ -n "$subpath" ] && subpath="/$subpath" # Only display a slash if we're actually in a subdirectory.
