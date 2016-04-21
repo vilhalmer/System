@@ -250,8 +250,7 @@ homebrew_updates () {
     # counts the file not existing as the same thing as it being old, thus doing the update.
     if [[ -n $(find "$update_time_file" -maxdepth 0 -mtime +1d 2>&1) ]]; then
         echo "\x1b[33mUpdating Homebrew, this may take a bit…\x1b[0m"
-        brew update > /dev/null 2>&1 || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
-        touch -t "$(date "+%m%d0500")" "$update_time_file"
+        brew update > /dev/null 2>&1 && touch -t "$(date "+%m%d0500")" "$update_time_file" || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
     fi
 
     local IFS=$'\n'
