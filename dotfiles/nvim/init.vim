@@ -50,20 +50,20 @@ endif
 " TODO: Move these into plugins.vim (needs: vim-plug#104)
 call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged')) " Must use expand(), glob returns empty string if the directory doesn't exist. We know the variable is non-empty by now.
 
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'embear/vim-localvimrc'
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle', 'tag': '*' }
+Plug 'embear/vim-localvimrc', { 'tag': '*' }
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'Raimondi/delimitMate'
-Plug 'Shougo/unite.vim'
+Plug 'Shougo/unite.vim', { 'tag': '*' }
 Plug 'mhinz/vim-startify'
 Plug 'scrooloose/syntastic'
 Plug 'ap/vim-css-color'
 Plug 'PeterRincker/vim-argumentative'
-Plug 'tweekmonster/braceless.vim'
+Plug 'tweekmonster/braceless.vim', { 'tag': '*' }
 Plug 'guns/xterm-color-table.vim'
 
 if has('nvim')
-Plug 'Shougo/deoplete.nvim'
+Plug 'Shougo/deoplete.nvim', { 'tag': '*' }
 endif
 
 " Syntax
@@ -71,10 +71,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'keith/tmux.vim'
 Plug 'othree/html5.vim'
 Plug 'vim-scripts/groovy.vim'
-Plug 'nvie/vim-flake8'
-
-" Colors
-Plug 'tomasr/molokai'
+Plug 'nvie/vim-flake8', { 'tag': '*' }
 
 call plug#end()
 
