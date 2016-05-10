@@ -169,6 +169,9 @@ cnoremap <C-e> <End>
 cnoremap <C-b> <S-Left>
 cnoremap <C-f> <S-Right>
 
+" Terminal
+tnoremap <Esc> <C-\><C-n>
+
 " Only enable the scroll wheel.
 map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
