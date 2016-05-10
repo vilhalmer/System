@@ -50,4 +50,6 @@ let g:startify_change_to_vcs_root = 1
 
 " Braceless
 
+let g:braceless_line_continuation = 0
 autocmd FileType python BracelessEnable +indent
+
