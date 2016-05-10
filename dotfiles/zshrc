@@ -93,8 +93,9 @@ configure () {
     [[ -n "$config_file" ]] && $EDITOR "$config_file" || echo "No config file by that name."
 }
 
-yank () { # Copy the last command run to the clipboard.
-    last="$(echo -n $(fc -l -1 | sed -E 's/ [0-9]+  //'))"
+yank () { # Copy the n-th last command run to the clipboard.
+    # ${1:-1} gets the first argument, defaulting to 1. Not confusing at all.
+    last="$(echo -n $(fc -l -${1:-1} -${1:-1} | sed -E 's/ [0-9]+  //'))"
     case $flavor in
         "Darwin") echo -ne "$last" | pbcopy;;
         "Linux") echo -ne "$last" | xclip;;
