@@ -102,6 +102,7 @@ syntax on
 set number
 set mouse=n " Mouse is for scrolling in normal mode only.
 set scrolloff=999 " Enable side-scroller editing.
+set statusline=%t
 
 colorscheme later-this-evening
 
