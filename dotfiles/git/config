@@ -1,6 +1,3 @@
-[core]
-	editor = vim
-
 [alias]
 	ci = commit --verbose
 	co = checkout
