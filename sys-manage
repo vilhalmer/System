@@ -122,7 +122,7 @@ install_osx () {
     xcode-select --install 2>&1 > /dev/null || echo "Xcode CLI tools are already installed."
     is_available brew && echo "Homebrew is already installed." || ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     brew tap-info homebrew/bundle 2>&1 > /dev/null && echo "homebrew-bundle is already tapped." || brew tap homebrew/bundle # Tap bundle to read the Brewfile
-    brew bundle check 2>&1 > /dev/null && echo "All formulae are already installed." || brew bundle # Install everything
+    brew bundle check --global 2>&1 > /dev/null && echo "All formulae are already installed." || brew bundle --global # Install everything
 }
 
 configure () {
