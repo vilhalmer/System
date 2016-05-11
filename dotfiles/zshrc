@@ -237,6 +237,7 @@ precmd () {
 
 # Finally, stuff to run before the first prompt:
 
+mkdir -p "$XDG_CACHE_HOME"
 is_available keychain && eval $(keychain --quiet --eval id_ed25519)
 
 homebrew_updates () {
