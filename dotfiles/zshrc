@@ -2,29 +2,20 @@ typeset -U PATH # Prevents duplicate PATH entries. zsh only, so it's set prior t
 
 source $HOME/.profile
 
-HISTFILE=$HOME/.zsh_history
-setopt APPEND_HISTORY
+setopt hist_expire_dups_first hist_ignore_dups hist_ignore_space share_history
+HISTFILE="$XDG_CACHE_HOME/zsh_history"
 HISTSIZE=1200
 SAVEHIST=1000
-setopt HIST_EXPIRE_DUPS_FIRST
-setopt HIST_IGNORE_DUPS
-#setopt EXTENDED_HISTORY
-setopt HIST_IGNORE_SPACE
 setopt PROMPT_SUBST
 
 autoload -U colors && colors
 
-set -o emacs # I just cannot get used to vim bindings on the shell, they're clunky. Disabling since EDITOR would set it.
-
-# These force vim-style behavior, rather than vi-style. Screw vi.
-#bindkey "^?" backward-delete-char
-#bindkey "^W" backward-kill-word
-#bindkey "^H" backward-delete-char
-#bindkey "^U" kill-line
+set -o emacs
 
 flavor=$(uname)
 
 # Autocompletions
+# These are the one thing in this file that I don't even begin to understand.
 autoload -Uz compinit
 compinit
 
