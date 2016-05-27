@@ -247,7 +247,7 @@ homebrew_updates () {
     fi
 
     local IFS=$'\n'
-    outdated=( $(brew outdated --verbose | grep -vFf <(brew list --pinned) | sed -E 's/([a-zA-Z0-9_\-]+) \(.* ([a-zA-Z0-9._\-]+)\)/\\x1b[35m\1\\x1b[0m \2/') )
+    outdated=( $(brew outdated --verbose | grep -vFf <(cat <(brew list --pinned) <(echo "???")) | sed -E 's/([a-zA-Z0-9_\-]+) \(.* ([a-zA-Z0-9._\-]+)\)/\\x1b[35m\1\\x1b[0m \2/') )
 
     if [[ -n "$outdated" ]]; then
         separator=", "
