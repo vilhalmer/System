@@ -208,7 +208,7 @@ build_prompt () {
     PROMPT="$PROMPT%1(j. %F{cyan}⎇ %j%f.)${nl}%(#.%B%F{red}.%F{blue})>> %f%b"
 
     # Set up the right-hand widgets:
-    top_right="$(power)"
+    #top_right="$(power)"
 
     up=$'\e[1A'
     down=$'\e[1B'
