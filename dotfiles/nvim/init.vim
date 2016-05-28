@@ -134,15 +134,27 @@ set smartcase
 " Sync the unnamed register with the system clipboard.
 set clipboard^=unnamed
 
-" This is good for Makefiles, but that's about it:
+""""""""""""
+" Commands "
+""""""""""""
+
+" Open a terminal in a new vertical split
+function Vterm()
+  execute "vertical botright split"
+  execute "terminal"
+endfunction
+
+command! Vterm call Vterm()
+
+" This is good for Makefiles, but that's about it
 command! RealTabs %s-^\(    \)\+-	
+
+" Truncate and quit
+command! Tq %d | wq
 
 """"""""""""
 " Mappings "
 """"""""""""
-
-" Truncate and quit
-command! Tq %d | wq
 
 " Source vimrc
 nmap <silent> <Leader>sv :so $MYVIMRC<CR> :echo "Sourced" $MYVIMRC<CR>
