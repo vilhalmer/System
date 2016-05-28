@@ -62,6 +62,7 @@ Plug 'PeterRincker/vim-argumentative'
 Plug 'tweekmonster/braceless.vim', { 'tag': '*' }
 Plug 'guns/xterm-color-table.vim'
 Plug 'tpope/vim-surround'
+Plug 'wesQ3/vim-windowswap'
 
 if has('nvim')
 Plug 'Shougo/deoplete.nvim', { 'tag': '*' }
