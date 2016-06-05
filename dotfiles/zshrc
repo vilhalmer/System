@@ -21,7 +21,7 @@ autoload -Uz compinit
 compinit
 
 zstyle ':completion:*' auto-description 'specify: %d'
-zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+zstyle ':completion:*' completer _expand _complete _ignored _correct #_approximate
 zstyle ':completion:*' completions 1
 zstyle ':completion:*' expand prefix suffix
 zstyle ':completion:*' file-sort modification
@@ -33,7 +33,7 @@ zstyle ':completion:*' insert-unambiguous true
 zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' list-suffixes true
 zstyle ':completion:*' matcher-list '+' '+m:{[:lower:]}={[:upper:]}' '+r:|[._-]=** r:|=**' '+'
-zstyle ':completion:*' max-errors 3
+#zstyle ':completion:*' max-errors 3
 zstyle ':completion:*' menu select=0
 zstyle ':completion:*' original false
 zstyle ':completion:*' prompt 'Corrections (%e):'
@@ -99,7 +99,11 @@ current_repo () {
     [[ -n $repo ]] && echo $(basename "$repo")
 }
 
-chpwd () { # zsh hook, called on each directory change.
+# tmux integration
+
+name_tmux_window () {
+    # At the moment, this only uses git repo names. More could be added, though.
+
     is_available tmux && [[ -n $TMUX ]] || return
 
     repo_name=$(current_repo)
@@ -117,42 +121,10 @@ count_git_items () {
     echo "$1" | awk "{c+=gsub(/$2/,\"\")} END{print c+0}"
 }
 
-power () {
-    is_available pmset || return
-
-    # Options:
-    segments=5
-    show_percent=false
-
-    level=$(case $flavor in
-        "Darwin") pmset -g batt | tail -1 | cut -f 2 | cut -f 1 -d '%';;
-        *) echo "unknown";;
-    esac)
-
-    [[ -n $1 ]] && level=$1 # Optionally pass a percentage for testing.
-
-    segment=$(echo "scale=2;(($level + (100/$segments) - 1) / (100/$segments))" | bc) # Calculate which segment we're in, rounding up.
-    segment=${segment%.*} # Truncate so bash can understand the number
-    [[ -z $segment ]] && segment=0 # bc doesn't print leading zeroes.
-
-    battery="%F{green}"
-    [[ $level -le 25 ]] && battery="%F{yellow}"
-    [[ $level -le 10 ]] && battery="%F{red}"
-
-    for (( i=0; i < $segment; i++ )); do
-        battery="${battery}▊"
-    done
-    battery="${battery}%F{black}"
-    for (( i=$segment; i < $segments; i++ )); do
-        battery="${battery}▊"
-    done
-
-    detail=$(pmset -g batt | head -1 | grep -s 'AC' > /dev/null && echo "%B%F{yellow}⚡%b" || ($show_percent && echo "$level"))
-    echo "%F{white}$detail%f $battery%F{white}∎%f"
-}
-
 build_prompt () {
     local code="$?" # Grab the exit code first thing so we can use it later.
+
+    PROMPT="%(#.%F{red}ROOT%f.%F{white}%n)%F{white} @ %m : %f%F{yellow}%d%f"
 
     repo_name=$(current_repo)
     if [[ -n $repo_name ]]; then
@@ -197,8 +169,6 @@ build_prompt () {
         branch="%F{blue}$branch"
 
         PROMPT="%F{white}$git_name ± %f%F{yellow}$repo_name%f%F{white}$subpath ⋋ $branch $drift%F{white}[$unstage_status$divider$stage_status %F{white}]%f"
-    else
-        PROMPT="%(#.%F{red}ROOT%f.%F{white}%n)%F{white} @ %m : %f%F{yellow}%d%f"
     fi
     
     local nl=$'\n'
@@ -208,23 +178,36 @@ build_prompt () {
     PROMPT="$PROMPT%1(j. %F{cyan}⎇ %j%f.)${nl}%(#.%B%F{red}.%F{blue})>> %f%b"
 
     # Set up the right-hand widgets:
-    #top_right="$(power)"
+    top_right=""
 
-    up=$'\e[1A'
-    down=$'\e[1B'
+    RPROMPT=""
+    if [[ -n "$top_right" ]]; then
+        up=$'\e[1A'
+        down=$'\e[1B'
 
-    offset=1 # The LED is always in the second-to-last column, otherwise this would be 2.
-    [[ $code > 0 ]] && offset=$(( $offset + ${#code} + 1 )) # +1 for the extra space between the code and dot.
+        offset=1 # The LED is always in the second-to-last column, otherwise this would be 2.
+        [[ $code > 0 ]] && offset=$(( $offset + ${#code} + 1 )) # +1 for the extra space between the code and dot.
 
-    right=$'\e['$offset'C'
-    left=$'\e['$offset'D'
+        right=$'\e['$offset'C'
+        left=$'\e['$offset'D'
 
-    # Display the right-aligned widgets, then on the line with the actual prompt, display the last exit code and a status LED:
-    RPROMPT="%{${up}${right}%}${top_right}%{${left}${down}%}%(?.%F{green}.%F{red}%? )%{%G•%}%f"
+        # Display the right-aligned widgets, then on the line with the actual prompt, display the last exit code and a status LED:
+        RPROMPT="%{${up}${right}%}${top_right}%{${left}${down}%}"
+    fi
+
+    RPROMPT="$RPROMPT%(?.%F{green}.%F{red}%? )%{%G•%}%f"
 }
 
+# zsh hooks
+
 precmd () {
+    # Called before the prompt is rendered.
     build_prompt
+}
+
+chpwd () {
+    # Called on each directory change.
+    name_tmux_window
 }
 
 # Finally, stuff to run before the first prompt:
@@ -259,4 +242,5 @@ homebrew_updates () {
     fi
 }
 
+name_tmux_window
 homebrew_updates
