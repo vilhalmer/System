@@ -27,55 +27,10 @@ silent !mkdir -p "$XDG_DATA_HOME"
 
 set runtimepath=$XDG_CONFIG_HOME/nvim,$XDG_DATA_HOME/nvim,$VIMRUNTIME
 
-"""""""""""""""""""""""""
-" vim-plug installation "
-"""""""""""""""""""""""""
-
-let g:plug_window = 'topleft new' " Make sure the window shows up in a good spot the first run.
-
-" This is temporarily a mess until vim-plug#104 is resolved.
-if empty(glob('$XDG_DATA_HOME/nvim/autoload/plug.vim'))
-    echo "Installing vim-plug…"
-    silent exec '!curl -fLo '.expand('$XDG_DATA_HOME/nvim/autoload/plug.vim').' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-    echo "Installed. PlugInstall will run automatically, then restart nvim."
-    autocmd VimEnter * PlugInstall
-else
-    autocmd VimEnter * runtime plugins.vim
-endif
-
 """""""""""
 " Plugins "
 """""""""""
-
-" TODO: Move these into plugins.vim (needs: vim-plug#104)
-call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged')) " Must use expand(), glob returns empty string if the directory doesn't exist. We know the variable is non-empty by now.
-
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle', 'tag': '*' }
-Plug 'embear/vim-localvimrc', { 'tag': '*' }
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'Raimondi/delimitMate'
-Plug 'Shougo/unite.vim', { 'tag': '*' }
-Plug 'mhinz/vim-startify'
-Plug 'scrooloose/syntastic'
-Plug 'ap/vim-css-color'
-Plug 'PeterRincker/vim-argumentative'
-Plug 'tweekmonster/braceless.vim', { 'tag': '*' }
-Plug 'guns/xterm-color-table.vim'
-Plug 'tpope/vim-surround'
-Plug 'wesQ3/vim-windowswap'
-
-if has('nvim')
-Plug 'Shougo/deoplete.nvim', { 'tag': '*' }
-endif
-
-" Syntax
-Plug 'rust-lang/rust.vim'
-Plug 'keith/tmux.vim'
-Plug 'othree/html5.vim'
-Plug 'vim-scripts/groovy.vim'
-Plug 'nvie/vim-flake8', { 'tag': '*' }
-
-call plug#end()
+runtime plugins.vim
 
 """""""""""""""""""""""
 " Basic configuration "
