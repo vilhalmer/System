@@ -8,6 +8,10 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
+# If we have a custom terminfo for $TERM, use it
+maybe_terminfo="$XDG_CONFIG_HOME/terminfo/$(uname)/$TERM.ti" 
+[[ -f $maybe_terminfo ]] && export TERMINFO="$maybe_terminfo"
+
 export TIGRC_USER="$XDG_CONFIG_HOME/tig/tigrc"
 export VIMINIT="let \$MYVIMRC=\"$XDG_CONFIG_HOME/nvim/init.vim\" | source \$MYVIMRC"
 # This will override nvim's search path, but does the same thing.

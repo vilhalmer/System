@@ -180,12 +180,3 @@ if !has('nvim')
     silent !mkdir -p "$XDG_DATA_HOME/nvim/swap" 
 endif
 
-"""""""""""""""
-" Workarounds "
-"""""""""""""""
-
-" neovim/neovim#2048
-if has('nvim')
-    nmap <bs> :<c-u>TmuxNavigateLeft<cr>
-endif
-
