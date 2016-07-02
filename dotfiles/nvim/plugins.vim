@@ -107,6 +107,11 @@ let g:startify_change_to_vcs_root = 1
 let g:braceless_line_continuation = 0
 autocmd FileType python BracelessEnable +indent
 
+"""""""""""
+" Cleanup "
+"""""""""""
+syntax on " Reenable syntax highlighting in case we loaded a plugin that changes it.
+
 endif
 unlet g:plugins_ready
 

@@ -44,16 +44,17 @@ filetype plugin on
 filetype indent on
 
 " Make everything pretty.
+colorscheme later-this-evening
+syntax on
+
 set formatoptions+=rwn1
 set formatoptions-=t
 set formatoptions-=c
-syntax on
+
 set number
 set mouse=n " Mouse is for scrolling in normal mode only.
 set scrolloff=999 " Enable side-scroller editing.
 set statusline=%t
-
-colorscheme later-this-evening
 
 " Wrapping stuff
 set showbreak=↪\ 
@@ -86,7 +87,7 @@ set clipboard^=unnamed
 " Commands "
 """"""""""""
 " Open a terminal in a new vertical split
-function Vterm()
+function! Vterm()
   execute "vertical botright split"
   execute "terminal"
 endfunction
