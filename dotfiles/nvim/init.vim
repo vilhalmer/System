@@ -7,7 +7,6 @@
 """""""""""""""""""""
 " Environment setup "
 """""""""""""""""""""
-
 " First, make sure we know where to store our stuff.
 
 if !exists('$XDG_CONFIG_HOME')
@@ -35,7 +34,6 @@ runtime plugins.vim
 """""""""""""""""""""""
 " Basic configuration "
 """""""""""""""""""""""
-
 " Silence the intro message.
 set shortmess+=I
 
@@ -69,7 +67,7 @@ set sidescroll=5
 set listchars+=precedes:<
 set listchars+=extends:>
 
-if has('patch-7.2.315') " Ensure breakindent is around.
+if has('patch-7.2.315')
     set breakindent
     set breakindentopt=shift:0
 endif
@@ -92,7 +90,6 @@ set clipboard^=unnamed
 """"""""""""
 " Commands "
 """"""""""""
-
 " Open a terminal in a new vertical split
 function Vterm()
   execute "vertical botright split"
@@ -110,7 +107,6 @@ command! Tq %d | wq
 """"""""""""
 " Mappings "
 """"""""""""
-
 " Source vimrc
 nmap <silent> <Leader>sv :so $MYVIMRC<CR> :echo "Sourced" $MYVIMRC<CR>
 
@@ -161,7 +157,6 @@ map <RightRelease> <Nop>
 """"""""""""""""
 " vim Classic™ "
 """"""""""""""""
-
 if !has('nvim')
 	set directory=$XDG_DATA_HOME/nvim/swap//
 	set backupdir=.,$XDG_DATA_HOME/nvim/backup
