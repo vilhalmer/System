@@ -26,11 +26,6 @@ silent !mkdir -p "$XDG_DATA_HOME"
 
 set runtimepath=$XDG_CONFIG_HOME/nvim,$XDG_DATA_HOME/nvim,$VIMRUNTIME
 
-"""""""""""
-" Plugins "
-"""""""""""
-runtime plugins.vim
-
 """""""""""""""""""""""
 " Basic configuration "
 """""""""""""""""""""""
@@ -174,4 +169,9 @@ if !has('nvim')
     " neovim will automatically create the swap directory, but vim will not.
     silent !mkdir -p "$XDG_DATA_HOME/nvim/swap" 
 endif
+
+"""""""""""
+" Plugins "
+"""""""""""
+runtime plugins.vim
 
