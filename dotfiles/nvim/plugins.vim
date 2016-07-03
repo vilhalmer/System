@@ -24,7 +24,7 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'Raimondi/delimitMate'
     Plug 'Shougo/unite.vim', { 'tag': '*' }
     Plug 'mhinz/vim-startify'
-    Plug 'scrooloose/syntastic'
+    Plug 'neomake/neomake'
     Plug 'ap/vim-css-color'
     Plug 'PeterRincker/vim-argumentative'
     Plug 'tweekmonster/braceless.vim', { 'tag': '*' }
@@ -41,7 +41,6 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'keith/tmux.vim'
     Plug 'othree/html5.vim'
     Plug 'vim-scripts/groovy.vim'
-    Plug 'nvie/vim-flake8', { 'tag': '*' }
 
 call plug#end()
 
@@ -82,19 +81,15 @@ let g:localvimrc_ask = 0
 """"""""""""
 let g:NERDTreeWinSize = 40
 
-"""""""""""""
-" Syntastic "
-"""""""""""""
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+"""""""""""
+" neomake "
+"""""""""""
+let g:neomake_python_enabled_makers = [ 'pylint' ]
+let g:neomake_rust_enabled_makers = [ 'rustc' ]
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
-let g:syntastic_python_checkers = ['python', 'flake8']
+augroup neomake_onsave | au!
+    autocmd! BufWritePost * Neomake
+augroup end
 
 """"""""""""
 " Startify "
