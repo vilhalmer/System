@@ -31,6 +31,7 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'guns/xterm-color-table.vim'
     Plug 'tpope/vim-surround'
     Plug 'wesQ3/vim-windowswap'
+    Plug 'easymotion/vim-easymotion', { 'tag': '*' }
 
     if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'tag': '*' }
@@ -101,6 +102,19 @@ let g:startify_change_to_vcs_root = 1
 """""""""""""
 let g:braceless_line_continuation = 0
 autocmd FileType python BracelessEnable +indent
+
+""""""""""""""
+" easymotion "
+""""""""""""""
+map  \ <Plug>(easymotion-prefix)
+
+" Replace vim search and highlighting.
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+map  n <Plug>(easymotion-next)
+map  N <Plug>(easymotion-prev)
+
+let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 
 """""""""""
 " Cleanup "
