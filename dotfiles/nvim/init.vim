@@ -100,6 +100,10 @@ command! RealTabs %s-^\(    \)\+-
 " Truncate and quit
 command! Tq %d | wq
 
+function! TmuxZoom()
+    execute "!tmux resize-pane -Z"
+endfunction
+
 """"""""""""
 " Mappings "
 """"""""""""
@@ -111,6 +115,7 @@ nnoremap <Leader>th :set hlsearch! hlsearch?<CR>
 nnoremap <Leader>tt :set expandtab! expandtab?<CR>
 nnoremap <Leader>tw :set wrap! wrap?<CR>
 nnoremap <Leader>tr :set relativenumber! relativenumber?<CR>
+nnoremap <Leader>tz :silent call TmuxZoom()<CR>
 
 " Black-hole characters deleted with x
 noremap x "_x
