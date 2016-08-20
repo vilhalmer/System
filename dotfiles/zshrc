@@ -231,7 +231,7 @@ chpwd () {
 
 # Finally, stuff to run before the first prompt:
 
-is_available keychain && eval $(keychain --quiet --eval id_ed25519)
+is_available keychain && eval $(keychain --quiet --eval $(find $HOME/.ssh -name id_\* ! -name '*\.pub'))
 
 homebrew_updates () {
     # Calls `brew update` if it's been a day since the last check, then prints any
