@@ -3,7 +3,7 @@ typeset -U PATH # Prevents duplicate PATH entries. zsh only, so it's set prior t
 source $HOME/.profile
 mkdir -p "$XDG_CACHE_HOME"
 
-setopt hist_expire_dups_first hist_ignore_dups hist_ignore_space share_history
+setopt hist_expire_dups_first hist_ignore_dups hist_ignore_space
 HISTFILE="$XDG_CACHE_HOME/zsh_history"
 HISTSIZE=1200
 SAVEHIST=1000
