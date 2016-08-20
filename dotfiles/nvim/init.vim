@@ -24,7 +24,7 @@ endif
 silent !mkdir -p "$XDG_CONFIG_HOME"
 silent !mkdir -p "$XDG_DATA_HOME"
 
-set runtimepath=$XDG_CONFIG_HOME/nvim,$XDG_DATA_HOME/nvim,$VIMRUNTIME
+set runtimepath=$XDG_CONFIG_HOME/nvim,$XDG_DATA_HOME/nvim,$VIMRUNTIME,$XDG_CONFIG_HOME/nvim/after
 
 """""""""""""""""""""""
 " Basic configuration "
@@ -55,6 +55,7 @@ set number
 set mouse=n " Mouse is for scrolling in normal mode only.
 set scrolloff=999 " Enable side-scroller editing.
 set statusline=%t
+set colorcolumn=80
 
 " Wrapping stuff
 set showbreak=↪\ 
@@ -80,8 +81,19 @@ set backspace=2
 set ignorecase
 set smartcase
 
+" Completion
+set completeopt=menu,longest
+
+" Global and project tags.
+set tags=$XDG_CACHE_HOME/tags,./tags;/,tags;/
+
 " Sync the unnamed register with the system clipboard.
 set clipboard^=unnamed
+
+augroup dummysign | au!
+    autocmd BufEnter * sign define dummy
+    autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
+augroup end
 
 """"""""""""
 " Commands "
@@ -99,6 +111,9 @@ command! RealTabs %s-^\(    \)\+-
 
 " Truncate and quit
 command! Tq %d | wq
+
+" Git blame the current line
+command! Blame exec '!git blame -L'.line('.').','.line('.').' -- % | perl -pe "s/.* \((.*) \d{4}\-\d{2}\-\d{2} .*/\1/"'
 
 function! TmuxZoom()
     execute "!tmux resize-pane -Z"
