@@ -1,6 +1,7 @@
 # vim crap #
 *.swp
 .netrw*
+*-rplugin~
 
 # OS generated files #
 .DS_Store
