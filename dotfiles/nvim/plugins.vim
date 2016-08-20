@@ -32,6 +32,12 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'tpope/vim-surround'
     Plug 'wesQ3/vim-windowswap'
     Plug 'easymotion/vim-easymotion', { 'tag': '*' }
+    Plug 'plasticboy/vim-markdown'
+    Plug 'vim-scripts/taglist.vim'
+    Plug 'kana/vim-scratch'
+    Plug 'ntpeters/vim-better-whitespace'
+    Plug 'junegunn/limelight.vim'
+    Plug 'junegunn/vim-easy-align'
 
     if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } " TODO: Pin to tag once on_init is in a release (for jedi).
@@ -120,6 +126,32 @@ let g:startify_change_to_vcs_root = 1
 """""""""""""
 let g:braceless_line_continuation = 0
 autocmd FileType python BracelessEnable +indent
+
+"""""""""""""
+" Limelight "
+"""""""""""""
+let g:limelight_conceal_ctermfg = 'black'
+
+" Default: 0.5
+let g:limelight_default_coefficient = 1.0
+
+" Number of preceding/following paragraphs to include (default: 0)
+let g:limelight_paragraph_span = 1
+
+" Beginning/end of paragraph
+"   When there's no empty line between the paragraphs
+"   and each paragraph starts with indentation
+let g:limelight_bop = '^\s'
+let g:limelight_eop = '\ze\n^\s'
+
+" Highlighting priority (default: 10)
+"   Set it to -1 not to overrule hlsearch
+let g:limelight_priority = -1
+
+""""""""""""""""
+" vim-markdown "
+""""""""""""""""
+let g:vim_markdown_folding_disabled = 1
 
 """"""""""""""
 " easymotion "

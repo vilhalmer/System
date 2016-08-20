@@ -130,6 +130,7 @@ nnoremap <Leader>th :set hlsearch! hlsearch?<CR>
 nnoremap <Leader>tt :set expandtab! expandtab?<CR>
 nnoremap <Leader>tw :set wrap! wrap?<CR>
 nnoremap <Leader>tr :set relativenumber! relativenumber?<CR>
+noremap <Leader>tl :Limelight!!<CR>
 nnoremap <Leader>tz :silent call TmuxZoom()<CR>
 
 " Black-hole characters deleted with x
