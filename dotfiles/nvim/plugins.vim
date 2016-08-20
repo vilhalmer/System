@@ -34,7 +34,9 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'easymotion/vim-easymotion', { 'tag': '*' }
 
     if has('nvim')
-    Plug 'Shougo/deoplete.nvim', { 'tag': '*' }
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } " TODO: Pin to tag once on_init is in a release (for jedi).
+    Plug 'Shougo/neoinclude.vim'
+    Plug 'zchee/deoplete-jedi'
     endif
 
     " Syntax
@@ -65,10 +67,7 @@ nnoremap <silent> <Leader>, :Unite -no-split -start-insert -auto-preview buffer:
 """"""""""""
 " deoplete "
 """"""""""""
-if exists("*DeopleteEnable")
-    DeopleteEnable
-endif
-
+call deoplete#enable()
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
 """"""""""""""

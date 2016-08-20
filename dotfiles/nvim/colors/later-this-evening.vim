@@ -71,9 +71,9 @@ call <SID>Color("FoldColumn", "", s:background, "")
 if version >= 700
     call <SID>Color("CursorLine", "", s:line, "none")
     call <SID>Color("CursorColumn", "", s:line, "none")
-    call <SID>Color("PMenu", s:foreground, s:selection, "none")
-    call <SID>Color("PMenuSel", s:foreground, s:selection, "reverse")
-    call <SID>Color("SignColumn", "", s:background, "none")
+    call <SID>Color("PMenu", s:bright_white, s:black, "none")
+    call <SID>Color("PMenuSel", s:black, s:yellow, "none")
+    call <SID>Color("SignColumn", "", s:black, "none")
 end
 if version >= 703
     call <SID>Color("ColorColumn", "", s:line, "none")
