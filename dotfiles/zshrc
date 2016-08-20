@@ -111,10 +111,26 @@ name_tmux_window () {
 
     repo_name=$(current_repo)
 
+    # We need a flag to rememeber if we're the ones who set the window name,
+    # but tmux environements are per-session. Use allow-rename as a hack.
+    # Setting it to off breaks nothing, because we are already disabling the
+    # automatic rename. When done, we unset it, allowing it to return to
+    # inheriting from the session. However, we can still tell whether we set it,
+    # because when inherited, show-option returns nothing rather than the value.
+
     if [[ -n $repo_name ]]; then
+        # To set the name, it must not already be set manually.
+        [[ -z $(tmux show-option -wv allow-rename) ]] &&
+        [[ $(tmux show-option -wv automatic-rename) == 'off' ]] && return
+
+        tmux set-option -wt${TMUX_PANE} allow-rename 'off' 1>/dev/null
         tmux rename-window -t${TMUX_PANE} "$repo_name"
     else
-        tmux set-window-option -t${TMUX_PANE} automatic-rename "on" 1>/dev/null
+        # Only unset the name if we set it.
+        [[ $(tmux show-option -wv allow-rename) == 'off' ]] || return
+
+        tmux set-option -wt${TMUX_PANE} -u allow-rename 1>/dev/null
+        tmux set-option -wt${TMUX_PANE} automatic-rename 'on' 1>/dev/null
     fi
 }
 
