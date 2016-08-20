@@ -17,6 +17,29 @@
         && printf "\"\nIf you really want to do this, do \\`really-unpush\\`.\n\""
     really-unpush = !git push -f $(git first-origin) +HEAD^:$(git branch-name)
 
+    mup = !git stash save --include-untracked git-new-stash \
+            && branch=$(git branch-name) \
+            && git co master \
+            && git fetch \
+            && git log master..origin/master \
+            && git pull \
+            && git co $branch \
+            && stash=$(git stash list | grep 'git-new-stash' | cut -d':' -f1) \
+            && [[ -n $stash ]] && git stash pop $stash
+
+    whahappen = "!f() { git diff --stat $1^..$1; }; f"
+
+    diverged = !bash -c 'diff --old-line-format='' --new-line-format='' <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1' -
+    bdiff = !git diff $(git diverged)..
+    blog = !git log $(git diverged)..
+
+    is-clean = "!f() { \
+        [[ -z $(git ls-files --others --exclude-standard) ]] && git diff-files --quiet; \
+    }; f"
+
 [push]
 	default = simple
+
+[diff]
+    compactionHeuristic = true
 
