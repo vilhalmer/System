@@ -261,5 +261,19 @@ homebrew_updates () {
     fi
 }
 
+mas_updates () {
+    # Display available updates from the App Store in the same format
+    # as for Homebrew.
+    is_available mas || return
+
+    outdated=( $(mas outdated | sed -E 's/[0-9]+ (.+) \(.* -> (.*)\)$/\\x1b[35m\1\\x1b[0m \2/') )
+
+    if [[ -n "$outdated" ]]; then
+        echo "\x1b[32;1mUpdates available\x1b[0m in the App Store:"
+        echo "    ${outdated[@]}"
+    fi
+}
+
 name_tmux_window
 homebrew_updates
+mas_updates
