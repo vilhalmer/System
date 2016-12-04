@@ -6,4 +6,5 @@
 
 PATH=/usr/local/bin/:$PATH
 
-airport --getinfo | perl -ne 'print if s/\s+lastTxRate: ([0-9]+)$/\1 Mbps|size=12/'
+state=$(airport --getinfo | perl -ne 'print if s/\s*lastTxRate: ([0-9]+)$/\1 Mbps/; print if s/\s*AirPort: (\w+)$/\1/')
+echo "$state|size=12"
