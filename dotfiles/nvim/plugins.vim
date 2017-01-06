@@ -22,7 +22,6 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'embear/vim-localvimrc', { 'tag': '*' }
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'Raimondi/delimitMate'
-    Plug 'Shougo/unite.vim', { 'tag': '*' }
     Plug 'mhinz/vim-startify'
     Plug 'neomake/neomake'
     Plug 'ap/vim-css-color'
@@ -38,6 +37,7 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'ntpeters/vim-better-whitespace'
     Plug 'junegunn/limelight.vim'
     Plug 'junegunn/vim-easy-align'
+    Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 
     if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } " TODO: Pin to tag once on_init is in a release (for jedi).
@@ -54,40 +54,6 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
 call plug#end()
 
 if g:plugins_ready
-
-"""""""""
-" Unite "
-"""""""""
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-
-autocmd FileType unite call s:unite_settings()
-
-function! s:unite_settings()
-    imap <buffer> <ESC> <Plug>(unite_exit)
-endfunction
-
-nnoremap <silent> <Leader>. :Unite -no-split -start-insert -auto-preview file_rec buffer:-<CR>
-nnoremap <silent> <Leader>, :Unite -no-split -start-insert -auto-preview buffer:-<CR>
-
-let s:filters = { "name" : "candidate_format_converter", }
-
-function! s:filters.filter(candidates, context)
-    for candidate in a:candidates
-        let bufname = bufname(candidate.action__buffer_nr)
-        let filename = fnamemodify(bufname, ':p:t')
-        let path = fnamemodify(bufname, ':p:h')
-
-        " Customize output format.
-        let candidate.abbr = printf("[%s] %s", filename, path)
-    endfor
-    return a:candidates
-endfunction
-
-call unite#define_filter(s:filters)
-unlet s:filters
-
-call unite#custom#source('buffer', 'converters', 'candidate_format_converter')
 
 """"""""""""
 " deoplete "
@@ -165,6 +131,15 @@ map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
 
 let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
+
+"""""""
+" fzf "
+"""""""
+autocmd! FileType fzf tnoremap <buffer> <Esc> <C-c>
+nnoremap <silent> <Leader>. :GFiles --cached --others --exclude-standard<CR>
+nnoremap <silent> <Leader>, :Buffers<CR>
+nnoremap <silent> <Leader>/ :History/<CR>
+nnoremap <silent> <Leader><Space> :Lines<CR>
 
 """""""""""
 " Cleanup "
