@@ -37,6 +37,7 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'ntpeters/vim-better-whitespace'
     Plug 'junegunn/limelight.vim'
     Plug 'junegunn/vim-easy-align'
+    Plug 'racer-rust/vim-racer'
     Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 
     if has('nvim')
@@ -76,10 +77,11 @@ let g:NERDTreeWinSize = 40
 " neomake "
 """""""""""
 let g:neomake_python_enabled_makers = [ 'pylint' ]
-let g:neomake_rust_enabled_makers = [ 'rustc' ]
+let g:neomake_rust_enabled_makers = []
 
 augroup neomake_onsave | au!
     autocmd! BufWritePost * Neomake
+    autocmd BufWritePost *.rs Neomake! cargo
 augroup end
 
 """"""""""""
