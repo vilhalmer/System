@@ -9,18 +9,20 @@ end):start()
 
 -- Wallpaper
 
-wallpaper_adjuster = function () hs.osascript([[
-    tell application "System Events"
-        set theDesktops to a reference to every desktop
-        set numberOfDesktops to the count of theDesktops
-        if numberOfDesktops is 2 then
-            set pictures folder of (item 1 of theDesktops) to "/Users/vil/.wallpaper/external"
-            set pictures folder of (item 2 of theDesktops) to "/Users/vil/.wallpaper/internal"
-        else
-            set pictures folder of (item 1 of theDesktops) to "/Users/vil/.wallpaper/internal"
-        end if
-    end tell
-]]) end
+wallpaper_adjuster = function ()
+    hs.timer.doAfter(1, function () hs.osascript([[
+        tell application "System Events"
+            set theDesktops to a reference to every desktop
+            set numberOfDesktops to the count of theDesktops
+            if numberOfDesktops is 2 then
+                set pictures folder of (item 1 of theDesktops) to "/Users/vil/.wallpaper/external"
+                set pictures folder of (item 2 of theDesktops) to "/Users/vil/.wallpaper/internal"
+            else
+                set pictures folder of (item 1 of theDesktops) to "/Users/vil/.wallpaper/internal"
+            end if
+        end tell
+    ]]) end)
+end
 
 screen_watcher = hs.screen.watcher.newWithActiveScreen(wallpaper_adjuster):start()
 space_watcher = hs.spaces.watcher.new(wallpaper_adjuster):start()
