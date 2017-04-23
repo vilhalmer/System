@@ -17,8 +17,22 @@ actions.pause = function (data)
 end
 
 actions.metadata = function (data)
+    title = data['title'] or data['icy-title']
+    title = string.gsub(title, "(%s*%([Oo]riginal [Mm]ix%))", "") -- A waste of space
+    artist = data['artist']
+
+    if artist then
+        artist_and_title = string.format("%s - %s", artist, title)
+    else
+        artist_and_title = title
+    end
+
+    now_playing = hs.styledtext.new(artist_and_title, {
+        font={name=hs.styledtext.defaultFonts.menuBar, size=12}
+    })
+
     menulet:returnToMenuBar()
-    menulet:setTitle(data['icy-title'])
+    menulet:setTitle(now_playing)
 end
 
 local mpv_read = function (event, tag)
@@ -52,3 +66,5 @@ end
 mpv()
 
 local mpv_watcher = hs.pathwatcher.new(os.getenv('HOME') .. '/.cache/mpvsocket', mpv):start()
+
+return mpv_watcher
