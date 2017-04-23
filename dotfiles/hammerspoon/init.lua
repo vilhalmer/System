@@ -27,24 +27,46 @@ end
 screen_watcher = hs.screen.watcher.newWithActiveScreen(wallpaper_adjuster):start()
 space_watcher = hs.spaces.watcher.new(wallpaper_adjuster):start()
 
--- Mouse reconnector
+-- Battery time
 
-bluetooth_trigger = '04-69-f8-c4-e2-9c' -- Selectric
+battery_menulet = hs.menubar.new(false)
+time_remaining = function ()
+    minutes_remaining = hs.battery.timeRemaining()
 
-bluetooth_notification_processor = function (name, sender, userInfo)
-    if sender == bluetooth_trigger then
-        hs.task.new('/usr/local/bin/bluectl', function (code, stdout, stderr)
-            if string.find(stdout, 'Connected') then
-                -- This will occasionally cause suprious connection attempts, but that won't hurt anything.
-                hs.task.new('/usr/local/bin/bluectl', function (code, stdout, stderr)
-                    hs.notify.new({title='Bluetooth Watcher', informativeText='Attempted to reconnect MX Master'}):send()
-                end, {'MX Master', 'connect'}):start()
-            end
-        end, {sender, 'status'}):start()
+    if minutes_remaining < 0 then
+        time = '✓'
+    else
+        hours = math.floor(minutes_remaining / 60)
+        minutes = minutes_remaining % 60
+        time = string.format("%d:%02d", hours, minutes)
     end
-end
 
-bt_watcher = hs.distributednotifications.new(bluetooth_notification_processor, 'com.apple.bluetooth.deviceUpdated'):start()
+    time = hs.styledtext.new(time, {
+        font={name=hs.styledtext.defaultFonts.menuBar, size=12}
+    })
+
+    battery_menulet:returnToMenuBar()
+    battery_menulet:setTitle(time)
+end
+battery_watcher = hs.battery.watcher.new(time_remaining):start()
+time_remaining()
+
+-- Audio source
+
+audio_menulet = hs.menubar.new(false)
+audio_device = function (_)
+    device = hs.audiodevice.defaultOutputDevice():name()
+
+    device = hs.styledtext.new(device, {
+        font={name=hs.styledtext.defaultFonts.menuBar, size=12}
+    })
+
+    audio_menulet:returnToMenuBar()
+    audio_menulet:setTitle(device)
+end
+hs.audiodevice.watcher.setCallback(audio_device)
+hs.audiodevice.watcher.start()
+audio_device()
 
 -- Meta
 
