@@ -193,8 +193,11 @@ build_prompt () {
     local nl=$'\n'
     local up down left right offset top_right
 
+    arrow=">>"
+    [[ -n $VIRTUAL_ENV ]] && arrow="❩❩"
+
     # Add in the "always-on" stuff:
-    PROMPT="$PROMPT%1(j. %F{cyan}⎇ %j%f.)${nl}%(#.%B%F{red}.%F{blue})>> %f%b"
+    PROMPT="$PROMPT%1(j. %F{cyan}⎇ %j%f.)${nl}%(#.%B%F{red}.%F{blue})$arrow %f%b"
 
     # Set up the right-hand widgets:
     top_right=""
