@@ -8,7 +8,6 @@
 " Environment setup "
 """""""""""""""""""""
 " First, make sure we know where to store our stuff.
-
 if !exists('$XDG_CONFIG_HOME')
     let $XDG_CONFIG_HOME=glob('$HOME').'/.config/'
     echo '$XDG_CONFIG_HOME is unset, defaulting to '.glob('$XDG_CONFIG_HOME')
@@ -20,7 +19,6 @@ if !exists('$XDG_DATA_HOME')
 endif
 
 " Make sure said stuff actually ends up somewhere.
-
 silent !mkdir -p "$XDG_CONFIG_HOME"
 silent !mkdir -p "$XDG_DATA_HOME"
 
@@ -48,14 +46,15 @@ colorscheme later-this-evening
 syntax on
 
 set formatoptions+=rwn1
-set formatoptions-=t
-set formatoptions-=c
+set formatoptions-=tc
 
 set number
 set mouse=n " Mouse is for scrolling in normal mode only.
 set scrolloff=999 " Enable side-scroller editing.
 set statusline=%t
 set colorcolumn=80
+set guicursor=
+set noshowcmd
 
 " Wrapping stuff
 set showbreak=↪\ 
@@ -64,10 +63,10 @@ set sidescroll=5
 set listchars+=precedes:<
 set listchars+=extends:>
 
-if has('patch-7.2.315')
-    set breakindent
-    set breakindentopt=shift:0
-endif
+set breakindent
+set breakindentopt=shift:0
+
+set virtualedit=block
 
 " Set up our tab handling.
 set autoindent
@@ -90,10 +89,21 @@ set tags=$XDG_CACHE_HOME/tags,./tags;/,tags;/
 " Sync the unnamed register with the system clipboard.
 set clipboard^=unnamed
 
+" Make the sign gutter always visible to avoid it jumping around.
 augroup dummysign | au!
     autocmd BufEnter * sign define dummy
     autocmd BufEnter * execute 'sign place 9999 line=1 name=dummy buffer=' . bufnr('')
 augroup end
+
+" Makes panes keep relative widths.
+autocmd VimResized * wincmd =
+
+" Force syntax highlighting to always analyze the entire file for Python.
+autocmd BufEnter *.py :syntax sync fromstart
+
+" Update the editor state more frequently when the cursor isn't moving around,
+" this makes Tagbar jump to the current tag faster.
+set updatetime=1000
 
 """"""""""""
 " Commands "
@@ -113,7 +123,14 @@ command! RealTabs %s-^\(    \)\+-
 command! Tq %d | wq
 
 " Git blame the current line
-command! Blame exec '!git blame -L'.line('.').','.line('.').' -- % | perl -pe "s/.* \((.*) \d{4}\-\d{2}\-\d{2} .*/\1/"'
+command! Blame exec '!git blame -L'.line('.').','.line('.').' -- % | perl -pe "s/.* \((.*) (\d{4}\-\d{2}\-\d{2}) .*/\1 \2/"'
+
+function! <SID>SynStack()
+    if !exists("*synstack")
+        return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
 
 function! TmuxZoom()
     execute "!tmux resize-pane -Z"
@@ -132,6 +149,7 @@ nnoremap <Leader>tw :set wrap! wrap?<CR>
 nnoremap <Leader>tr :set relativenumber! relativenumber?<CR>
 noremap <Leader>tl :Limelight!!<CR>
 nnoremap <Leader>tz :silent call TmuxZoom()<CR>
+nnoremap <Leader>ds :call <SID>SynStack()<CR>
 
 " Black-hole characters deleted with x
 noremap x "_x
@@ -171,6 +189,14 @@ map <C-RightMouse> <Nop>
 map <RightDrag> <Nop>
 map <RightRelease> <Nop>
 
+nnoremap Y y$
+
+"""""""""""""""""
+" Abbreviations "
+"""""""""""""""""
+cabbr <expr> %% expand('%:p:h')
+cabbr <expr> snip/ expand('r $XDG_DATA_HOME/nvim/snippets')
+
 """"""""""""""""
 " vim Classic™ "
 """"""""""""""""
@@ -189,8 +215,15 @@ if !has('nvim')
 	nnoremap <Leader>tp :set paste! paste?<CR>
 
     " neovim will automatically create the swap directory, but vim will not.
-    silent !mkdir -p "$XDG_DATA_HOME/nvim/swap" 
+    silent !mkdir -p "$XDG_DATA_HOME/nvim/swap"
 endif
+
+""""""""""""""
+" virtualenv "
+""""""""""""""
+" If we're working in a pipenv, we need to add the virtualenv's site-packages
+" to a bunch of python plugins. Store it for easy access.
+let g:pipenv_site_packages_path = system('pipenv --venv &>/dev/null && echo -n "$(pipenv --venv)"/lib/python*/site-packages/')
 
 """""""""""
 " Plugins "

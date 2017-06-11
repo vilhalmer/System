@@ -23,8 +23,8 @@ let s:bright_purple = "Magenta"
 let s:bright_black = "DarkGrey"
 let s:bright_white = "White"
 
-let s:foreground = "" " Default
-let s:background = "" " Same
+let s:foreground = "none" " Default
+let s:background = "none" " Same
 let s:selection = s:white
 let s:line = s:black
 let s:comment = s:bright_black
@@ -65,7 +65,7 @@ call <SID>Color("ModeMsg", s:green, "", "")
 call <SID>Color("MoreMsg", s:green, "", "")
 call <SID>Color("Question", s:green, "", "")
 call <SID>Color("WarningMsg", s:red, "", "")
-call <SID>Color("MatchParen", "", s:selection, "")
+call <SID>Color("MatchParen", s:bright_yellow, s:background, "bold")
 call <SID>Color("Folded", s:comment, s:background, "")
 call <SID>Color("FoldColumn", "", s:background, "")
 if version >= 700
@@ -82,7 +82,7 @@ end
 " Standard Highlighting
 call <SID>Color("Comment", s:comment, "", "")
 call <SID>Color("Todo", s:black, s:bright_yellow, "")
-call <SID>Color("Title", s:comment, "", "")
+call <SID>Color("Title", s:foreground, "", "bold")
 call <SID>Color("Identifier", s:red, "", "none")
 call <SID>Color("Statement", s:foreground, "", "")
 call <SID>Color("Conditional", s:foreground, "", "")
@@ -290,6 +290,24 @@ call <SID>Color("scalaBackTick", s:blue, "", "")
 call <SID>Color("diffAdded", s:green, "", "")
 call <SID>Color("diffRemoved", s:red, "", "")
 call <SID>Color("gitcommitSummary", "", "", "bold")
+
+" Tagbar
+call <SID>Color("TagbarHighlight", s:yellow, "", "")
+call <SID>Color("TagbarType", s:bright_black, "", "")
+call <SID>Color("TagbarScope", s:blue, "", "")
+call <SID>Color("TagbarNestedKind", s:bright_black, "", "")
+call <SID>Color("TagbarFoldIcon", s:bright_black, "", "")
+call <SID>Color("TagbarKind", s:purple, "", "")
+
+" Startify
+call <SID>Color("StartifyHeader", s:bright_black, "", "")
+call <SID>Color("StartifyFooter", s:white, "", "")
+call <SID>Color("StartifySection", s:bright_white, "", "bold")
+call <SID>Color("StartifyNumber", s:foreground, "", "")
+call <SID>Color("StartifyBracket", s:bright_black, "", "")
+call <SID>Color("StartifyFile", s:foreground, "", "bold")
+call <SID>Color("StartifyPath", s:bright_black, "", "")
+call <SID>Color("StartifySlash", s:bright_black, "", "")
 
 " Delete Functions
 delf <SID>Color
