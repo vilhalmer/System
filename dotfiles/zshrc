@@ -269,9 +269,14 @@ mas_updates () {
     # as for Homebrew.
     is_available mas || return
 
+    local IFS=$'\n'
     outdated=( $(mas outdated | sed -E 's/[0-9]+ (.+) \(.* -> (.*)\)$/\\x1b[35m\1\\x1b[0m \2/') )
 
     if [[ -n "$outdated" ]]; then
+        separator=", "
+        outdated="$( printf "${separator}%s" "${outdated[@]}" )"
+        outdated="${outdated:${#separator}}" # remove leading separator
+
         echo "\x1b[32;1mUpdates available\x1b[0m in the App Store:"
         echo "    ${outdated[@]}"
     fi
