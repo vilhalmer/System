@@ -52,7 +52,7 @@ if [[ $#h -gt 0 ]]; then
 fi
 
 is_available () {
-    /usr/bin/which $@ > /dev/null 2>&1 
+    /usr/bin/which $@ > /dev/null 2>&1
 }
 
 # General aliases
@@ -172,7 +172,7 @@ build_prompt () {
 
         deleted_unstaged=$(count_git_items "$git_status" "^.D")
         [ $deleted_unstaged -ne 0 ] && unstage_status="$unstage_status %F{magenta}-$deleted_unstaged"
-       
+
         added_staged=$(count_git_items "$git_status" "^A")
         [ $added_staged -ne 0 ] && stage_status="$stage_status %F{green}+$added_staged"
 
@@ -190,7 +190,7 @@ build_prompt () {
 
         PROMPT="%F{white}$git_name ± %f%F{yellow}$repo_name%f%F{white}$subpath ⋋ $branch $drift%F{white}[$unstage_status$divider$stage_status %F{white}]%f"
     fi
-    
+
     local nl=$'\n'
     local up down left right offset top_right
 
