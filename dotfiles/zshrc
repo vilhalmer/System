@@ -64,6 +64,7 @@ alias truncate='cut -c 1-$(stty size | cut -f 2 -d " ")'
 alias projroot='cd $(git rev-parse --show-toplevel)'
 alias f='find . -name'
 alias browse='fzf --bind="enter:execute(echo -n {} | pbcopy)" --preview="pygmentize {} 2>/dev/null || cat {}" --preview-window=up'
+alias ipy="ipython"
 
 is_available nvim && alias view='nvim -R' # nvim doesn't provide `view`, which means it will run vim unless I override it when nvim is around.
 
