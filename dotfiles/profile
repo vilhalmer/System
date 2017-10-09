@@ -17,6 +17,9 @@ export VIMINIT="let \$MYVIMRC=\"$XDG_CONFIG_HOME/nvim/init.vim\" | source \$MYVI
 # This will override nvim's search path, but does the same thing.
 export HISTFILE="$XDG_DATA_HOME/$(basename $SHELL)/history"
 
+export PATH="$HOME/.cargo/bin:$PATH"
+export RUST_SRC_PATH="$HOME/.multirust/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src"
+
 stty -ixon # Keep Ctrl-s from freezing the terminal
 
 if [ -n "$SSH_CONNECTION" ] && \
