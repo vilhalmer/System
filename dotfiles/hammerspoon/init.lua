@@ -24,8 +24,8 @@ wallpaper_adjuster = function ()
     ]]) end)
 end
 
-screen_watcher = hs.screen.watcher.newWithActiveScreen(wallpaper_adjuster):start()
-space_watcher = hs.spaces.watcher.new(wallpaper_adjuster):start()
+--screen_watcher = hs.screen.watcher.newWithActiveScreen(wallpaper_adjuster):start()
+--space_watcher = hs.spaces.watcher.new(wallpaper_adjuster):start()
 
 -- Battery time
 
@@ -68,6 +68,18 @@ hs.audiodevice.watcher.setCallback(audio_device)
 hs.audiodevice.watcher.start()
 audio_device()
 
+-- Display control
+
+sleep_watcher = hs.caffeinate.watcher.new(function (event)
+    if event == hs.caffeinate.watcher.systemWillSleep or event == hs.caffeinate.watcher.screensDidSleep then
+        -- Power off the display to avoid the sleep message
+        hs.task.new('/usr/local/bin/ddcctl', nil, {'-d', '1', '-p', '5'}):start()
+    else
+        hs.task.new('/usr/local/bin/ddcctl', nil, {'-d', '1', '-p', '1'}):start()
+    end
+end)
+--sleep_watcher:start()
+
 -- Meta
 
 meta_watcher = hs.pathwatcher.new(os.getenv('HOME') .. '/.config/hammerspoon/', hs.reload):start()
@@ -78,3 +90,4 @@ import = require 'import'
 
 mpv = import('mpv')
 download_fixer = import('download_fixer')
+--bar = import('bar')

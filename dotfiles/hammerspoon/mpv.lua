@@ -36,8 +36,12 @@ actions.metadata = function (data)
 end
 
 local mpv_read = function (event, tag)
+    if event == nil then
+        -- I don't know why this would happen but I have seen it.
+        return
+    end
+
     event = hs.json.decode(event)
-    log.i(hs.inspect.inspect(event))
 
     if event['event'] == 'property-change' or event['error'] == 'success' then
         if event['data'] ~= nil and actions[event['name']] ~= nil then
