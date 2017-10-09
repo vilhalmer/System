@@ -189,7 +189,15 @@ map <C-RightMouse> <Nop>
 map <RightDrag> <Nop>
 map <RightRelease> <Nop>
 
+" Make Y act like all the other capital variants.
 nnoremap Y y$
+
+" Fix the completion popup:
+" Insert a newline on enter even when it's open…
+inoremap <expr><CR> pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
+" …and use Tab for selection.
+inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 """""""""""""""""
 " Abbreviations "
