@@ -31,9 +31,7 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
 
     " Completion
     if has('nvim')
-    Plug 'Shougo/deoplete.nvim', {'tag': '*', 'do': ':UpdateRemotePlugins'}
-    Plug 'Shougo/neoinclude.vim'
-    Plug 'zchee/deoplete-jedi'
+    Plug 'roxma/nvim-completion-manager'
     endif
 
     " Text objects
@@ -66,19 +64,12 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'ap/vim-css-color',      {'for': 'css'}
     Plug 'dzeban/vim-log-syntax', {'for': 'log'}
 
+    " Dev
+    Plug '/Users/vil/Code/python/vim-corral', {'do': ':UpdateRemotePlugins'}
+
 call plug#end()
 
 if s:plugins_ready
-
-""""""""""""
-" deoplete "
-""""""""""""
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#buffer#require_same_filetype = 0 " If it's open, it's important.
-let g:deoplete#max_menu_width = 80
-let g:deoplete#sources#jedi#extra_path = [g:pipenv_site_packages_path]
-
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
 """""""""""
 " neomake "
