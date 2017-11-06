@@ -243,17 +243,17 @@ homebrew_updates () {
 
     is_available brew || return # Make sure homebrew's around.
 
-    update_time_file="$XDG_CACHE_HOME/homebrew_update_time"
+    local update_time_file="$XDG_CACHE_HOME/homebrew_update_time"
 
     # Check if the $update_time_file is more than 1 day old. By redirecting stderr to stout, this
     # counts the file not existing as the same thing as it being old, thus doing the update.
     if [[ -n $(find "$update_time_file" -maxdepth 0 -mtime +1d 2>&1) ]]; then
-        echo "\x1b[33mUpdating Homebrew, this may take a bit…\x1b[0m"
-        brew update > /dev/null 2>&1 && touch -t "$(date "+%m%d0500")" "$update_time_file" || echo "\x1b[31mCouldn't update Homebrew.\x1b[0m"
+        echo "\x1b[33mUpdating Homebrew in the background…\x1b[0m"
+        ((brew update && touch -t "$(date "+%m%d0500")" "$update_time_file") & disown) &>/dev/null
     fi
 
     local IFS=$'\n'
-    outdated=( $(brew outdated --verbose | grep -vFf <(cat <(brew list --pinned) <(echo "???")) | sed -E 's/(.+) \(.*\) < (.*)$/\\x1b[35m\1\\x1b[0m \2/') )
+    local outdated=( $(brew outdated --verbose | grep -vFf <(cat <(brew list --pinned) <(echo "???")) | sed -E 's/(.+) \(.*\) < (.*)$/\\x1b[35m\1\\x1b[0m \2/') )
 
     if [[ -n "$outdated" ]]; then
         separator=", "
@@ -271,7 +271,7 @@ mas_updates () {
     is_available mas || return
 
     local IFS=$'\n'
-    outdated=( $(mas outdated | sed -E 's/[0-9]+ (.+) \(.* -> (.*)\)$/\\x1b[35m\1\\x1b[0m \2/') )
+    local outdated=( $(mas outdated | sed -E 's/[0-9]+ (.+) \(.* -> (.*)\)$/\\x1b[35m\1\\x1b[0m \2/') )
 
     if [[ -n "$outdated" ]]; then
         separator=", "
