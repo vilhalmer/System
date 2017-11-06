@@ -29,4 +29,7 @@ xcdebugger/
 # Ignore Xcode's UserInterfaceState
 UserInterfaceState.xcuserstate
 
+__pycache__/
+*.pyc
+
 /tags
