@@ -28,6 +28,7 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'mhinz/vim-startify'
     Plug 'majutsushi/tagbar'
     Plug 'neomake/neomake'
+    Plug 'vilhalmer/nvim-corral', {'do': ':UpdateRemotePlugins'}
 
     " Completion
     if has('nvim')
@@ -63,9 +64,6 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'othree/html5.vim',      {'for': 'html'}
     Plug 'ap/vim-css-color',      {'for': 'css'}
     Plug 'dzeban/vim-log-syntax', {'for': 'log'}
-
-    " Dev
-    Plug '/Users/vil/Code/python/vim-corral', {'do': ':UpdateRemotePlugins'}
 
 call plug#end()
 
