@@ -1,0 +1,8 @@
+# A mode with no bindings, to allow use of keys that are otherwise bound to sway
+
+set $passthrough "passthrough"
+mode $passthrough {
+    bindsym Escape    mode "default"
+}
+
+bindsym $mod+p mode $passthrough

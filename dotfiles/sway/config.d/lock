@@ -1,0 +1,1 @@
+exec --no-startup-id $HOME/Code/lockscreen-spawn.sh $HOME/Code/lockscreen.sh

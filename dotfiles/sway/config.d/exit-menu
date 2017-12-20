@@ -1,0 +1,13 @@
+# Stolen from https://gist.github.com/reedjosh/02192841820b18a84f6d0a07b310011d
+
+set $exitmenu "system:  [r]eboot  [s]hutdown  [l]ogout"
+mode $exitmenu {
+    bindsym r exec shutdown -r now
+    bindsym s exec shutdown -P now
+    bindsym l exit
+
+    bindsym Return    mode "default"
+    bindsym Escape    mode "default"
+}
+
+bindsym $mod+backspace mode $exitmenu

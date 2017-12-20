@@ -1,0 +1,207 @@
+### Variables
+#
+    # Logo key. Use Mod1 for Alt.
+    set $mod Mod1
+    # Home row direction keys, like vim
+    set $left h
+    set $down j
+    set $up k
+    set $right l
+    # Your preferred terminal emulator
+    set $term konsole
+    # Your preferred application launcher
+    set $menu rofi -show drun
+
+### Output configuration
+#
+    output * bg $HOME/.config/wallpaper fill
+#
+# Example configuration:
+#
+#   output HDMI-A-1 resolution 1920x1080 position 1920,0
+#
+# You can get the names of your outputs by running: swaymsg -t get_outputs
+
+### Input configuration
+#
+# Example configuration:
+#
+#   input "2:14:SynPS/2_Synaptics_TouchPad" {
+#       dwt enabled
+#       tap enabled
+#       natural_scroll enabled
+#       middle_emulation enabled
+#   }
+#
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+# Read `man 5 sway-input` for more information about this section.
+
+    input "2:8:AlpsPS/2_ALPS_DualPoint_Stick" {
+        pointer_accel -0.3
+        accel_profile adaptive
+    }
+
+    input "2:8:AlpsPS/2_ALPS_DualPoint_TouchPad" {
+        # The trackpad is currently totally fucked.
+        events disabled
+    }
+
+### Key bindings
+#
+# Basics:
+#
+    # start a terminal
+    bindsym $mod+Return exec $term
+
+    # kill focused window
+    bindsym $mod+Shift+q kill
+
+    # start your launcher
+    bindsym $mod+space exec $menu
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    # Despite the name, also works for non-floating windows.
+    # Change normal to inverse to use left mouse button for resizing and right
+    # mouse button for dragging.
+    floating_modifier $mod normal
+
+    # reload the configuration file
+    bindsym $mod+Shift+r reload
+
+    bindsym $mod+Shift+3 exec swaygrab
+#
+# Moving around:
+#
+    # Move your focus around
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+
+    # _move_ the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+#
+# Workspaces:
+#
+    # switch to workspace
+    bindsym f1 workspace 1
+    bindsym f2 workspace 2
+    bindsym f3 workspace 3
+    bindsym f4 workspace 4
+    bindsym f5 workspace 5
+    bindsym f6 workspace 6
+    bindsym f7 workspace 7
+    bindsym f8 workspace 8
+    bindsym f9 workspace 9
+    bindsym f10 workspace 10
+    # move focused container to workspace
+    bindsym Shift+f1 move container to workspace 1
+    bindsym Shift+f2 move container to workspace 2
+    bindsym Shift+f3 move container to workspace 3
+    bindsym Shift+f4 move container to workspace 4
+    bindsym Shift+f5 move container to workspace 5
+    bindsym Shift+f6 move container to workspace 6
+    bindsym Shift+f7 move container to workspace 7
+    bindsym Shift+f8 move container to workspace 8
+    bindsym Shift+f9 move container to workspace 9
+    bindsym Shift+f0 move container to workspace 10
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+#
+# Layout stuff:
+#
+	# Split current container, same keys as I use for tmux.
+    bindsym $mod+Shift+Backslash splith
+    bindsym $mod+Backslash splitv
+
+    # Switch the current container between different layout styles
+    bindsym $mod+s layout stacking
+    bindsym $mod+w layout tabbed
+    bindsym $mod+e layout toggle split
+
+    # Make the current focus fullscreen
+    #bindsym $mod+f fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    #bindsym $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    bindsym $mod+f focus mode_toggle
+
+    # move focus to the parent container
+    bindsym $mod+a focus parent
+#
+# Scratchpad:
+#
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+    # Move the currently focused window to the scratchpad
+    #bindsym $mod+Shift+minus move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    #bindsym $mod+minus scratchpad show
+#
+# Resizing containers:
+#
+    mode "resize" {
+        # left will shrink the containers width
+        # right will grow the containers width
+        # up will shrink the containers height
+        # down will grow the containers height
+        bindsym $left resize shrink width 10 px or 10 ppt
+        bindsym $down resize grow height 10 px or 10 ppt
+        bindsym $up resize shrink height 10 px or 10 ppt
+        bindsym $right resize grow width 10 px or 10 ppt
+
+        # ditto, with arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # return to default mode
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+    }
+    bindsym $mod+r mode "resize"
+
+### Looks
+#
+    font Noto Sans Medium 8
+
+#
+# Status Bar:
+#
+    bar {
+        font Noto Sans Medium 10
+        status_command py3status
+        position top
+        separator_symbol –
+        colors {
+            statusline #cccccc
+            background #323232aa
+            inactive_workspace #323232 #323232 #cccccc
+            separator #323232aa
+        }
+    }
+
+#
+# Floating
+#
+floating_minimum_size 10 x 10
+
+#
+# Gaps
+#
+    default_border normal 0 # This currently doesn't work.
+    # edge gaps don't work as intended either, and end up doubling the gaps
+    gaps edge_gaps off
+    gaps 12
+
+include $HOME/.config/sway/config.d/*

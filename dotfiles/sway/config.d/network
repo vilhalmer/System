@@ -1,0 +1,5 @@
+# Start the keyring agent so nmcli can read psks.
+exec --no-startup-id ~/Code/python/nm_keyring_agent/nm_keyring_agent.py
+
+# Attempt to connect to a nearby network.
+exec --no-startup-id nmcli connection up ifname wlp2s0
