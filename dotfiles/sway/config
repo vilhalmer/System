@@ -185,16 +185,16 @@
         separator_symbol –
         colors {
             statusline #cccccc
-            background #323232aa
+            background #323232
             inactive_workspace #323232 #323232 #cccccc
-            separator #323232aa
+            separator #323232
         }
     }
 
 #
 # Floating
 #
-floating_minimum_size 10 x 10
+    floating_minimum_size 10 x 10
 
 #
 # Gaps
