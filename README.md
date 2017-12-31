@@ -3,8 +3,6 @@
 ## What is?
 This is where I keep my configuration for (nearly) everything. Eventually I hope to get rid of the (nearly), but some software is just not very cooperative.
 
-I use this configuration nearly exclusively on OS X, but I do have it on a few Linux servers.
-
 ## How do?
 If you want to use these dotfiles, I'd recommend forking the repo and making any changes that you would like, first.
 If you do want to install this as-is, it's as easy as:
