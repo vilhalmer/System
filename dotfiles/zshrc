@@ -235,7 +235,10 @@ chpwd () {
 
 # Finally, stuff to run before the first prompt:
 
-is_available keychain && eval $(keychain --quiet --eval $(find $HOME/.ssh -name id_\* ! -name '*\.pub'))
+if is_available keychain; then
+    local gpg_key_id=$(gpg --list-secret-keys | grep sec -A1 | tail -1 | awk '{$1=$1};1')
+    eval $(keychain --quiet --agents ssh,gpg --eval $(find $HOME/.ssh -name id_\* ! -name '*\.pub') $gpg_key_id)
+fi
 
 homebrew_updates () {
     # Calls `brew update` if it's been a day since the last check, then prints any
