@@ -1,10 +1,11 @@
-#bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +6.25%
-#bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -6.25%
-#bindsym XF86AudioMute exec pactl set-sink-mute $(pactl list short | grep RUNNING | cut -f2) toggle
-
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+
 bindsym XF86AudioLowerVolume exec amixer -q set Master 5%-
 bindsym XF86AudioMute exec amixer -q set Master toggle
+
+bindsym XF86AudioPlay exec mpris-ctl pp
+bindsym XF86AudioStop exec mpris-ctl stop
+bindsym XF86AudioNext exec mpris-ctl next
+bindsym XF86AudioPrev exec mpris-ctl prev
 
 bindsym XF86MonBrightnessUp exec xbacklight -fps 30 -time 200 -inc 5
 bindsym XF86MonBrightnessDown exec xbacklight -fps 30 -time 200 -dec 5

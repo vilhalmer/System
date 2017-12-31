@@ -1,0 +1,64 @@
+order += 'mpris'
+order += 'volume_status'
+order += 'bluetooth'
+order += 'wifi'
+order += 'battery_level'
+order += 'clock'
+
+general {
+    color = '#cccccc'
+    color_good = '#cccccc'
+    color_degraded = '#ffff00'
+    color_bad = '#ff0000'
+}
+
+bluetooth {
+    format = '\uf294\u2009 {format_device}|\uf294\u2009_'
+    format_separator = ' + '
+    color_bad = '#777777'
+}
+
+wifi {
+    format = '\uf1eb\u2009 {bitrate} {ssid}|\uf1eb\u2009⚠'
+}
+
+battery_level {
+    battery_id = 'all'
+    blocks = '\uf244\uf243\uf243\uf242\uf242\uf242\uf241\uf241\uf240'
+    charging_character = '\uf1e6'
+    format = '{icon}\u2009 {time_remaining}'
+    hide_seconds = True
+    hide_when_full = True
+    notify_low_level = True
+
+    color_charging = '#00cc00'
+    threshold_degraded = 30
+    threshold_bad = 15
+}
+
+clock {
+    format_time = '%H:%M'
+}
+
+volume_status {
+    command = 'amixer'
+    format = '\uf028\u2009 {percentage}'
+    format_muted = '\uf026\u2009 {percentage}'
+    thresholds = [(0, 'bad'), (1, 'good')]
+
+    # This doesn't matter, doing it on a signal with py3-cmd.
+    # Set it to once a week, since zero seems to be "infinitely quickly".
+    cache_timeout = 604800
+}
+
+mpris {
+    format = '{state}\u2009 [{artist} - ]{title}'
+    format_none = '\uf28d\u2009_'
+    state_play = '\uf144'
+    state_pause = '\uf28b'
+    player_priority = '[mpv, *]'
+
+    color_bad = '#777777'
+}
+
+# vim: syntax=python
