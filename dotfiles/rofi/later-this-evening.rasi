@@ -1,0 +1,53 @@
+// Later This Evening fullscreen
+
+* {
+    background-color: #323232;
+    border-color: White;
+    text-color: White;
+    font: "Sans 24";
+}
+
+configuration {
+    display-window: "";
+    display-windowcd: "";
+    display-run: "";
+    display-ssh: "";
+    display-drun: "";
+    display-combi: "";
+    display-keys: "";
+}
+
+window {
+    anchor: center;
+    location: center;
+    width: 100%;
+    padding: 0.5em;
+    children: [ horibox, listview ];
+}
+
+horibox {
+    orientation: horizontal;
+    children: [ prompt, entry ];
+}
+
+listview {
+    layout: horizontal;
+    spacing: 20px;
+    fixed-height: true;
+}
+
+entry {
+    expand: false;
+    width: 25%;
+}
+
+element {
+    padding: 0px 8px;
+}
+element selected {
+    text-color: #cccccc;
+}
+
+prompt {
+    str: "";
+}
