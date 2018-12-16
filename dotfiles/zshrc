@@ -206,22 +206,22 @@ build_prompt () {
     # Set up the right-hand widgets:
     top_right=""
 
-    RPROMPT=""
-    if [[ -n "$top_right" ]]; then
-        up=$'\e[1A'
-        down=$'\e[1B'
+    #RPROMPT=""
+    #if [[ -n "$top_right" ]]; then
+    #    up=$'\e[1A'
+    #    down=$'\e[1B'
 
-        offset=1 # The LED is always in the second-to-last column, otherwise this would be 2.
-        [[ $code > 0 ]] && offset=$(( $offset + ${#code} + 1 )) # +1 for the extra space between the code and dot.
+    #    offset=1 # The LED is always in the second-to-last column, otherwise this would be 2.
+    #    [[ $code > 0 ]] && offset=$(( $offset + ${#code} + 1 )) # +1 for the extra space between the code and dot.
 
-        right=$'\e['$offset'C'
-        left=$'\e['$offset'D'
+    #    right=$'\e['$offset'C'
+    #    left=$'\e['$offset'D'
 
-        # Display the right-aligned widgets, then on the line with the actual prompt, display the last exit code and a status LED:
-        RPROMPT="%{${up}${right}%}${top_right}%{${left}${down}%}"
-    fi
+    #    # Display the right-aligned widgets, then on the line with the actual prompt, display the last exit code and a status LED:
+    #    RPROMPT="%{${up}${right}%}${top_right}%{${left}${down}%}"
+    #fi
 
-    RPROMPT="$RPROMPT%(?.%F{green}.%F{red}%? )%{%G•%}%f"
+    #RPROMPT="$RPROMPT%(?.%F{green}.%F{red}%? )%{%G•%}%f"
 }
 
 # zsh hooks
