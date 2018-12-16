@@ -31,5 +31,6 @@ UserInterfaceState.xcuserstate
 
 __pycache__/
 *.pyc
+*.egg-info/
 
 /tags
