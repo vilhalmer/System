@@ -1,25 +1,48 @@
+order += 'external_script count_updates'
 order += 'mpris'
-order += 'volume_status'
+#order += 'volume_status'
 order += 'bluetooth'
+order += 'external_script vpn_status'
 order += 'wifi'
+order += 'sysdata'
 order += 'battery_level'
 order += 'clock'
+order += 'static_string space'
 
 general {
-    color = '#cccccc'
-    color_good = '#cccccc'
-    color_degraded = '#ffff00'
-    color_bad = '#ff0000'
+    color = '#ffffffaa'
+    color_good = '#ffffffaa'
+    color_degraded = '#ffff00aa'
+    color_bad = '#555555aa'
+}
+
+static_string space {
+    format = '\u200b'
+}
+
+clock {
+    format_time = '%H:%M'
+}
+
+sysdata {
+    format = '\uf3fd\u2009 {load1} / {cpu_temp}°'
 }
 
 bluetooth {
-    format = '\uf294\u2009 {format_device}|\uf294\u2009_'
+    format = '\uf294\u2009 {format_device}|\uf294'
     format_separator = ' + '
-    color_bad = '#777777'
+    color_bad = '#ffffff33'
+}
+
+external_script vpn_status {
+    format = '[\uf023\u2009 {output}]'
+    script_path = '$HOME/scripts/vpn-status'
+
+    cache_timeout = 15
 }
 
 wifi {
-    format = '\uf1eb\u2009 {bitrate} {ssid}|\uf1eb\u2009⚠'
+    format = '\uf1eb\u2009 {ssid}|\uf1eb'
 }
 
 battery_level {
@@ -31,13 +54,9 @@ battery_level {
     hide_when_full = True
     notify_low_level = True
 
-    color_charging = '#00cc00'
+    color_charging = '#88dd88'
     threshold_degraded = 30
     threshold_bad = 15
-}
-
-clock {
-    format_time = '%H:%M'
 }
 
 volume_status {
@@ -46,19 +65,26 @@ volume_status {
     format_muted = '\uf026\u2009 {percentage}'
     thresholds = [(0, 'bad'), (1, 'good')]
 
-    # This doesn't matter, doing it on a signal with py3-cmd.
-    # Set it to once a week, since zero seems to be "infinitely quickly".
-    cache_timeout = 604800
+    # Patched to cache forever.
+    #cache_timeout = 604800
 }
 
 mpris {
     format = '{state}\u2009 [{artist} - ]{title}'
-    format_none = '\uf28d\u2009_'
+    format_none = '\uf28d'
     state_play = '\uf144'
     state_pause = '\uf28b'
     player_priority = '[mpv, *]'
 
-    color_bad = '#777777'
+    color_bad = '#ffffff33'
+}
+
+external_script count_updates {
+    format = '[\uf35b\u2009 {output}]'
+    script_path = '$HOME/scripts/count-updates'
+
+    # Check every hour
+    cache_timeout = 3600
 }
 
 # vim: syntax=python
