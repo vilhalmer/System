@@ -27,7 +27,7 @@ if [[ $1 != current ]]; then
     # Provided to sync backlights on boot/login/display connection/etc
     echo $current > $XDG_CACHE_HOME/display_brightness
 
-    $HOME/scripts/notify-send \
+    $HOME/System/scripts/notify-send \
         --app-name=hud \
         --replace-file=/run/user/$UID/hud-id \
         " ${current}%"

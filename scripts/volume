@@ -19,7 +19,7 @@ else
     icon=" "
 fi
 
-$HOME/scripts/notify-send \
+$HOME/System/scripts/notify-send \
     --app-name=hud \
     --replace-file=/run/user/$UID/hud-id \
     "$icon ${current[0]}%"
