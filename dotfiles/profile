@@ -24,6 +24,8 @@ export RUST_SRC_PATH="$HOME/.multirust/toolchains/stable-x86_64-apple-darwin/lib
 
 export WEECHAT_HOME="$XDG_CONFIG_HOME/weechat"
 
+export GTK_BACKEND=wayland
+
 stty -ixon # Keep Ctrl-s from freezing the terminal
 
 if [ -n "$SSH_CONNECTION" ] && \
