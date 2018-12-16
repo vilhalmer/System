@@ -19,7 +19,7 @@ export HISTFILE="$XDG_DATA_HOME/$(basename $SHELL)/history"
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$HOME/scripts:$PATH"
 export RUST_SRC_PATH="$HOME/.multirust/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src"
 
 export WEECHAT_HOME="$XDG_CONFIG_HOME/weechat"
