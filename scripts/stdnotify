@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Tees each line of stdin to a D-Bus notification.
+# Writes to stdout by default, use -e as the first argument to send to stderr.
+# Remaining arguments are passed directly to notify-send, with the line of
+# stdin as the very last one. This allows you to pass a custom summary.
+# The app-name defaults to 'stdnotify'.
+
+[[ $1 == '-e' ]] && use_stderr=$1 && shift
+
+while read line; do
+    notify-send --app-name=stdnotify "$@" "$line"
+    [[ -n $use_stderr ]] && >&2 printf "$line\n" || printf "$line\n"
+done
