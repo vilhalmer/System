@@ -1,0 +1,40 @@
+font=Noto Sans 10
+background-color=#b1c6d7ff
+text-color=#000000ff
+margin=10,0
+padding=10
+border-size=0
+default-timeout=5000
+max-visible=9
+format=<span font='7'>%a</span>\n<b>%s</b>\n%b
+layer=overlay
+
+[hidden]
+background-color=#bfbfbfff
+format=+ %h
+font=Noto Sans Bold 8
+
+[!expiring]
+background-color=#555555ff
+text-color=#eeeeeeff
+
+[app-name=hud]
+# Used by keybindings to show adjusted value.
+font=Noto Sans 14
+width=100
+format=<b>%s</b>
+background-color=#555555ff
+text-color=#eeeeeeff
+default-timeout=1000
+
+[app-name=test]
+width=500
+height=300
+margin=20
+
+[app-name=coredump-notify]
+background-color=#d09a9a
+
+[urgency=high]
+ignore-timeout=true
+default-timeout=0
