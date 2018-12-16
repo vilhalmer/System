@@ -1,0 +1,4 @@
+for_window [title="Picture in picture"] \
+    floating enable; \
+    sticky enable; \
+    move position 1000 520

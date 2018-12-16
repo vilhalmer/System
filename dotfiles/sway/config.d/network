@@ -2,4 +2,4 @@
 exec ~/Code/python/nm_keyring_agent/nm_keyring_agent.py
 
 # Attempt to connect to a nearby network.
-exec nmcli connection up ifname wlp2s0
+exec [[ $(nmcli -g state general) == "connected" ]] || nmcli connection up ifname wlp2s0

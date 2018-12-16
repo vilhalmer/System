@@ -1,11 +1,22 @@
-bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+
-bindsym XF86AudioLowerVolume exec amixer -q set Master 5%-
-bindsym XF86AudioMute exec amixer -q set Master toggle
+bindsym XF86AudioRaiseVolume exec $HOME/scripts/volume up
+bindsym XF86AudioLowerVolume exec $HOME/scripts/volume down
+bindsym XF86AudioMute exec $HOME/scripts/volume mute
 
 bindsym XF86AudioPlay exec mpris-ctl pp
 bindsym XF86AudioStop exec mpris-ctl stop
 bindsym XF86AudioNext exec mpris-ctl next
 bindsym XF86AudioPrev exec mpris-ctl prev
 
-bindsym XF86MonBrightnessUp exec xbacklight -fps 30 -time 200 -inc 5
-bindsym XF86MonBrightnessDown exec xbacklight -fps 30 -time 200 -dec 5
+# Also bind these directly (they overlap with the fn media keys)
+bindsym f11 exec mpris-ctl pp
+bindsym f12 exec mpris-ctl next
+bindsym f10 exec mpris-ctl prev
+
+bindsym XF86MonBrightnessUp exec $HOME/scripts/brightness up &
+bindsym XF86MonBrightnessDown exec $HOME/scripts/brightness down &
+
+bindsym XF86Eject exec udiskie-umount --all
+
+#bindsym $mod+Shift+3 exec grim $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
+bindsym $mod+Shift+3 exec grim -o $(swaymsg -t get_workspaces | jq -r 'map(select(.focused))[0].output') $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
+bindsym $mod+Shift+4 exec slurp | grim -g - $(date +'screenshot_%Y-%m-%d-%H%M%S.png')

@@ -1,0 +1,3 @@
+for_window [class="Rofi"] floating enable
+for_window [class="Rofi"] border pixel 0
+for_window [class="Rofi"] sticky enable
