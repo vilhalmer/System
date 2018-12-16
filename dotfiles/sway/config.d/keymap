@@ -1,6 +1,6 @@
-bindsym XF86AudioRaiseVolume exec $HOME/System/scripts/volume up
-bindsym XF86AudioLowerVolume exec $HOME/System/scripts/volume down
-bindsym XF86AudioMute exec $HOME/System/scripts/volume mute
+bindsym XF86AudioRaiseVolume exec volume up
+bindsym XF86AudioLowerVolume exec volume down
+bindsym XF86AudioMute exec volume mute
 
 bindsym XF86AudioPlay exec mpris-ctl pp
 bindsym XF86AudioStop exec mpris-ctl stop
@@ -12,8 +12,8 @@ bindsym f11 exec mpris-ctl pp
 bindsym f12 exec mpris-ctl next
 bindsym f10 exec mpris-ctl prev
 
-bindsym XF86MonBrightnessUp exec $HOME/System/scripts/brightness up &
-bindsym XF86MonBrightnessDown exec $HOME/System/scripts/brightness down &
+bindsym XF86MonBrightnessUp exec brightness up &
+bindsym XF86MonBrightnessDown exec brightness down &
 
 bindsym XF86Eject exec udiskie-umount --all
 
