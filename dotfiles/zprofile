@@ -1,0 +1,2 @@
+typeset -U PATH  # Prevents duplicate PATH entries.
+source $HOME/.profile

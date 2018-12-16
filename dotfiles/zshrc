@@ -1,13 +1,7 @@
-typeset -U PATH # Prevents duplicate PATH entries. zsh only, so it's set prior to sourcing anything that might set PATH.
-
 # Autocompletions
 # These are the one thing in this file that I don't even begin to understand.
 autoload -Uz compinit
 compinit
-
-# Run .profile after completion is ready in case it wants to
-# define any completion functions.
-source $HOME/.profile
 
 mkdir -p "$XDG_CACHE_HOME"
 
@@ -288,6 +282,14 @@ mas_updates () {
         echo "    ${outdated[@]}"
     fi
 }
+
+# Source any site-specific scripts.
+if [[ -d "$XDG_CONFIG_HOME/zshrc.d" ]]; then
+    # For every file in zshrc.d, but not the directory itself.
+    find "$XDG_CONFIG_HOME/zshrc.d" -mindepth 1 -maxdepth 1 | while read file; do
+        source "${file}"
+    done
+fi
 
 name_tmux_window
 homebrew_updates

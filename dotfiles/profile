@@ -1,5 +1,6 @@
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+export PATH="$HOME/.cargo/bin:$HOME/System/scripts:$PATH"
 
 which nvim > /dev/null 2>&1 && export EDITOR=nvim || export EDITOR=vim
 
@@ -9,7 +10,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
 # If we have a custom terminfo for $TERM, use it
-maybe_terminfo="$XDG_CONFIG_HOME/terminfo/$(uname)/$TERM.ti" 
+maybe_terminfo="$XDG_CONFIG_HOME/terminfo/$(uname)/$TERM.ti"
 [[ -f $maybe_terminfo ]] && export TERMINFO="$maybe_terminfo"
 
 export TIGRC_USER="$XDG_CONFIG_HOME/tig/tigrc"
@@ -19,7 +20,6 @@ export HISTFILE="$XDG_DATA_HOME/$(basename $SHELL)/history"
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-export PATH="$HOME/.cargo/bin:$HOME/System/scripts:$PATH"
 export RUST_SRC_PATH="$HOME/.multirust/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src"
 
 export WEECHAT_HOME="$XDG_CONFIG_HOME/weechat"
@@ -52,11 +52,3 @@ if [ "$TERM" = "mobile" ]; then
     export TERM=xterm-256color
     clear # Yay even more hacky. This fixes the visual corruption that happens right after mobile connect.
 fi
-
-# Run any site-specific profile scripts.
-if [ -d "$XDG_CONFIG_HOME/profile.d" ]; then
-    find "$XDG_CONFIG_HOME/profile.d" -mindepth 1 -maxdepth 1 | while read file; do # For every file in profile.d, but not the directory itself.
-        source "${file}"
-    done
-fi
-
