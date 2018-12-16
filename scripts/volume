@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+[[ $1 == up ]] || [[ $1 == down ]] || [[ $1 == mute ]] || exit 1
+
+BASE_STEP=5
+
+if [[ $1 == up ]]; then
+    amixer -q set Master ${BASE_STEP}%+
+elif [[ $1 == down ]]; then
+    amixer -q set Master ${BASE_STEP}%-
+elif [[ $1 == mute ]]; then
+    amixer -q set Master toggle
+fi
+
+current=( $(amixer get Master | perl -ne 'print if s/.*\[(\d+)%\] \[(\w+)\]/\1 \2/' | head -n 1) )
+if [[ ${current[1]} == on ]]; then
+    icon=
+else
+    icon=" "
+fi
+
+$HOME/scripts/notify-send \
+    --app-name=hud \
+    --replace-file=/run/user/$UID/hud-id \
+    "$icon ${current[0]}%"
+
+# vim: syntax=sh

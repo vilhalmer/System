@@ -1,2 +1,2 @@
-exec_always $HOME/scripts/brightness current
+exec_always $HOME/System/scripts/brightness current
 exec $HOME/Code/python/dbus-glue/wake_brightness.py

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -e
+set -o pipefail
+
+patch="$1"
+[[ -z $patch ]] && echo "Please provide a patch file" && exit 1
+
+# I feel like this could be guessed from the files in the patch but oh well.
+module="$2"
+[[ -z $module ]] && echo "Please provide the module path to patch" && exit 1
+# Assumes we're in a directory created by `kernel-fetch`, and that the
+# version we're targeting has at least been installed.
+version=$(git tag | cut -d 'v' -f 2)
+echo "Targeting kernel $version"
+
+uname=$(cd /usr/lib/modules && find -maxdepth 1 -name "${version}*")
+extraversion="$(echo $uname | cut -d '-' -f 3)"  # Used to be field 2, but now there's -archN in the version
+[[ -z $extraversion ]] && echo "$version is not installed, giving up" && exit 1
+extraversion="-$extraversion"
+
+echo "Discovered EXTRAVERSION: $extraversion"
+
+echo "Preparing tree"
+make clean
+make mrproper
+
+echo "Configuring build"
+cp "/usr/lib/modules/$uname/build/.config" ./
+cp "/usr/lib/modules/$uname/build/Module.symvers" ./
+make oldconfig
+
+echo "Applying $patch"
+git apply --whitespace=nowarn "$patch"
+
+make "EXTRAVERSION=$extraversion" modules_prepare
+
+make "M=$module"
+
+echo "Made the following modules:"
+find "$module" -maxdepth 1 -name \*.ko
+
+# vim: syntax=zsh

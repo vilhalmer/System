@@ -36,7 +36,7 @@ bluetooth {
 
 external_script vpn_status {
     format = '[\uf023\u2009 {output}]'
-    script_path = '$HOME/scripts/vpn-status'
+    script_path = '$HOME/System/scripts/vpn-status'
 
     cache_timeout = 15
 }
@@ -81,7 +81,7 @@ mpris {
 
 external_script count_updates {
     format = '[\uf35b\u2009 {output}]'
-    script_path = '$HOME/scripts/count-updates'
+    script_path = '$HOME/System/scripts/count-updates'
 
     # Check every hour
     cache_timeout = 3600

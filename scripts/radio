@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+file="$HOME/notes/radio.txt"
+station=$1
+url=""
+
+if [[ $station == '-l' ]]; then
+    while read -r line; do
+        components=( $line )
+        printf "${components[0]}\n"
+    done < "$file"
+
+    exit 0
+fi
+
+while read -r line; do
+    components=( $line )
+    if [[ "${components[0]}" == "$station" ]]; then
+        url="${components[1]}"
+    fi
+done < "$file"
+
+if [[ -z "$url" ]]; then
+    printf "No station named '$url'\n"
+    exit 1
+fi
+
+mpv "$url"
+
+# vim: syntax=zsh

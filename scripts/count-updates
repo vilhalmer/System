@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Output the number of available updates, if there are any. Otherwise, output
+# nothing so that it doesn't appear in py3status.
+count=$(checkupdates | wc -l)
+if (( $count > 0 )); then
+    echo $count
+else
+    echo ''
+fi
+
+# vim: syntax=sh

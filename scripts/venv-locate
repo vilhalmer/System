@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+venv="$XDG_DATA_HOME/virtualenvs/${1:-$(basename $(pwd))}"
+[[ -d $venv ]] && printf "$venv\n" || { printf "No venv!\n" > /dev/stderr; exit 1; }

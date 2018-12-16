@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+venv="${1:-$(venv-locate)}"
+[[ -n $venv ]] || exit 1
+exec env VIRTUAL_ENV_DISABLE_PROMPT=1 $SHELL -c "source '$venv/bin/activate'; exec $SHELL"

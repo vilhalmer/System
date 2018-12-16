@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+from __future__ import print_function
+from functools import reduce
+from operator import add
+import sys
+import random
+
+def roll(spec):
+    base, *additions = spec.lower().split('+')
+    additions = reduce(add, map(int, additions), 0)
+    count, size = map(int, base.lower().split('d'))
+    total = 0
+
+    # We do want randint, despite randrange's docstring.
+    rolls = (random.randint(1, size) for _ in range(count))
+
+    for r in rolls:
+        print(r)
+        total += r
+
+    print(f'{total} + {additions} = {total + additions}')
+
+if __name__ == "__main__":
+    roll(sys.argv[1])

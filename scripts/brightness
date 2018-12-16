@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+[[ $1 == up ]] || [[ $1 == down ]] || [[ $1 == current ]] || exit 1
+
+#current=$(cat $HOME/.cache/external_display_brightness 2>/dev/null)
+#if [[ -z $current ]]; then
+#    current=$(ddcutil --display=1 --brief getvcp 10 | cut -d ' ' -f 4)
+#fi
+
+BASE_STEP=3
+
+current=$(cat $XDG_CACHE_HOME/display_brightness)
+if [[ -z $current ]]; then
+    current=$(xbacklight -get)
+fi
+
+if [[ $1 == up ]]; then
+    current=$(( $current + $BASE_STEP ))
+    (( $current > 100 )) && current=100
+
+elif [[ $1 == down ]]; then
+    current=$(( $current - $BASE_STEP ))
+    (( $current < 0 )) && current=0
+fi
+
+if [[ $1 != current ]]; then
+    # Provided to sync backlights on boot/login/display connection/etc
+    echo $current > $XDG_CACHE_HOME/display_brightness
+
+    $HOME/scripts/notify-send \
+        --app-name=hud \
+        --replace-file=/run/user/$UID/hud-id \
+        " ${current}%"
+fi
+
+xbacklight -fps 30 -time 200 $current
+ddcutil --display=1 --noverify --maxtries=5,5,5 setvcp 10 $current
+
+# vim: syntax=sh

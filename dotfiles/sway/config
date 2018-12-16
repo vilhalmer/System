@@ -40,7 +40,7 @@ input "1:1:AT_Translated_Set_2_keyboard" {
 # Basics:
 #
 # start a terminal
-bindsym $mod+Return exec $HOME/scripts/cwd-terminal
+bindsym $mod+Return exec $HOME/System/scripts/cwd-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill

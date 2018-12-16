@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+domain=$1
+script=$2
+cat $script | xargs -L 1 -- virsh send-key $domain >/dev/null

@@ -1,0 +1,42 @@
+#!/usr/bin/env zsh
+set -e
+set -o pipefail
+
+# This script only applies patches to ensure that they do still apply,
+# aborting a kernel upgrade if they don't. The actual module building is done by the cooresponding post-hook.
+
+# This isn't strictly necessary, as pacinfo defaults to stdin if no
+# arguments are provided, but I'm doing it explicitly for my own
+# sanity when I read this later.
+target=$1
+[[ -z $target ]] && read target
+
+target_version=${2:-$(\
+    pacinfo --short $target | \
+    grep -Ev '(local/|^\s)' | \
+    cut -d' ' -f2 | \
+    cut -d'-' -f1 | \
+    perl -pe 's/(.*)\.arch(\d+)/\1-arch\2/'  # Fix up the PKGBUILD version.
+)}
+
+[[ -z $target_version ]] && exit 2
+
+echo "Fetching kernel version $target_version"
+version=$(kernel-fetch -f $target_version)  # kernel-fetch may edit the version.
+
+patch_root="/home/vil/Code/kernel-module-patches"
+cd "$patch_root"
+patches=( $(find . -mindepth 1 -type 'f' -printf '%P\n') )
+
+cd /home/vil/Code/clones/kernel/$target_version
+exec 5>&1
+for patch in $patches; do
+    module="$(dirname "$patch")"
+    kernel-patch-module "$patch_root/$patch" "$module"
+    ko_name="$(basename "$patch" | cut -d'.' -f1).ko"
+    kernel-update-module \
+        $(find "$module" -maxdepth 1 -name "$ko_name" | head -n1) \
+        $target_version
+done
+
+# vim: syntax=zsh

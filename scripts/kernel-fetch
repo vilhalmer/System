@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+if [[ $1 == '-f' ]]; then
+    shift
+    force='yes'
+fi
+
+version=$1
+if [[ -z $version ]]; then
+    version=$(uname -r | cut -d '-' -f 1)
+fi
+
+# Fix up the version number since PKGBUILD versions aren't allowed to have dashes.
+version=$(echo $version | perl -pe 's/(.*)\.arch(\d+)/\1-arch\2/')
+
+location="/home/vil/Code/clones/kernel/$version"
+if [[ -d $location ]]; then
+    [[ -z $force ]] && exit
+
+    echo "Already exists, resetting"
+    cd "$location"
+    git reset --hard HEAD
+    exit
+fi
+
+git clone --branch v$version --depth 1 https://git.archlinux.org/linux.git /home/vil/Code/clones/kernel/$version
+
+# vim: syntax=zsh

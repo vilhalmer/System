@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+vpns=$(nmcli -t connection | grep :vpn: | cut -d':' -f1)
+
+for vpn in $vpns; do
+    if [[ -n $(nmcli -t connection show "$vpn" | grep VPN.VPN-STATE:5) ]]; then
+        printf "$vpn\n"
+        exit 0
+    fi
+done
+
+printf "\n"
+exit 0

@@ -1,0 +1,11 @@
+#!/bin/env bash
+
+device=$(bluetoothctl paired-devices | grep -iE "$1" | cut -d' ' -f2)
+if [[ -n $2 ]]; then
+    command=$(bluetoothctl help | cut -d' ' -f1 | grep -iE "$2" | head -n1 | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g')
+else
+    command="connect"
+fi
+echo "Command: bluetoothctl $command $device"
+
+bluetoothctl "$command" "$device"

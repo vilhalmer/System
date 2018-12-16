@@ -1,0 +1,28 @@
+#!/usr/bin/env zsh
+
+pending=$(checkupdates 2>/dev/null)
+[[ -z $pending ]] && exit 0
+
+set -o pipefail
+
+# Print them all out, with rebuilds in grey
+printf '%s\n' "${pending[@]}" | awk '{ split($2, old, "-"); split($4, new, "-"); if (old[1] == new[1]) { print "\x1b[38;5;242m" $0 "\x1b[0m" } else { print $0 } }'
+
+pending_names=( $(echo $pending | cut -d' ' -f1) )
+
+ignores=( $(pacman-conf IgnorePkg; pacman -Qm | cut -d' ' -f1) )
+
+affected=()
+for pkg in $ignores; do
+    effects=$(pactree --linear --depth=1 "$pkg" | grep -Ff <(printf '%s\n' ${pending_names[@]}))
+    if [[ -n $effects ]]; then
+        affected+=($pkg)
+    fi
+done
+
+if [[ -n $affected ]]; then
+    echo "\nIgnored + AUR packages affected by updates:"
+    echo $affected
+fi
+
+# vim: syntax=zsh

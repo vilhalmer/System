@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+venv_path="${1:-$XDG_DATA_HOME/virtualenvs/$(basename $(pwd))}"
+[[ -n $venv_path ]] && shift
+virtualenv "$@" $venv_path
+args=()
+[[ -f requirements*.txt ]] && args+=('-r' 'requirements*.txt')
+[[ -f setup.py ]] && args+=('-e' '.')
+
+[[ -n $args ]] && $venv_path/bin/pip install ${args[@]}
