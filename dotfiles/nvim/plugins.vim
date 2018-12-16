@@ -29,11 +29,17 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'majutsushi/tagbar'
     Plug 'neomake/neomake'
     Plug 'vilhalmer/nvim-corral', {'do': ':UpdateRemotePlugins'}
+    "Plug 'tpope/vim-sleuth'
+    Plug 'editorconfig/editorconfig-vim'
 
     " Completion
-    if has('nvim')
-    Plug 'roxma/nvim-completion-manager'
-    endif
+    Plug 'roxma/nvim-yarp'
+    Plug 'ncm2/ncm2'
+    Plug 'ncm2/ncm2-bufword'
+    Plug 'ncm2/ncm2-tmux'
+    Plug 'ncm2/ncm2-path'
+    Plug 'ncm2/ncm2-jedi'
+    Plug 'ncm2/ncm2-pyclang'
 
     " Text objects
     Plug 'PeterRincker/vim-argumentative'
@@ -59,30 +65,78 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'avakhov/vim-yaml',           {'for': 'yaml'}
 
     " Syntax highlighting
-    Plug 'rust-lang/rust.vim',    {'for': 'rust'}
-    Plug 'keith/tmux.vim',        {'for': 'tmux'}
-    Plug 'othree/html5.vim',      {'for': 'html'}
-    Plug 'ap/vim-css-color',      {'for': 'css'}
-    Plug 'dzeban/vim-log-syntax', {'for': 'log'}
+    Plug 'rust-lang/rust.vim',         {'for': 'rust'}
+    Plug 'keith/tmux.vim',             {'for': 'tmux'}
+    Plug 'othree/html5.vim',           {'for': 'html'}
+    Plug 'ap/vim-css-color',           {'for': 'css'}
+    Plug 'dzeban/vim-log-syntax',      {'for': 'log'}
+    Plug 'nathangrigg/vim-beancount',  {'for': 'beancount'}
+    Plug 'hashivim/vim-terraform',     {'for': 'terraform'}
+    Plug 'chr4/nginx.vim',             {'for': 'nginx'}
 
 call plug#end()
 
 if s:plugins_ready
 
+""""""""
+" ncm2 "
+""""""""
+let g:ncm2#matcher = 'substrfuzzy'
+set completeopt=noinsert,menuone,noselect
+autocmd BufEnter * call ncm2#enable_for_buffer()
+
+let g:ncm2_pyclang#library_path = '/usr/lib/libclang.so'
+let g:ncm2_pyclang#database_path = ['build/compile_commands.json']
+
+"""""""""""
+" vim-lsp "
+"""""""""""
+"if executable('pyls')
+"    au User lsp_setup call lsp#register_server({
+"        \ 'name': 'pyls',
+"        \ 'cmd': {server_info->['pyls']},
+"        \ 'whitelist': ['python'],
+"        \ })
+"endif
+"
+"if executable('clangd')
+"    au User lsp_setup call lsp#register_server({
+"        \ 'name': 'clangd',
+"        \ 'cmd': {server_info->['clangd']},
+"        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
+"        \ })
+"endif
+
 """""""""""
 " neomake "
 """""""""""
-let g:neomake_python_enabled_makers = ['pylint']
-let g:neomake_python_pylint_args = [
-    \ "--init-hook", "import sys; sys.path.append('".g:pipenv_site_packages_path."')"] +
-    \ neomake#makers#ft#python#pylint()['args']
+let g:neomake_python_enabled_makers = ['flake8']
+"let g:neomake_python_pylint_args = [
+"    \ "--init-hook", "import sys; sys.path.append('".g:pipenv_site_packages_path."')"] +
+"    \ neomake#makers#ft#python#pylint()['args']
 
 let g:neomake_rust_enabled_makers = ['cargo']
+
+let g:neomake_c_enabled_makers = ['clangcheck', 'clangtidy']
+let g:neomake_c_clangcheck_args = ['-p', 'build', '%']
+let g:neomake_c_clangtidy_args = ['-p', 'build', '%']
 
 augroup neomake_onsave | au!
     autocmd! BufWritePost * Neomake
     autocmd BufWritePost *.rs Neomake cargo
 augroup end
+
+function BeanCheckWarningToError(entry)
+    let a:entry.type = 'E'
+endfunction
+
+let g:neomake_beancheck_maker = {
+    \ 'exe': 'bean-check',
+    \ 'args': [],
+    \ 'errorformat': '%f:%l: %m',
+    \ 'postprocess': function('BeanCheckWarningToError')
+    \ }
+let g:neomake_beancount_enabled_makers = ['beancheck']
 
 """"""""""""
 " Startify "
@@ -209,6 +263,21 @@ let g:riv_disable_folding = 1
 " InstantRst "
 """"""""""""""
 let g:instant_rst_localhost_only = 1
+
+"""""""""""""
+" beancount "
+"""""""""""""
+" Register the omnifunc as an nvim-completion-manager source.
+au User CmSetup call cm#register_source({
+        \ 'name' : 'cm-beancount',
+        \ 'priority': 9,
+        \ 'scoping': 1,
+        \ 'scopes': ['beancount'],
+        \ 'abbreviation': 'bean',
+        \ 'word_pattern': '[\w\-]+',
+        \ 'cm_refresh_patterns':['[\w\-]+\s*:\s+'],
+        \ 'cm_refresh': {'omnifunc': 'beancount#complete'},
+        \ })
 
 """""""""""
 " Cleanup "

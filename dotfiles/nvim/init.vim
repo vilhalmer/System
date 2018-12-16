@@ -81,13 +81,18 @@ set ignorecase
 set smartcase
 
 " Completion
-set completeopt=menu,longest
+"set completeopt=menu,longest
 
 " Global and project tags.
 set tags=$XDG_CACHE_HOME/tags,./tags;/,tags;/
 
 " Sync the unnamed register with the system clipboard.
-set clipboard^=unnamed
+set clipboard^=unnamedplus
+let g:clipboard = {
+    \ 'name': 'wl-clipboard',
+    \ 'copy': {'+': 'wl-copy', '*': 'wl-copy'},
+    \ 'paste': {'+': 'bash -c "echo -n $(wl-paste)"', '*': 'bash -c "echo -n $(wl-paste)"'},
+    \ 'cache_enabled': 1, }
 
 " Make the sign gutter always visible to avoid it jumping around.
 augroup dummysign | au!
@@ -117,7 +122,7 @@ endfunction
 command! Vterm call Vterm()
 
 " This is good for Makefiles, but that's about it
-command! RealTabs %s-^\(    \)\+-	
+command! RealTabs %s/    /\t/g
 
 " Truncate and quit
 command! Tq %d | wq
@@ -231,7 +236,9 @@ endif
 """"""""""""""
 " If we're working in a pipenv, we need to add the virtualenv's site-packages
 " to a bunch of python plugins. Store it for easy access.
-let g:pipenv_site_packages_path = system('pipenv --venv &>/dev/null && echo -n "$(pipenv --venv)"/lib/python*/site-packages/')
+let g:pipenv_site_packages_path = system(
+            \ 'venv=$(pipenv --venv 2>/dev/null) && [[ -n $venv ]] ' .
+            \ '&& echo -n "$venv"/lib/python*/site-packages/')
 
 """""""""""
 " Plugins "
