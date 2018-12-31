@@ -1,12 +1,5 @@
 // Later This Evening fullscreen
 
-* {
-    background-color: #323232;
-    border-color: White;
-    text-color: White;
-    font: "Sans 24";
-}
-
 configuration {
     display-window: "";
     display-windowcd: "";
@@ -15,6 +8,13 @@ configuration {
     display-drun: "";
     display-combi: "";
     display-keys: "";
+}
+
+* {
+    background-color: #323232;
+    border-color: White;
+    text-color: White;
+    font: "Sans 24";
 }
 
 window {
