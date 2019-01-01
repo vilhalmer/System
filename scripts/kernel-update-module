@@ -4,28 +4,27 @@ set -o pipefail
 module_ko="$1"
 [[ -z $module_ko ]] && echo "Please provide a .ko" && exit 1
 
-module_name=$(basename $module_ko)
+module_name="$(basename $module_ko)"
 
 version="$2"
 if [[ -z $version ]]; then
     version=$(uname -r)
     echo "Defaulting to current kernel ($version)"
-else
-    echo "$version is not currently running, module will not be reloaded"
 fi
 
 version_path=$(find /usr/lib/modules -maxdepth 1 -name "${version}*")
+[[ -z $version_path ]] && echo "Unable to find the module path for '$version'!" && exit 2
 
-sudo mkdir -p $version_path/updates
-new_path=$version_path/updates/$module_name
-sudo mv $module_ko $new_path
-sudo gzip $new_path
+sudo mkdir -p "$version_path/updates"
+new_path="$version_path/updates/$module_name"
+sudo cp "$module_ko" "$new_path"
+sudo gzip "$new_path"
 
-sudo depmod $(basename "$version_path")
+sudo depmod "$(basename "$version_path")"
 
 set +o pipefail
 
-modinfo $(echo $module_name | cut -d '.' -f 1) | grep '^filename' || echo "No modinfo available"
+modinfo $(echo "$module_name" | cut -d '.' -f 1) | grep '^filename' || echo "No modinfo available"
 
 echo "(I didn't reload it for you)"
 

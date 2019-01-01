@@ -2,41 +2,92 @@
 set -e
 set -o pipefail
 
-# This script only applies patches to ensure that they do still apply,
-# aborting a kernel upgrade if they don't. The actual module building is done by the cooresponding post-hook.
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --check)
+            check_only=yes
+            ;;
+        --work-dir)
+            shift
+            work_dir="$1"
+            mkdir -p "$work_dir"
+            ;;
+        --clean)
+            clean=yes
+            ;;
+        *)
+            target="$1"
+            ;;
+    esac
+    shift
+done
 
-# This isn't strictly necessary, as pacinfo defaults to stdin if no
-# arguments are provided, but I'm doing it explicitly for my own
-# sanity when I read this later.
-target=$1
+clean () {
+    cd
+    [[ -n $clean ]] && rm -rf "$work_dir"
+}
+trap clean EXIT
+
+# Read the target package from stdin if it wasn't given, since we're usually run as an alpm hook.
 [[ -z $target ]] && read target
 
-target_version=${2:-$(\
-    pacinfo --short $target | \
-    grep -Ev '(local/|^\s)' | \
-    cut -d' ' -f2 | \
-    cut -d'-' -f1 | \
-    perl -pe 's/(.*)\.arch(\d+)/\1-arch\2/'  # Fix up the PKGBUILD version.
-)}
+# Fetch the current remote version.
+target_version="$(pacinfo --short "$target" | perl -ne 'print if not /^(local|\s)/ and s/^.*? (.*?) .*$/\1/')"
+[[ -z $target_version ]] && printf "Unable to determine target version" && exit 2
 
-[[ -z $target_version ]] && exit 2
+asp update "$target"
 
-echo "Fetching kernel version $target_version"
-version=$(kernel-fetch -f $target_version)  # kernel-fetch may edit the version.
+# Use an existing work_dir if one is set, good for debugging.
+work_dir="${work_dir:-$(mktemp --directory --suffix=.kernel-upgrade-autopatch)}"
+cd "$work_dir" && printf "\nWorking in $work_dir\n\n"
+
+asp checkout "$target" 2>/dev/null || printf "NOTE: Using existing checkout!\n"
+cd "$target"
+
+# Releases aren't tagged, so we have to look through the log.
+# Checkout quietly to avoid the giant "detached HEAD" warning, but still show where we end up.
+git checkout --quiet $(git log --fixed-strings --grep="$target_version" --max-count=1 --format=format:%H)
+git log --oneline --max-count=1
+cd "trunk"
+
+# Download the kernel source and apply the configuration.
+makepkg --nodeps --nobuild
+
+# Extract the path that the kernel gets stored in from the PKGBUILD. This is probably overkill.
+kernel_src_dir=$(makepkg --printsrcinfo | perl -ne 'print $1 if /^\s+source = (.*?)::git\+.*linux\.git/')
 
 patch_root="/home/vil/Code/kernel-module-patches"
-cd "$patch_root"
-patches=( $(find . -mindepth 1 -type 'f' -printf '%P\n') )
+patches=( $(cd "$patch_root" && find . -mindepth 1 -type 'f' -printf '%P\n') )
 
-cd /home/vil/Code/clones/kernel/$target_version
-exec 5>&1
+cd "src/$kernel_src_dir"
+
+for patch in $patches; do
+    git apply --verbose --whitespace=nowarn "$patch_root/$patch"
+done
+
+# If we only wanted to see if things applied cleanly, we're done.
+if [[ -n $check_only ]] && exit 0
+
+kernel_version=$(git describe --exact-match | perl -ne 'print $1 if /^v(.*)-arch\d+$/')
+[[ -z $kernel_version ]] && echo "Unable to determine version from git tag!" && exit 3
+
+uname_r="$(basename $(cd /usr/lib/modules && find -maxdepth 1 -name "${kernel_version}*"))"
+[[ -z $uname_r ]] && echo "Kernel $kernel_version doesn't appear to be installed!" && exit 4
+echo "Building modules for kernel $uname_r"
+
+make modules_prepare
+
+exec 5>&1  # I can't remember why this is here...
 for patch in $patches; do
     module="$(dirname "$patch")"
-    kernel-patch-module "$patch_root/$patch" "$module"
+
+    make "M=$module"
+
+    echo "Made the following modules:"
+    find "$module" -maxdepth 1 -name \*.ko
+
     ko_name="$(basename "$patch" | cut -d'.' -f1).ko"
     kernel-update-module \
         $(find "$module" -maxdepth 1 -name "$ko_name" | head -n1) \
-        $target_version
+        $uname_r
 done
-
-# vim: syntax=zsh
