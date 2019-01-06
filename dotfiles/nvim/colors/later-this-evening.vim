@@ -25,10 +25,10 @@ let s:bright_white = "White"
 
 let s:foreground = "none" " Default
 let s:background = "none" " Same
-let s:selection = s:white
+let s:selection = s:black
 let s:line = s:black
 let s:comment = s:bright_black
-let s:window = s:white
+let s:window = s:black
 
 hi clear
 syntax reset
@@ -50,7 +50,7 @@ endfun
 
 " Vim Highlighting
 call <SID>Color("Normal", s:foreground, "", "")
-call <SID>Color("LineNr", s:selection, "", "")
+call <SID>Color("LineNr", s:bright_black, "", "")
 call <SID>Color("NonText", s:selection, "", "")
 call <SID>Color("SpecialKey", s:selection, "", "")
 call <SID>Color("Search", s:background, s:yellow, "")
@@ -64,7 +64,8 @@ call <SID>Color("Directory", s:blue, "", "")
 call <SID>Color("ModeMsg", s:green, "", "")
 call <SID>Color("MoreMsg", s:green, "", "")
 call <SID>Color("Question", s:green, "", "")
-call <SID>Color("WarningMsg", s:red, "", "")
+call <SID>Color("WarningMsg", s:yellow, "", "")
+call <SID>Color("ErrorMsg", s:red, s:background, "bold")
 call <SID>Color("MatchParen", s:bright_yellow, s:background, "bold")
 call <SID>Color("Folded", s:comment, s:background, "")
 call <SID>Color("FoldColumn", "", s:background, "")
@@ -301,13 +302,18 @@ call <SID>Color("TagbarKind", s:purple, "", "")
 
 " Startify
 call <SID>Color("StartifyHeader", s:bright_black, "", "")
-call <SID>Color("StartifyFooter", s:white, "", "")
+call <SID>Color("StartifyFooter", s:bright_black, "", "")
 call <SID>Color("StartifySection", s:bright_white, "", "bold")
 call <SID>Color("StartifyNumber", s:foreground, "", "")
 call <SID>Color("StartifyBracket", s:bright_black, "", "")
 call <SID>Color("StartifyFile", s:foreground, "", "bold")
 call <SID>Color("StartifyPath", s:bright_black, "", "")
 call <SID>Color("StartifySlash", s:bright_black, "", "")
+
+" Easymotion
+call <SID>Color("EasyMotionTarget", s:bright_purple, "", "bold")
+call <SID>Color("EasyMotionIncSearch", s:bright_white, "", "bold")
+call <SID>Color("EasyMotionMoveHL", s:purple, "", "reverse")
 
 " Delete Functions
 delf <SID>Color
