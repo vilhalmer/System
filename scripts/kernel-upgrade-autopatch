@@ -1,4 +1,7 @@
 #!/usr/bin/env zsh
+#
+# Requires: bc, bison, flex
+
 set -e
 set -o pipefail
 
@@ -24,7 +27,7 @@ done
 
 clean () {
     cd
-    [[ -n $clean ]] && rm -rf "$work_dir"
+    [[ -n $clean ]] && rm -rf "$work_dir" || exit 0
 }
 trap clean EXIT
 
@@ -50,11 +53,21 @@ git checkout --quiet $(git log --fixed-strings --grep="$target_version" --max-co
 git log --oneline --max-count=1
 cd "trunk"
 
+if [[ -n $SUDO_USER && $UID -eq 0 ]]; then
+    # makepkg can't be run as root, so downgrade to whoever we actually are.
+    # We also need to be able to write into the directories.
+    printf "Switching users to configure linux package...\n"
+    MAKEPKG_USER="$SUDO_USER"
+    chown -R "$MAKEPKG_USER" $work_dir
+else
+    MAKEPKG_USER="$USER"
+fi
+
 # Download the kernel source and apply the configuration.
-makepkg --nodeps --nobuild
+sudo -u "$MAKEPKG_USER" makepkg --nodeps --nobuild
 
 # Extract the path that the kernel gets stored in from the PKGBUILD. This is probably overkill.
-kernel_src_dir=$(makepkg --printsrcinfo | perl -ne 'print $1 if /^\s+source = (.*?)::git\+.*linux\.git/')
+kernel_src_dir=$(sudo -u "$MAKEPKG_USER" makepkg --printsrcinfo | perl -ne 'print $1 if /^\s+source = (.*?)::git\+.*linux\.git/')
 
 patch_root="/home/vil/Code/kernel-module-patches"
 patches=( $(cd "$patch_root" && find . -mindepth 1 -type 'f' -printf '%P\n') )
@@ -66,8 +79,9 @@ for patch in $patches; do
 done
 
 # If we only wanted to see if things applied cleanly, we're done.
-if [[ -n $check_only ]] && exit 0
+[[ -n $check_only ]] && exit 0
 
+# Otherwise, on to module building.
 kernel_version=$(git describe --exact-match | perl -ne 'print $1 if /^v(.*)-arch\d+$/')
 [[ -z $kernel_version ]] && echo "Unable to determine version from git tag!" && exit 3
 
