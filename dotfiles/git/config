@@ -1,11 +1,18 @@
-[alias]
-	ci = commit --verbose
-	co = checkout
-	last = log -1 HEAD
-	unstage = reset HEAD --
-	uncommit = reset --soft HEAD~1
+[ncore]
+    whitespace = trailing-space
+    hooksPath = ~/.config/git/hooks
 
-    branch-name = "!git symbolic-ref --short HEAD"
+[alias]
+    ci = commit --verbose
+    co = checkout
+    cob = checkout -b
+    last = log -1 HEAD
+    unstage = reset HEAD --
+    uncommit = reset --soft HEAD~1
+    brease = rebase
+    info = log --pretty=fuller -n1
+
+    branch-name = "!git symbolic-ref --short ${1:-HEAD}"
     first-origin = "!git remote | head -1"
 
     publish = "!git push --set-upstream $(git first-origin) $(git branch-name)"
@@ -17,29 +24,67 @@
         && printf "\"\nIf you really want to do this, do \\`really-unpush\\`.\n\""
     really-unpush = !git push -f $(git first-origin) +HEAD^:$(git branch-name)
 
-    mup = !git stash save --include-untracked git-new-stash \
-            && branch=$(git branch-name) \
-            && git co master \
-            && git fetch \
-            && git log master..origin/master \
-            && git pull \
-            && git co $branch \
-            && stash=$(git stash list | grep 'git-new-stash' | cut -d':' -f1) \
-            && [[ -n $stash ]] && git stash pop $stash
+    mup = "!f() { \
+        git stash save --include-untracked git-mup-stash \
+        && branch=$(git branch-name) \
+        && git co master \
+        && git fetch \
+        && git log master..origin/master \
+        && git pull --rebase \
+        && git co $branch \
+        && stash=$(git stash list | grep 'git-mup-stash' | cut -d':' -f1) \
+        && [[ -n $stash ]] && git stash pop $stash; \
+    }; f"
 
-    whahappen = "!f() { git diff --stat $1^..$1; }; f"
+    who = "!f() { git ls-tree -r -z --name-only HEAD -- $1 | xargs -0 -n1 git blame --line-porcelain HEAD | grep '^author ' | sort | uniq -c | sort -nr | perl -pe 's/author //'; }; f"
 
-    diverged = !bash -c 'diff --old-line-format='' --new-line-format='' <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1' -
-    bdiff = !git diff $(git diverged)..
-    blog = !git log $(git diverged)..
+    diverged = "!bash -c 'diff --old-line-format='' --new-line-format='' <(git rev-list --first-parent \"${2:-master}\") <(git rev-list --first-parent \"${1:-HEAD}\") | head -1' -"
+    bdiff = "!f() { \
+        [[ $1 != -* ]] && { branch=$1 && shift 2>/dev/null; }; \
+        git diff $(git diverged \"$branch\")..$branch \"$@\"; \
+    }; f"
+    blog = "!f() { \
+        [[ $1 != -* ]] && { branch=$1 && shift 2>/dev/null; }; \
+        git log $(git diverged \"$branch\")..$branch \"$@\"; \
+    }; f"
 
     is-clean = "!f() { \
         [[ -z $(git ls-files --others --exclude-standard) ]] && git diff-files --quiet; \
     }; f"
 
+    branch-age = "!git for-each-ref --sort=committerdate refs/heads/ --format='%(committerdate:short) %(refname:short)' | sort -r"
+
+    fuzz = "!git log --pretty='format:%h %<(12)%cN %s' | fzf | cut -d' ' -f1"
+
+    near = "!f() { \
+        [[ $1 == *'-'* && $1 != *'T'* ]] && date=${1}T00:00:00 || date=$1; \
+        count=${2:-3} \
+        base_commit_time=$(git show -s --format=%ct $(git rev-list --max-count=1 --before=$date $(git branch-name))); \
+        newest=$(git rev-list --reverse --after=$base_commit_time $(git branch-name) | head -n$(($count + 1)) | tail -n1) && \
+        oldest=$(git rev-list --max-count=$count --before=$base_commit_time $(git branch-name) | tail -n1); \
+        git log \
+            --format='%C(yellow)%h %C(reset)%cd %C(green)%<(12)%cN%C(reset) %s%+d%C(reset)' \
+            --date='format:%Y-%m-%d %H:%M' \
+            --before=$(git show -s --format=%ct $newest) --after=$(git show -s --format=%ct $oldest); \
+    }; f"
+
 [push]
-	default = simple
+    default = simple
+
+[pull]
+    rebase = preserve
 
 [diff]
-    compactionHeuristic = true
+    algorithm = patience
 
+[format]
+    pretty = %C(yellow)%h %C(green)%<(12)%cN%C(reset) %s%+d%C(reset)
+
+[log]
+    mailmap = true
+
+[mailmap]
+    file = ~/.mailmap
+
+[help]
+    autocorrect = 10
