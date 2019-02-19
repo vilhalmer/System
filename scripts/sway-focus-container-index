@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Bless jq, it even does the math for us
+swaymsg "[con_id=$(swaymsg -t get_tree | jq "recurse(.nodes[]; .nodes) | .nodes | select(any(.focused)) | .[$1-1].id")]" focus

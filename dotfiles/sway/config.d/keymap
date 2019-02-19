@@ -8,9 +8,19 @@ bindsym XF86AudioNext exec mpris-ctl next
 bindsym XF86AudioPrev exec mpris-ctl prev
 
 # Also bind these directly (they overlap with the fn media keys)
-bindsym f11 exec mpris-ctl pp
-bindsym f12 exec mpris-ctl next
-bindsym f10 exec mpris-ctl prev
+set $internal_kb 1:1:AT_Translated_Set_2_keyboard
+bindsym --input-device=$internal_kb f10 exec mpris-ctl prev
+bindsym --input-device=$internal_kb f11 exec mpris-ctl pp
+bindsym --input-device=$internal_kb f12 exec mpris-ctl next
+
+# Media keys on Magic Keyboard
+set $magic_kb 76:615:Selectric
+bindsym --input-device=$magic_kb f7 exec mpris-ctl prev
+bindsym --input-device=$magic_kb f8 exec mpris-ctl pp
+bindsym --input-device=$magic_kb f9 exec mpris-ctl next
+bindsym --input-device=$magic_kb f10 exec volume mute
+bindsym --input-device=$magic_kb f11 exec volume down
+bindsym --input-device=$magic_kb f12 exec volume up
 
 bindsym XF86MonBrightnessUp exec brightness up &
 bindsym XF86MonBrightnessDown exec brightness down &
@@ -20,3 +30,9 @@ bindsym XF86Eject exec udiskie-umount --all
 #bindsym $mod+Shift+3 exec grim $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
 bindsym $mod+Shift+3 exec grim -o $(swaymsg -t get_workspaces | jq -r 'map(select(.focused))[0].output') $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
 bindsym $mod+Shift+4 exec slurp | grim -g - $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
+
+bindsym $mod+w exec sway-workspace-candidates | rofi -dmenu -p 'workspace ' | xargs swaymsg workspace
+
+bindsym $mod+Shift+t exec mpris-ctl info | perl -pe 's/( - unknown)+$//g' | wl-copy
+
+bindsym --release BTN_MIDDLE kill

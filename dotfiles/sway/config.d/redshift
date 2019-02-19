@@ -1,1 +1,2 @@
-exec redshift -t 5500K:2500K -l 42.28:-83.74
+exec redshift -t 5500K:2500K -l geoclue2
+# 42.28:-83.74

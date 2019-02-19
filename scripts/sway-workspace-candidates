@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Create a list of potential workspaces you might want to switch to. This
+# includes all existing workspaces, as well as any that are mentioned in the
+# config.
+
+# Active workspaces are easy.
+active_workspaces=( $(swaymsg -t get_workspaces | jq -r '.[].name') )
+
+# Defined ones are gnarly. This regex probably doesn't actually work correctly.
+defined_workspaces=( $( \
+    swaymsg -t get_config | jq -r '.config' | \
+    perl -ne 'print "$1$2\n" if /(?:^workspace (.*?) output|^bindsym(?: --[\w=\$]+)* [\w+\$]+ workspace (.*)$)/'
+) )
+
+printf "%s\n" "${defined_workspaces[@]}" "${active_workspaces[@]}" | sort | uniq

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+last_container="$(swaymsg -t get_tree | jq 'recurse(.nodes[]; .nodes) | select(.nodes | any(.focused)).nodes[-1].id')"
+swaymsg "[con_id=$last_container] mark move-last; move container mark move-last; unmark move-last"

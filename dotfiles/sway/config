@@ -31,8 +31,10 @@ input "2:8:AlpsPS/2_ALPS_DualPoint_TouchPad" {
     events disabled
 }
 
+input * xkb_options compose:caps
+
 input "1:1:AT_Translated_Set_2_keyboard" {
-    xkb_options altwin:swap_alt_win
+    xkb_options altwin:swap_alt_win,compose:caps
 }
 
 ### Key bindings
@@ -54,6 +56,7 @@ bindsym $mod+space exec $menu
 # Change normal to inverse to use left mouse button for resizing and right
 # mouse button for dragging.
 floating_modifier $mod normal
+tiling_drag disable
 
 # reload the configuration file
 bindsym $mod+Shift+r reload
@@ -67,6 +70,17 @@ bindsym $mod+$down focus down
 bindsym $mod+$up focus up
 bindsym $mod+$right focus right
 
+bindsym $mod+1 exec sway-focus-container-index 1
+bindsym $mod+2 exec sway-focus-container-index 2
+bindsym $mod+3 exec sway-focus-container-index 3
+bindsym $mod+4 exec sway-focus-container-index 4
+bindsym $mod+5 exec sway-focus-container-index 5
+bindsym $mod+6 exec sway-focus-container-index 6
+bindsym $mod+7 exec sway-focus-container-index 7
+bindsym $mod+8 exec sway-focus-container-index 8
+bindsym $mod+9 exec sway-focus-container-index 9
+bindsym $mod+0 exec sway-focus-container-index 0
+
 mouse_warping container
 
 # _move_ the focused window with the same, but add Shift
@@ -75,37 +89,37 @@ bindsym $mod+Shift+$down move down
 bindsym $mod+Shift+$up move up
 bindsym $mod+Shift+$right move right
 
+bindsym $mod+Shift+semicolon exec sway-move-container-last
+
+# Focus previous container (can only toggle, not the full stack)
+bindsym $mod+grave exec swaymsg "[con_id=$(swaymsg -t get_tree | jq 'recurse(.nodes[]; .nodes) | select(.nodes | any(.focused)).focus[1]')] focus"
+
 #
 # Workspaces:
 #
 # switch to workspace
-bindsym f1 workspace 1
-bindsym f2 workspace 2
-bindsym f3 workspace 3
-bindsym f4 workspace 4
-bindsym f5 workspace 5
-bindsym f6 workspace 6
-bindsym f7 workspace 7
-bindsym f8 workspace 8
-bindsym f9 workspace media
+bindsym f1 workspace number 1
+bindsym f2 workspace number 2
+bindsym f3 workspace number 3
+bindsym f4 workspace number 4
+bindsym f5 workspace number 5
+bindsym f6 workspace media
+
 # move focused container to workspace
-bindsym Shift+f1 move container to workspace 1
-bindsym Shift+f2 move container to workspace 2
-bindsym Shift+f3 move container to workspace 3
-bindsym Shift+f4 move container to workspace 4
-bindsym Shift+f5 move container to workspace 5
-bindsym Shift+f6 move container to workspace 6
-bindsym Shift+f7 move container to workspace 7
-bindsym Shift+f8 move container to workspace 8
-bindsym Shift+f9 move container to workspace media
-# Note: workspaces can have any name you want, not just numbers.
-# We just use 1-10 as the default.
+bindsym Shift+f1 move container to workspace number 1
+bindsym Shift+f2 move container to workspace number 2
+bindsym Shift+f3 move container to workspace number 3
+bindsym Shift+f4 move container to workspace number 4
+bindsym Shift+f5 move container to workspace number 5
+bindsym Shift+f6 move container to workspace media
 
 bindsym $mod+Alt+h move workspace to output left
 bindsym $mod+Alt+l move workspace to output right
 
 workspace 1 output $internal_display
 workspace media output $internal_display
+
+workspace_auto_back_and_forth yes
 
 #
 # Layout stuff:
@@ -116,9 +130,9 @@ bindsym $mod+Shift+Backslash splith
 bindsym $mod+Backslash splitv
 
 # Switch the current container between different layout styles
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+#bindsym $mod+s layout stacking
+bindsym $mod+t layout tabbed
+bindsym $mod+s layout toggle split
 
 # Make the current focus fullscreen
 bindsym $mod+f fullscreen
@@ -158,7 +172,7 @@ bindsym $mod+Ctrl+$down resize shrink height 50 px
 font Noto Sans Bold 8
 client.focused #ffffffaa #ffffffaa #222222ff #ffffffaa #ffffffaa
 client.focused_inactive #ffffff55 #ffffff55 #222222 #ffffff55 #ffffff55
-client.unfocused #22222255 #22222255 #ffffff55 #22222255 #22222255
+client.unfocused #22222255 #22222255 #ddddddff #22222255 #22222255
 
 # Show the position that a new split will open while super is held.
 #bindsym Super_L client.focused #ffffffaa #ffffffaa #222222ff #ffffffff #ffffffaa
