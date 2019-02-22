@@ -106,7 +106,20 @@ current_repo () {
     [[ -n $repo ]] && echo $(basename "$repo")
 }
 
-# tmux integration
+# enivronment integration
+
+name_sway_workspace () {
+    is_available swaymsg || return
+
+    local repo_name=$(current_repo)
+    local current_workspace_number=$(swaymsg -t get_workspaces | jq -r '.[] | select(.focused).name' | cut -f1 -d'/')
+
+    if [[ -n $repo_name ]]; then
+        swaymsg "rename workspace to '$current_workspace_number/$repo_name'"
+    else
+        swaymsg "rename workspace to $current_workspace_number"
+    fi
+}
 
 name_tmux_window () {
     # At the moment, this only uses git repo names. More could be added, though.
@@ -234,6 +247,7 @@ precmd () {
 chpwd () {
     # Called on each directory change.
     name_tmux_window
+    name_sway_workspace
 }
 
 # Finally, stuff to run before the first prompt:
@@ -298,5 +312,6 @@ if [[ -d "$XDG_CONFIG_HOME/zshrc.d" ]]; then
 fi
 
 name_tmux_window
+name_sway_workspace
 homebrew_updates
 mas_updates
