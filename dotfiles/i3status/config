@@ -1,3 +1,4 @@
+order += 'external_script systemd_status'
 order += 'external_script count_updates'
 order += 'mpris'
 #order += 'volume_status'
@@ -85,6 +86,15 @@ external_script count_updates {
 
     # Check every hour
     cache_timeout = 3600
+}
+
+external_script systemd_status {
+    # Maybe \uf0ad?
+    format = '[\uf071\u2009 {output}]'
+    script_path = '$HOME/System/scripts/systemd-status'
+    color = '#f9b381aa'
+
+    cache_timeout = 60
 }
 
 # vim: syntax=python
