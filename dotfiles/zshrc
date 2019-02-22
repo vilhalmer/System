@@ -91,7 +91,13 @@ yank () { # Copy the n-th last command run to the clipboard.
     last="$(echo -n $(fc -l -${1:-1} -${1:-1} | sed -E 's/ [0-9]+  //'))"
     case $flavor in
         "Darwin") echo -ne "$last" | pbcopy;;
-        "Linux") echo -ne "$last" | xclip;;
+        "Linux")
+            if is_available wl-copy; then
+                echo -ne "$last" | wl-copy
+            else
+                echo -ne "$last" | xclip
+            fi
+            ;;
     esac
 }
 
