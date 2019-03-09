@@ -22,6 +22,7 @@ fi
 $HOME/System/scripts/notify-send \
     --app-name=hud \
     --replace-file=/run/user/$UID/hud-id \
+    --hint=int:value:${current[0]} \
     "$icon ${current[0]}%"
 
 # vim: syntax=sh

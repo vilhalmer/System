@@ -30,6 +30,7 @@ if [[ $1 != current ]]; then
     $HOME/System/scripts/notify-send \
         --app-name=hud \
         --replace-file=/run/user/$UID/hud-id \
+        --hint=int:value:${current} \
         " ${current}%"
 fi
 
