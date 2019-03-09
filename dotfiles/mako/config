@@ -1,6 +1,7 @@
 font=Noto Sans 10
 background-color=#b1c6d7ff
 text-color=#000000ff
+progress-color=over #00000044
 margin=10,0
 padding=10
 border-size=0
