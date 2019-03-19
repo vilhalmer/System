@@ -108,8 +108,20 @@ current_repo () {
 
 # enivronment integration
 
+# We only want to autoname workspaces when they were nameless at the time the terminal was opened.
+# This means that the first terminal to enter a repo in a workspace effectively owns it.
+sway_workspace_prenamed=$(swaymsg -t get_workspaces | jq -r '.[] | select(.focused).name' | cut -s -f2 -d'/')
+
+# Clear the workspace name when exiting the shell if it wasn't named when we started (i.e. we named it).
+zshexit () {
+    [[ -z $sway_workspace_prenamed ]] || return
+    local current_workspace_number=$(swaymsg -t get_workspaces | jq -r '.[] | select(.focused).name' | cut -f1 -d'/')
+    swaymsg "rename workspace to $current_workspace_number"
+}
+
 name_sway_workspace () {
     is_available swaymsg || return
+    [[ -z $sway_workspace_prenamed ]] || return
 
     local repo_name=$(current_repo)
     local current_workspace_number=$(swaymsg -t get_workspaces | jq -r '.[] | select(.focused).name' | cut -f1 -d'/')
