@@ -1,5 +1,5 @@
 order += 'external_script systemd_status'
-order += 'external_script count_updates'
+order += 'arch_updates'
 order += 'mpris'
 #order += 'volume_status'
 order += 'bluetooth'
@@ -80,11 +80,9 @@ mpris {
     color_bad = '#ffffff33'
 }
 
-external_script count_updates {
-    format = '[\uf35b\u2009 {output}]'
-    script_path = '$HOME/System/scripts/count-updates'
-
-    # Check every hour
+arch_updates {
+    format = '\uf35b\u2009 {total}'
+    hide_if_zero = True
     cache_timeout = 3600
 }
 
