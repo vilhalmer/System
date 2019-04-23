@@ -1,0 +1,53 @@
+#!/bin/sh
+
+duration=$1
+
+declare -i count current
+
+count=${duration%%[a-z]}
+units=${duration#$count}
+
+case $units in
+    s)
+        # Nothing
+        ;;
+    m)
+        (( count = count * 60 ))
+        ;;
+    h)
+        (( count = count * 3600 ))
+        ;;
+esac
+
+current=0
+notif=$(mktemp)
+while [[ $current -lt $count ]]; do
+    (( h = (count - current) / 3600 ))
+    (( m = (count - current) / 60 - h * 60 ))
+    (( s = (count - current) - h * 3600 - m * 60 ))
+    (( progress = (current * 100 + count / 2) / count ))
+
+    [[ $h -eq 0 ]] && unset h
+    m=$(printf '%02d' $m)
+    s=$(printf '%02d' $s)
+
+    notify-send \
+        --replace-file=$notif \
+        --app-name=hud \
+        --expire-time=0 \
+        --hint=int:value:$progress \
+        ${h+$h:}$m:$s
+
+    (( current = current + 1 ))
+    sleep 1
+done
+
+notify-send \
+    --replace-file=$notif \
+    --app-name=hud \
+    --expire-time=0 \
+    --hint=int:value:100 \
+    --urgency=critical \
+    Ding!
+
+rm $notif
