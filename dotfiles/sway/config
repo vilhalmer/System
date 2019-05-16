@@ -9,8 +9,14 @@ set $up k
 set $right l
 # Your preferred terminal emulator
 set $term termite
-# Your preferred application launcher
-set $menu rofi -show drun
+
+#set $menu rofi -show drun
+set $menu termite -t termite-fzf -e fzf-launcher
+for_window [title=termite-fzf] {
+    floating enable
+    resize set width 800 px height 200 px
+    move position center
+}
 
 ### Output configuration
 

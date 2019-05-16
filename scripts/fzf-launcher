@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+set -o pipefail
+
+find \
+    /usr/share/applications $HOME/.local/share/applications/ \
+    -name '*.desktop' \
+    -print0 \
+| xargs -0 basename -s .desktop \
+| fzf --print-query --cycle --history=$HOME/.cache/fzf-desktop-history.log \
+| tail -n1 \
+| xargs -I% swaymsg "exec sh -c \"gtk-launch '%' || %\""
