@@ -32,5 +32,10 @@ UserInterfaceState.xcuserstate
 __pycache__/
 *.pyc
 *.egg-info/
+.mypy_cache/
 
-/tags
+tags
+
+*.pkg.tar
+
+subprojects/
