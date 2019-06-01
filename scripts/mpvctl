@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+set -o pipefail
+
+MPVCTL_SOCKET="${MPVCTL_SOCKET:-$XDG_CACHE_HOME/mpv-socket}"
+
+[[ $1 == "-h" ]] && echo "usage: mpvctl [-g] property [value...]" && exit 0
+
+command="set_property"
+[[ $1 == "-g" ]] && command="get_property" && shift
+
+echo "$@" \
+    | jq --raw-input --compact-output --arg command "$command" 'split(" ") | {"command": ([$command] + .)}' \
+    | { [[ -n $MPVCTL_DEBUG ]] && tee /dev/stderr; } \
+    | socat - "$MPVCTL_SOCKET" \
+    | { [[ -n $MPVCTL_DEBUG ]] && tee /dev/stderr; } \
+    | jq --raw-output '(select(.error != "success").error + "\n" | halt_error(1)) // select(has("data")).data'
