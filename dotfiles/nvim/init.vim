@@ -88,11 +88,6 @@ set tags=$XDG_CACHE_HOME/tags,./tags;/,tags;/
 
 " Sync the unnamed register with the system clipboard.
 set clipboard^=unnamedplus
-let g:clipboard = {
-    \ 'name': 'wl-clipboard',
-    \ 'copy': {'+': 'wl-copy', '*': 'wl-copy'},
-    \ 'paste': {'+': 'bash -c "echo -n $(wl-paste)"', '*': 'bash -c "echo -n $(wl-paste)"'},
-    \ 'cache_enabled': 1, }
 
 " Make the sign gutter always visible to avoid it jumping around.
 augroup dummysign | au!
