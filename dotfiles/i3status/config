@@ -25,8 +25,23 @@ clock {
     format_time = '%H:%M'
 }
 
+battery_level {
+    battery_id = 'all'
+    blocks = '\uf244\uf243\uf243\uf242\uf242\uf242\uf241\uf241\uf240'
+    charging_character = '\uf1e6'
+    format = '{icon}\u2009 {time_remaining}'
+    hide_seconds = True
+    hide_when_full = True
+    notify_low_level = True
+
+    color_charging = '#88dd88'
+    threshold_degraded = 30
+    threshold_bad = 15
+}
+
 sysdata {
-    format = '\uf3fd\u2009 {load1} / {cpu_temp}°'
+    format = '\uf3fd\u2009 {mem_used_percent} / {load1} / {cpu_temp}°'
+    thresholds = [(0, 'good'), (75, 'degraded'), (95, 'bad')]
 }
 
 bluetooth {
@@ -44,20 +59,6 @@ external_script vpn_status {
 
 wifi {
     format = '\uf1eb\u2009 {ssid}|\uf1eb'
-}
-
-battery_level {
-    battery_id = 'all'
-    blocks = '\uf244\uf243\uf243\uf242\uf242\uf242\uf241\uf241\uf240'
-    charging_character = '\uf1e6'
-    format = '{icon}\u2009 {time_remaining}'
-    hide_seconds = True
-    hide_when_full = True
-    notify_low_level = True
-
-    color_charging = '#88dd88'
-    threshold_degraded = 30
-    threshold_bad = 15
 }
 
 volume_status {
