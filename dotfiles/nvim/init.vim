@@ -123,7 +123,7 @@ command! RealTabs %s/    /\t/g
 command! Tq %d | wq
 
 " Git blame the current line
-command! Blame exec '!git blame -L'.line('.').','.line('.').' -- % | perl -pe "s/.* \((.*) (\d{4}\-\d{2}\-\d{2}) .*/\1 \2/"'
+command! Blame exec '!git blame -L'.line('.').','.line('.').' -- %'
 
 function! <SID>SynStack()
     if !exists("*synstack")
