@@ -5,6 +5,7 @@ urgent_on_bell = true
 fullscreen = false
 cursor_blink = off
 scrollback_lines = -1
+hyperlinks = true
 
 [colors]
 foreground = #aaaaaa
