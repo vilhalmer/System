@@ -57,7 +57,7 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'junegunn/goyo.vim'
 
     " Language-specific
-    Plug 'tweekmonster/braceless.vim', {'for': 'python', 'tag': '*'}
+    Plug 'k4nar/braceless.vim',        {'for': 'python', 'branch': 'async-syntax'}
     Plug 'racer-rust/vim-racer',       {'for': 'rust'}
     Plug 'Rykka/riv.vim',              {'for': 'rst'}
     Plug 'Rykka/InstantRst',           {'for': 'rst'}
