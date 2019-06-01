@@ -14,7 +14,7 @@ general {
     color = '#ffffffaa'
     color_good = '#ffffffaa'
     color_degraded = '#ffff00aa'
-    color_bad = '#555555aa'
+    color_bad = '#f9b381aa'  # #ff9999
 }
 
 static_string space {
