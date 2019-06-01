@@ -187,7 +187,7 @@ build_prompt () {
         git_status=$(git status --short --branch)
 
         branch_line=$(echo "$git_status" | grep "^##")
-        branch=$(git rev-parse --abbrev-ref HEAD)
+        branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
         drift=$(echo "$branch_line" | sed -n "s/.*\[.*ahead \(.*\).*\].*/→\1 /p")
         drift="$drift$(echo "$branch_line" | sed -n 's/.*\[.*behind \(.*\).*\].*/←\1 /p')"
 
