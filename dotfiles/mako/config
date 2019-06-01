@@ -10,6 +10,8 @@ max-visible=9
 format=<span font='7'>%a</span>\n<b>%s</b>\n%b
 layer=overlay
 group-by=summary
+icon-path=/usr/share/icons/Test:/usr/share/icons/Adwaita
+max-icon-size=48
 
 [hidden]
 background-color=#bfbfbfff
@@ -53,6 +55,7 @@ margin=10,0,0,0
 
 [group-index=1]
 invisible=false
+icons=false
 format=
 width=280
 margin=0
@@ -61,6 +64,7 @@ background-color=#a1b6c7ff
 
 [group-index=2]
 invisible=false
+icons=false
 format=
 width=260
 margin=0
