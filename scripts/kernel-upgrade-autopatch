@@ -41,7 +41,7 @@ target_version="$(pacinfo --short "$target" | perl -ne 'print if not /^(local|\s
 asp update "$target"
 
 # Use an existing work_dir if one is set, good for debugging.
-work_dir="${work_dir:-$(mktemp --directory --suffix=.kernel-upgrade-autopatch)}"
+work_dir="${work_dir:-$(mktemp --tmpdir=$XDG_CACHE_HOME --directory --suffix=.kernel-upgrade-autopatch)}"
 cd "$work_dir" && printf "\nWorking in $work_dir\n\n"
 
 asp checkout "$target" 2>/dev/null || printf "NOTE: Using existing checkout!\n"
