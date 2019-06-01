@@ -1,2 +1,0 @@
-exec_always brightness current
-exec $HOME/Code/python/dbus-glue/wake_brightness.py

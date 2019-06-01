@@ -1,16 +1,12 @@
-### Variables
-#
-# Logo key. Use Mod1 for Alt.
 set $mod Mod4
-# Home row direction keys, like vim
+
 set $left h
 set $down j
 set $up k
 set $right l
-# Your preferred terminal emulator
+
 set $term termite
 
-#set $menu rofi -show drun
 set $menu termite -t termite-fzf -e fzf-launcher
 for_window [title=termite-fzf] {
     floating enable
@@ -18,14 +14,20 @@ for_window [title=termite-fzf] {
     move position center
 }
 
-### Output configuration
+#
+# Output configuration
+#
 
 set $internal_display LVDS-1
+output LVDS-1 position 0 0
+output HDMI-A-1 position 1367 0
 
-swaybg_command $HOME/Code/oguri/build/oguri -s
-output * bg $HOME/.config/wallpaper fill
+swaybg_command -
+exec $HOME/Code/oguri/build/oguri
 
-### Input configuration
+#
+# Input configuration
+#
 
 input "2:8:AlpsPS/2_ALPS_DualPoint_Stick" {
     pointer_accel -0.3
@@ -43,18 +45,14 @@ input "1:1:AT_Translated_Set_2_keyboard" {
     xkb_options altwin:swap_alt_win,compose:caps
 }
 
-### Key bindings
 #
-# Basics:
+# Bindings
 #
-# start a terminal
+
 bindsym $mod+Return exec cwd-terminal
-
-# kill focused window
-bindsym $mod+Shift+q kill
-
-# start your launcher
 bindsym $mod+space exec $menu
+
+bindsym $mod+Shift+q kill
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
@@ -67,15 +65,66 @@ tiling_drag disable
 # reload the configuration file
 bindsym $mod+Shift+r reload
 
-#
-# Moving around:
-#
+# Standard media keys
+bindsym XF86AudioRaiseVolume exec volume up
+bindsym XF86AudioLowerVolume exec volume down
+bindsym XF86AudioMute exec volume mute
+
+bindsym XF86AudioPlay exec mpris-ctl pp
+bindsym XF86AudioStop exec mpris-ctl stop
+bindsym XF86AudioNext exec mpris-ctl next
+bindsym XF86AudioPrev exec mpris-ctl prev
+
+# Also bind these directly (they overlap with the fn media keys)
+set $internal_kb 1:1:AT_Translated_Set_2_keyboard
+bindsym --input-device=$internal_kb f10 exec mpris-ctl prev
+bindsym --input-device=$internal_kb f11 exec mpris-ctl pp
+bindsym --input-device=$internal_kb f12 exec mpris-ctl next
+
+# Media keys on Magic Keyboard
+set $magic_kb 76:615:Selectric
+bindsym --input-device=$magic_kb f7 exec mpris-ctl prev
+bindsym --input-device=$magic_kb f8 exec mpris-ctl pp
+bindsym --input-device=$magic_kb f9 exec mpris-ctl next
+bindsym --input-device=$magic_kb f10 exec volume mute
+bindsym --input-device=$magic_kb f11 exec volume down
+bindsym --input-device=$magic_kb f12 exec volume up
+
+# Brightness
+bindsym XF86MonBrightnessUp exec brightness up &
+bindsym XF86MonBrightnessDown exec brightness down &
+
+# Make the Apple eject key useful
+bindsym XF86Eject exec udiskie-umount --all
+
+#bindsym $mod+Shift+3 exec grim $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
+bindsym $mod+Shift+3 exec grim -o $(swaymsg -t get_workspaces | jq -r 'map(select(.focused))[0].output') $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
+bindsym $mod+Shift+4 exec slurp | grim -g - $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
+
+bindsym $mod+w exec sway-workspace-candidates | rofi -dmenu -p 'workspace ' | xargs swaymsg workspace
+
+bindsym $mod+Shift+t exec mpris-ctl info | perl -pe 's/( - unknown)+$//g' | wl-copy
+
+# Close tabs with the middle mouse button
+bindsym --release BTN_MIDDLE kill
+
+# Misc
+bindsym $mod+Shift+p floating toggle, sticky enable, resize set 427 240, move position 930 520
+
+bindsym $mod+Shift+d exec makoctl dismiss
+bindsym $mod+Shift+b exec bt beo disconnect && bt beo
+
+# Use Shift+pause to kill the mpv daemon (effectively clearing the current playlist)
+bindsym --input-device=$internal_kb Shift+f11 exec pkill -P $(pgrep -f '^entr.*mpv')
+bindsym --input-device=$magic_kb Shift+f8 exec pkill -P $(pgrep -f '^entr.*mpv')
+
 # Move your focus around
 bindsym $mod+$left focus left
 bindsym $mod+$down focus down
 bindsym $mod+$up focus up
 bindsym $mod+$right focus right
 
+# Quick jump to the first nine + last container
 bindsym $mod+1 exec sway-focus-container-index 1
 bindsym $mod+2 exec sway-focus-container-index 2
 bindsym $mod+3 exec sway-focus-container-index 3
@@ -87,7 +136,10 @@ bindsym $mod+8 exec sway-focus-container-index 8
 bindsym $mod+9 exec sway-focus-container-index 9
 bindsym $mod+0 exec sway-focus-container-index 0
 
-mouse_warping container
+# Focus previous container (can only toggle, not the full stack)
+bindsym $mod+grave exec swaymsg "[con_id=$(swaymsg -t get_tree | jq 'recurse(.nodes[]; .nodes) | select(.nodes | any(.focused)).focus[1]')] focus"
+
+mouse_warping none
 
 # _move_ the focused window with the same, but add Shift
 bindsym $mod+Shift+$left move left
@@ -95,48 +147,44 @@ bindsym $mod+Shift+$down move down
 bindsym $mod+Shift+$up move up
 bindsym $mod+Shift+$right move right
 
+# Move the current container to the end of its parent
 bindsym $mod+Shift+semicolon exec sway-move-container-last
 
-# Focus previous container (can only toggle, not the full stack)
-bindsym $mod+grave exec swaymsg "[con_id=$(swaymsg -t get_tree | jq 'recurse(.nodes[]; .nodes) | select(.nodes | any(.focused)).focus[1]')] focus"
+#
+# Workspaces
+#
 
-#
-# Workspaces:
-#
-# switch to workspace
 bindsym f1 workspace number 1
 bindsym f2 workspace number 2
 bindsym f3 workspace number 3
 bindsym f4 workspace number 4
 bindsym f5 workspace number 5
-bindsym f6 workspace media
+bindsym f6 workspace number 6/media
 
-# move focused container to workspace
 bindsym Shift+f1 move container to workspace number 1
 bindsym Shift+f2 move container to workspace number 2
 bindsym Shift+f3 move container to workspace number 3
 bindsym Shift+f4 move container to workspace number 4
 bindsym Shift+f5 move container to workspace number 5
-bindsym Shift+f6 move container to workspace media
+bindsym Shift+f6 move container to workspace number 6/media
 
 bindsym $mod+Alt+h move workspace to output left
 bindsym $mod+Alt+l move workspace to output right
 
 workspace 1 output $internal_display
-workspace media output $internal_display
+workspace 6/media output $internal_display
 
 workspace_auto_back_and_forth yes
 
 #
-# Layout stuff:
+# Layout
 #
-#
-# Split current container, same keys as I use for tmux.
+
+# Split current container
 bindsym $mod+Shift+Backslash splith
 bindsym $mod+Backslash splitv
 
 # Switch the current container between different layout styles
-#bindsym $mod+s layout stacking
 bindsym $mod+t layout tabbed
 bindsym $mod+s layout toggle split
 
@@ -144,7 +192,7 @@ bindsym $mod+s layout toggle split
 bindsym $mod+f fullscreen
 
 # Toggle the current focus between tiling and floating mode
-#bindsym $mod+Shift+space floating toggle
+bindsym $mod+Shift+space floating toggle
 
 # Swap focus between the tiling area and the floating area
 bindsym $mod+Shift+f focus mode_toggle
@@ -152,43 +200,20 @@ bindsym $mod+Shift+f focus mode_toggle
 # move focus to the parent container
 bindsym $mod+a focus parent
 
-#
-# Scratchpad:
-#
-# Sway has a "scratchpad", which is a bag of holding for windows.
-# You can send windows there and get them back later.
-
-# Move the currently focused window to the scratchpad
-#bindsym $mod+Shift+minus move scratchpad
-
-# Show the next scratchpad window or hide the focused scratchpad window.
-# If there are multiple scratchpad windows, this command cycles through them.
-#bindsym $mod+minus scratchpad show
-
-#
-# Resizing containers:
-#
 bindsym $mod+Ctrl+$left resize grow width 50 px
 bindsym $mod+Ctrl+$right resize shrink width 50 px
 bindsym $mod+Ctrl+$up resize grow height 50 px
 bindsym $mod+Ctrl+$down resize shrink height 50 px
 
-### Looks
 #
+# Looks
+#
+
 font Noto Sans Bold 8
 client.focused #ffffffaa #ffffffaa #222222ff #ffffffaa #ffffffaa
 client.focused_inactive #ffffff55 #ffffff55 #222222 #ffffff55 #ffffff55
 client.unfocused #22222255 #22222255 #ddddddff #22222255 #22222255
 
-# Show the position that a new split will open while super is held.
-#bindsym Super_L client.focused #ffffffaa #ffffffaa #222222ff #ffffffff #ffffffaa
-#bindsym --release Super_L client.focused #ffffffaa #ffffffaa #222222ff #ffffffaa #ffffffaa
-#bindsym Super_R client.focused #ffffffaa #ffffffaa #222222ff #ffffffff #ffffffaa
-#bindsym --release Super_R client.focused #ffffffaa #ffffffaa #222222ff #ffffffaa #ffffffaa
-
-#
-# Status Bar:
-#
 bar {
     font Noto Sans Bold 10
     status_command py3status --include $HOME/.local/share/py3status
@@ -211,16 +236,49 @@ bar {
     }
 }
 
-#
-# Floating
-#
 floating_minimum_size 10 x 10
 
-#
-# Gaps
-#
 default_border pixel 8
-
 gaps inner 24
 
-include $HOME/.config/sway/config.d/*
+#
+# Modes
+#
+
+# Menu with various ways to get out of sway
+# Stolen from https://gist.github.com/reedjosh/02192841820b18a84f6d0a07b310011d
+set $exitmenu "system:  [r]eboot  [s]hutdown  [l]ogout"
+mode $exitmenu {
+    bindsym r exec shutdown -r now
+    bindsym s exec shutdown -P now
+    bindsym l exit
+
+    bindsym Return    mode "default"
+    bindsym Escape    mode "default"
+}
+bindsym $mod+backspace mode $exitmenu
+
+# A mode with (almost) no bindings, to allow use of keys that are otherwise bound to sway
+mode "passthrough" {
+    bindsym $mod+p mode "default"
+}
+bindsym $mod+p mode "passthrough"
+
+#
+# Daemons
+#
+
+exec mako
+exec udiskie
+exec redshift -t 5500K:2500K -l 42.28:-83.74
+exec_always brightness current  # Attempts to sync external display brightness
+exec $HOME/Code/python/dbus-glue/wake_brightness.py  # This machine forgets brightness when waking, so fix it
+exec /home/vil/.local/share/virtualenvs/urleport/bin/urleport  # Fruitless Handoff, extremely insecure
+
+# Attempt to connect to a nearby network, need to start our custom password agent first
+exec ~/Code/python/nm_keyring_agent/nm_keyring_agent.py
+exec [[ $(nmcli -g state general) == "connected" ]] || nmcli connection up ifname wlp2s0
+
+# Start a daemonic mpv that listens for playlists downloaded from subsonic. If qutebrowser
+# ever gets per-site download config, the location will move to somewhere less generic.
+exec_always pgrep -f '^entr.*mpv' || ls $HOME/Downloads/play.m3u | entr -napr mpv /_ &>/dev/null

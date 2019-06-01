@@ -1,2 +1,0 @@
-#exec_always pgrep -f lockscreen-spawn | xargs -n 1 kill; $HOME/Code/lockscreen-spawn.sh $HOME/Code/lockscreen.sh
-#exec_always killall swayidle; swayidle -d before-sleep $HOME/Code/lockscreen.sh
