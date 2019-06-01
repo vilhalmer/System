@@ -32,7 +32,8 @@ battery_level {
     format = '{icon}\u2009 {time_remaining}'
     hide_seconds = True
     hide_when_full = True
-    notify_low_level = True
+    notify_low_level = False
+    measurement_mode = 'acpi'
 
     color_charging = '#88dd88'
     threshold_degraded = 30
