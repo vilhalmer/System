@@ -229,11 +229,7 @@ endif
 """"""""""""""
 " virtualenv "
 """"""""""""""
-" If we're working in a pipenv, we need to add the virtualenv's site-packages
-" to a bunch of python plugins. Store it for easy access.
-let g:pipenv_site_packages_path = system(
-            \ 'venv=$(pipenv --venv 2>/dev/null) && [[ -n $venv ]] ' .
-            \ '&& echo -n "$venv"/lib/python*/site-packages/')
+let g:python3_host_prog = expand("$XDG_DATA_HOME/virtualenvs/nvim/bin/python3")
 
 """""""""""
 " Plugins "
