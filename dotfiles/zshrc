@@ -56,7 +56,6 @@ is_available () {
 alias tmx='tmux new-session -A -s $USER'
 alias src='source $HOME/.zshrc'
 alias xcode='open *.xcworkspace || open *.xcodeproj' # Stolen from http://www.codeography.com/2009/10/28/open-xcode-project-from-the-command-line.html
-alias keychain='keychain --absolute --dir $XDG_CACHE_HOME/keychain'
 alias truncate='cut -c 1-$(stty size | cut -f 2 -d " ")'
 alias projroot='cd $(git rev-parse --show-toplevel)'
 alias f='find . -name'
@@ -265,8 +264,8 @@ chpwd () {
 # Finally, stuff to run before the first prompt:
 
 if is_available keychain; then
-    local gpg_key_id=$(gpg --list-secret-keys | grep sec -A1 | tail -1 | awk '{$1=$1};1')
-    eval $(keychain --quiet --agents ssh,gpg --eval $(find $HOME/.ssh -name id_\* ! -name '*\.pub') $gpg_key_id)
+    # keychain was already eval'd in .profile, which means the agent will be running. Now that we're in an interactive session, we can add keys.
+    eval $(keychain --absolute --dir $XDG_CACHE_HOME/keychain --quiet --agents ssh $(find $HOME/.ssh -name id_\* ! -name '*\.pub'))
 fi
 
 homebrew_updates () {
