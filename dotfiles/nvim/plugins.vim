@@ -29,7 +29,7 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'majutsushi/tagbar'
     Plug 'neomake/neomake'
     Plug 'vilhalmer/nvim-corral', {'do': ':UpdateRemotePlugins'}
-    "Plug 'tpope/vim-sleuth'
+    Plug 'tpope/vim-sleuth'
     Plug 'editorconfig/editorconfig-vim'
 
     " Completion
