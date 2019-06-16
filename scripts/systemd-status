@@ -2,7 +2,7 @@
 # Prints the name of the first failed systemd unit, plus how many more there
 # are, as appropriate.
 
-states=failed,not-found,error,bad-setting
+states=failed,error,bad-setting
 
 units=( $({ systemctl list-units --state=$states --no-legend; systemctl --user --state=$states --no-legend; } | cut -d' ' -f1) )
 
