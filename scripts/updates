@@ -15,7 +15,7 @@ ignores=( $(pacman-conf IgnorePkg; pacman -Qm | cut -d' ' -f1) )
 # Calculate the official packages responsible for affecting any ignores or custom
 affected=()
 for pkg in $ignores; do
-    effects=$(echo -n "$(pactree --linear --depth=1 "$pkg" | grep -v "^$pkg\$" | grep -Ff <(printf '%s\n' "${pending_names[@]}"))" | tr '\n' ' ')
+    effects=$(echo -n "$(pactree --linear --depth=1 "$pkg" | grep -v "^$pkg\$" | grep -f <(printf '^%s$\n' "${pending_names[@]}"))" | tr '\n' ' ')
     if [[ -n $effects ]]; then
         affected+=("$(printf '%s \x1b[38;5;242m(%s)\x1b[0m' "$pkg" "$effects")")
     fi
