@@ -2,10 +2,12 @@
 # Prints the name of the first failed systemd unit, plus how many more there
 # are, as appropriate.
 
-units=( $(systemctl list-units --state=failed --no-legend | cut -d' ' -f1) )
+states=failed,not-found,error,bad-setting
+
+units=( $({ systemctl list-units --state=$states --no-legend; systemctl --user --state=$states --no-legend; } | cut -d' ' -f1) )
 
 [[ ${#units[@]} -eq 0 ]] && exit 0
 
 printf "${units[0]}"
-[[ ${#units[@]} -gt 1 ]] && " + $(( ${#units[@]} - 1 ))"
+[[ ${#units[@]} -gt 1 ]] && printf " + $(( ${#units[@]} - 1 ))"
 printf "\n"
