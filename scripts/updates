@@ -12,17 +12,16 @@ pending_names=( $(echo $pending | cut -d' ' -f1) )
 
 ignores=( $(pacman-conf IgnorePkg; pacman -Qm | cut -d' ' -f1) )
 
+# Calculate the official packages responsible for affecting any ignores or custom
 affected=()
 for pkg in $ignores; do
-    effects=$(pactree --linear --depth=1 "$pkg" | grep -Ff <(printf '%s\n' ${pending_names[@]}))
+    effects=$(echo -n "$(pactree --linear --depth=1 "$pkg" | grep -v "^$pkg\$" | grep -Ff <(printf '%s\n' "${pending_names[@]}"))" | tr '\n' ' ')
     if [[ -n $effects ]]; then
-        affected+=($pkg)
+        affected+=("$(printf '%s \x1b[38;5;242m(%s)\x1b[0m' "$pkg" "$effects")")
     fi
 done
 
 if [[ -n $affected ]]; then
-    echo "\nIgnored + AUR packages affected by updates:"
-    echo $affected
+    printf '\nIgnored + custom packages affected by updates:\n'
+    printf '%s\n' "${affected[@]}"
 fi
-
-# vim: syntax=zsh
