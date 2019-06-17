@@ -1,3 +1,5 @@
+dotfiles/systemd/user/*.wants
+
 # vim crap #
 *.swp
 .netrw*

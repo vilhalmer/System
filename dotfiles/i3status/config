@@ -1,4 +1,5 @@
 order += 'external_script systemd_status'
+order += 'systemd bup_home'
 order += 'arch_updates'
 order += 'mpris'
 #order += 'volume_status'
@@ -86,6 +87,12 @@ arch_updates {
     format = '\uf35b\u2009 {total}'
     hide_if_zero = True
     cache_timeout = 3600
+}
+
+systemd bup_home {
+    unit = 'bup-home.service'
+    user = True
+    format = '[\?if=status=active \uf093|]'
 }
 
 external_script systemd_status {

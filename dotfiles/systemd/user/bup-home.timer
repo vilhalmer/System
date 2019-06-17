@@ -1,0 +1,10 @@
+[Unit]
+Description=Periodic automatic backups of $HOME with bup
+Documentation=man:bup(1)
+
+[Timer]
+OnStartupSec=15m
+OnUnitActiveSec=4h
+
+[Install]
+WantedBy=timers.target
