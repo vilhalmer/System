@@ -1,0 +1,7 @@
+#!/bin/sh
+# Launch a remote wayland client within a login shell over waypipe.
+set -e
+
+host=$1
+shift
+waypipe ssh $host \$SHELL --login -c "$*"
