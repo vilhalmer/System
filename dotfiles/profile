@@ -11,7 +11,7 @@ export XDG_CACHE_HOME="$HOME/.cache"
 
 # Start up an ssh-agent, but don't try to add any keys. There's no way to prompt from here.
 # The shell or some other element of the environment should then prompt once it is capable of accepting input.
-eval $(keychain --absolute --dir $XDG_CACHE_HOME/keychain --agents ssh --eval --systemd --noask)
+eval $(keychain --absolute --quiet --dir $XDG_CACHE_HOME/keychain --agents ssh --eval --systemd --noask)
 
 # If we have a custom terminfo for $TERM, use it
 maybe_terminfo="$XDG_CONFIG_HOME/terminfo/$(uname)/$TERM.ti"
