@@ -34,6 +34,8 @@ export QT_QPA_PLATFORM=wayland-egl
 export QT_WAYLAND_SHELL_INTEGRATION=xdg-shell  # Default is -v6
 export QUTE_SKIP_WAYLAND_CHECK=1
 
+export XCURSOR_THEME=retrosmart-xcursors-black
+
 stty -ixon # Keep Ctrl-s from freezing the terminal
 
 if [ -n "$SSH_CONNECTION" ] && \
