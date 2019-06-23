@@ -5,6 +5,7 @@ Documentation=man:bup(1)
 [Timer]
 OnStartupSec=15m
 OnUnitActiveSec=4h
+Persistent=yes
 
 [Install]
 WantedBy=timers.target
