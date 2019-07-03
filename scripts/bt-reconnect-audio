@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+import pydbus
+
+
+def main():
+    bus = pydbus.SystemBus()
+    bluez = bus.get('org.bluez', '/')
+
+    connected_devices = (
+        (name, info) for name, info in bluez.GetManagedObjects().items()
+        if info.get('org.bluez.Device1', {}).get('Connected')
+    )
+    audio_devices = (
+        name for name, info in connected_devices
+        if info['org.bluez.Device1'].get('Icon') == 'audio-card'
+    )
+
+    try:
+        device_name = next(audio_devices)
+    except StopIteration:
+        return
+
+    device = bus.get('org.bluez', device_name)
+    device.Disconnect()
+    device.Connect()
+
+
+if __name__ == '__main__':
+    main()

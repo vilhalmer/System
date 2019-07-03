@@ -112,7 +112,7 @@ bindsym --release BTN_MIDDLE kill
 bindsym $mod+Shift+p floating toggle, sticky enable, resize set 427 240, move position 930 520
 
 bindsym $mod+Shift+d exec makoctl dismiss
-bindsym $mod+Shift+b exec bt beo disconnect && bt beo
+bindsym $mod+Shift+b exec bt-reconnect-audio
 
 # Use Shift+pause to kill the mpv daemon (effectively clearing the current playlist)
 bindsym --input-device=$internal_kb Shift+f11 exec pkill -P $(pgrep -f '^entr.*mpv')
