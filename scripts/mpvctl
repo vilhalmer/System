@@ -11,7 +11,7 @@ command="set_property"
 
 echo "$@" \
     | jq --raw-input --compact-output --arg command "$command" 'split(" ") | {"command": ([$command] + .)}' \
-    | { [[ -n $MPVCTL_DEBUG ]] && tee /dev/stderr; } \
+    | { [[ -n $MPVCTL_DEBUG ]] && tee /dev/stderr || cat; } \
     | socat - "$MPVCTL_SOCKET" \
-    | { [[ -n $MPVCTL_DEBUG ]] && tee /dev/stderr; } \
+    | { [[ -n $MPVCTL_DEBUG ]] && tee /dev/stderr || cat; } \
     | jq --raw-output '(select(.error != "success").error + "\n" | halt_error(1)) // select(has("data")).data'
