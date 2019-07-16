@@ -281,4 +281,4 @@ exec [[ $(nmcli -g state general) == "connected" ]] || nmcli connection up ifnam
 
 # Start a daemonic mpv that listens for playlists downloaded from subsonic. If qutebrowser
 # ever gets per-site download config, the location will move to somewhere less generic.
-exec_always pgrep -f '^entr.*mpv' || ls $HOME/Downloads/play.m3u | entr -napr mpv /_ &>/dev/null
+exec_always pgrep -f '^entr.*mpv' || ls $HOME/Downloads/play.m3u | entr -napr mpv --input-ipc-server=$XDG_RUNTIME_DIR/mpv-daemon /_ &>/dev/null
