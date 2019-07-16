@@ -10,7 +10,7 @@ for path in \
     $XDG_CACHE_HOME/mpv-socket \
     $XDG_RUNTIME_DIR/mpv-daemon;
 do
-    socat /dev/null "UNIX-CONNECT:$path" && MPVCTL_SOCKET=$path && break || :
+    socat /dev/null "UNIX-CONNECT:$path" &>/dev/null && MPVCTL_SOCKET=$path && break || :
 done
 
 [[ -n $MPVCTL_DEBUG ]] && echo "Socket: $MPVCTL_SOCKET" >&2
