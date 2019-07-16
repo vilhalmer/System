@@ -2,6 +2,12 @@
 set -e
 set -o pipefail
 
+if [[ $1 == "-h" ]]; then
+    echo "usage: mpvctl command [arg...]"
+    echo "       mpvctl (-g|-s) property [value...]"
+    exit 0
+fi
+
 # Try several locations, choosing the first that responds. This prefers
 # controlling a manually-started mpv over the one that sway keeps running, or
 # one that was specifically provided if any.
@@ -15,12 +21,6 @@ done
 
 [[ -n $MPVCTL_DEBUG ]] && echo "Socket: $MPVCTL_SOCKET" >&2
 [[ -z $MPVCTL_SOCKET ]] && echo "No mpv instance found" >&2 && exit 1
-
-if [[ $1 == "-h" ]]; then
-    echo "usage: mpvctl command [arg...]"
-    echo "       mpvctl (-g|-s) property [value...]"
-    exit 0
-fi
 
 # Rewrite property accessors. These act differently than normal commands, and
 # `get` doesn't even exist as a normal command.
