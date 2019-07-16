@@ -6,8 +6,20 @@ MPVCTL_SOCKET="${MPVCTL_SOCKET:-$XDG_CACHE_HOME/mpv-socket}"
 
 [[ $1 == "-h" ]] && echo "usage: mpvctl [-g] property [value...]" && exit 0
 
-command="set_property"
-[[ $1 == "-g" ]] && command="get_property" && shift
+if [[ $1 == "-h" ]]; then
+    echo "usage: mpvctl command [arg...]"
+    echo "       mpvctl (-g|-s) property [value...]"
+    exit 0
+fi
+
+# Rewrite property accessors. These act differently than normal commands, and
+# `get` doesn't even exist as a normal command.
+case "$1" in
+    -g) command="get_property";;
+    -s) command="set_property";;
+    *) command="$1";;
+esac
+shift 2>/dev/null || true
 
 echo "$@" \
     | jq --raw-input --compact-output --arg command "$command" 'split(" ") | {"command": ([$command] + .)}' \
