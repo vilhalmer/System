@@ -2,9 +2,19 @@
 set -e
 set -o pipefail
 
-MPVCTL_SOCKET="${MPVCTL_SOCKET:-$XDG_CACHE_HOME/mpv-socket}"
+# Try several locations, choosing the first that responds. This prefers
+# controlling a manually-started mpv over the one that sway keeps running, or
+# one that was specifically provided if any.
+for path in \
+    $MPVCTL_SOCKET \
+    $XDG_CACHE_HOME/mpv-socket \
+    $XDG_RUNTIME_DIR/mpv-daemon;
+do
+    socat /dev/null "UNIX-CONNECT:$path" && MPVCTL_SOCKET=$path && break || :
+done
 
-[[ $1 == "-h" ]] && echo "usage: mpvctl [-g] property [value...]" && exit 0
+[[ -n $MPVCTL_DEBUG ]] && echo "Socket: $MPVCTL_SOCKET" >&2
+[[ -z $MPVCTL_SOCKET ]] && echo "No mpv instance found" >&2 && exit 1
 
 if [[ $1 == "-h" ]]; then
     echo "usage: mpvctl command [arg...]"
@@ -24,6 +34,6 @@ shift 2>/dev/null || true
 echo "$@" \
     | jq --raw-input --compact-output --arg command "$command" 'split(" ") | {"command": ([$command] + .)}' \
     | { [[ -n $MPVCTL_DEBUG ]] && tee /dev/stderr || cat; } \
-    | socat - "$MPVCTL_SOCKET" \
+    | socat - "UNIX-CONNECT:$MPVCTL_SOCKET" \
     | { [[ -n $MPVCTL_DEBUG ]] && tee /dev/stderr || cat; } \
     | jq --raw-output '(select(has("error") and .error != "success").error + "\n" | halt_error(1)) // select(has("data")).data'
