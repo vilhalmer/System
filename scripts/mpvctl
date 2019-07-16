@@ -14,4 +14,4 @@ echo "$@" \
     | { [[ -n $MPVCTL_DEBUG ]] && tee /dev/stderr || cat; } \
     | socat - "$MPVCTL_SOCKET" \
     | { [[ -n $MPVCTL_DEBUG ]] && tee /dev/stderr || cat; } \
-    | jq --raw-output '(select(.error != "success").error + "\n" | halt_error(1)) // select(has("data")).data'
+    | jq --raw-output '(select(has("error") and .error != "success").error + "\n" | halt_error(1)) // select(has("data")).data'
