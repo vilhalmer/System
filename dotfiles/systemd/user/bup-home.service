@@ -5,6 +5,7 @@ Documentation=man:bup(1)
 [Service]
 Environment=BUP_DIR=%h/.bup
 Environment=BUP_REMOTE_DIR=compendium:/srv/storage/pool0/backups/%H
+Nice=5
 
 Type=simple
 ExecStart=sh -c "bup index --exclude=%C --xdev %h && bup save --name=home-%u --commit --remote=${BUP_REMOTE_DIR} %h"
