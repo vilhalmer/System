@@ -270,7 +270,6 @@ bindsym $mod+p mode "passthrough"
 
 exec mako
 exec udiskie
-exec redshift -t 5500K:2500K -l 42.28:-83.74
 exec_always brightness current  # Attempts to sync external display brightness
 exec $HOME/Code/python/dbus-glue/wake_brightness.py  # This machine forgets brightness when waking, so fix it
 exec /home/vil/.local/share/virtualenvs/urleport/bin/urleport  # Fruitless Handoff, extremely insecure
