@@ -265,6 +265,14 @@ mode "passthrough" {
 bindsym $mod+p mode "passthrough"
 
 #
+# Rules
+#
+
+# Group qutebrowser tabs with other qutebrowser tabs, no matter where they
+# open from.
+for_window [app_id=qutebrowser] 'move scratchpad, exec /home/vil/System/scripts/sway-group-like'
+
+#
 # Daemons
 #
 

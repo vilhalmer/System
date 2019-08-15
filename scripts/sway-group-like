@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+import i3ipc
+
+
+def find_like(tree, con):
+    """
+    Use a bunch of fancy heuristics to figure out where this container goes.
+    Also return whether or not the new container should be focused.
+    """
+    current = tree.find_focused()
+
+    # If we're currently looking at a container of the same application, just
+    # put it here.
+    if current.app_id == con.app_id:
+        return current, False
+
+    # Now we're going to walk back through the focus stack of workspaces
+    # looking for matching containers.
+    for focused_output_id in tree.focus:
+        for focused_workspace_id in tree.find_by_id(focused_output_id).focus:
+            workspace = tree.find_by_id(focused_workspace_id)
+            matches = [
+                desc for desc in workspace.descendents()
+                if getattr(desc, 'app_id', None) == con.app_id
+            ]
+
+            if matches:
+                return matches[-1], True
+
+    # Finally, if we couldn't find ANYWHERE to put it, drop it at our current
+    # location and focus it.
+    return current, True
+
+
+def group_like():
+    sway = i3ipc.Connection()
+    tree = sway.get_tree()
+    scratchpad = next(
+        con for con in tree.descendents()
+        if con.name == '__i3_scratch'
+    )
+
+    current = tree.find_focused()
+
+    for con in scratchpad.floating_nodes:
+        target_container, focus = find_like(tree, con)
+        focus = ", focus" if focus else ""
+        target_container.command('mark _group_target')
+
+        # We have to move to mark twice, once while floating and once after we
+        # re-tile. It's impossible to disable floating while still on the
+        # scratchpad, and moving to a mark while floating actually just gets
+        # you onto the correct workspace at which point disabling floating
+        # throws you into the focused container instead of the marked one.
+        con.command(
+            f"move to mark _group_target, floating disable, "
+            f"move to mark _group_target{focus}"
+        )
+
+        # The framework doesn't update its state after commands, so use the
+        # target_container's workspace because we know it's the same as the new
+        # container.
+        if current.workspace().id != target_container.workspace().id:
+            # If we're opening a container on a different workspace, return
+            # focus to the current one. The new container will still be the new
+            # focus of the other workspace.
+            # This will pull the target workspace forward on other outputs. Not
+            # yet sure if that's desired behavior.
+            current.command('focus')
+
+        target_container.command('unmark _group_target')
+
+
+if __name__ == '__main__':
+    group_like()
