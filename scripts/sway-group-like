@@ -11,7 +11,7 @@ def find_like(tree, con):
 
     # If we're currently looking at a container of the same application, just
     # put it here.
-    if current.app_id == con.app_id:
+    if getattr(current, 'app_id', None) == con.app_id:
         return current, False
 
     # Now we're going to walk back through the focus stack of workspaces
@@ -40,10 +40,17 @@ def group_like():
         if con.name == '__i3_scratch'
     )
 
-    current = tree.find_focused()
-
     for con in scratchpad.floating_nodes:
+        # Have to re-fetch each time or it gets stale.
+        tree = sway.get_tree()
+        current = tree.find_focused()
+
         target_container, focus = find_like(tree, con)
+
+        if target_container.type == 'workspace':
+            con.command('move to workspace current, floating disable')
+            continue
+
         focus = ", focus" if focus else ""
         target_container.command('mark _group_target')
 
