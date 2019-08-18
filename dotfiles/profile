@@ -28,7 +28,6 @@ export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/src/
 
 export WEECHAT_HOME="$XDG_CONFIG_HOME/weechat"
 
-export GTK_BACKEND=wayland
 export SDL_VIDEODRIVER=wayland
 export QT_QPA_PLATFORM=wayland-egl
 export QT_WAYLAND_SHELL_INTEGRATION=xdg-shell  # Default is -v6
