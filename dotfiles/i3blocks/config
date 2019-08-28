@@ -1,0 +1,20 @@
+[bluetooth]
+command=$HOME/System/scripts/bar/bluetooth.py
+interval=persist
+format=json
+
+[network]
+command=$HOME/System/scripts/bar/network.py
+interval=persist
+format=json
+
+[battery]
+command=acpi -b | perl -ne 'print if s/.*?(\d+:\d+):\d+ (remaining|until charged)/\1/'
+interval=30
+
+[clock]
+command=date +'%H:%M'
+interval=1
+
+[space]
+full_text= 

@@ -216,7 +216,8 @@ client.unfocused #22222255 #22222255 #ddddddff #22222255 #22222255
 
 bar {
     font Noto Sans Bold 10
-    status_command py3status --include $HOME/.local/share/py3status
+    status_command i3blocks
+    #status_command py3status --include $HOME/.local/share/py3status
     position top
     separator_symbol –
     gaps 0 0 0 6
@@ -226,7 +227,7 @@ bar {
         #inactive_workspace #323232 #323232 #cccccc
         #separator #323232
 
-        #Foreground color is overriden by py3status
+        #Foreground color is overriden by each block
         #statusline #ffffffaa
         background #00000000
         separator #00000000
