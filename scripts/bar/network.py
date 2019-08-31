@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import array
 import json
+import sys
 import time
 
 import pydbus
@@ -98,7 +99,19 @@ def main():
     )
 
     state_changed(nm.State)  # Trigger immediately for the current state.
-    GLib.MainLoop().run()
+    loop = GLib.MainLoop()
+
+    def handle_stdin(channel, message, *data):
+        if message == GLib.IO_HUP:
+            loop.quit()
+        return True
+
+    stdin_channel = GLib.IOChannel(sys.stdin.fileno())
+    GLib.io_add_watch(stdin_channel, 0, GLib.IO_IN | GLib.IO_HUP, handle_stdin)
+    try:
+        loop.run()
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import json
+import signal
 import sys
 
 from gi.repository import GLib
@@ -67,15 +68,19 @@ if __name__ == '__main__':
     status = BluetoothStatus()
     status.handle_event()  # Draw immediately.
 
+    loop = GLib.MainLoop()
+
     def handle_stdin(channel, message, *data):
-        status.toggle_mode()
-        message = channel.readline()
-        if not message:
-            GLib.MainLoop().quit()
-            return False
+        if message == GLib.IO_HUP:
+            loop.quit()
         else:
-            return True
+            channel.readline()
+            status.toggle_mode()
+        return True
 
     stdin_channel = GLib.IOChannel(sys.stdin.fileno())
     GLib.io_add_watch(stdin_channel, 0, GLib.IO_IN | GLib.IO_HUP, handle_stdin)
-    GLib.MainLoop().run()
+    try:
+        loop.run()
+    except KeyboardInterrupt:
+        pass
