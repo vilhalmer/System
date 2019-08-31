@@ -72,7 +72,7 @@
     default = simple
 
 [pull]
-    rebase = preserve
+    rebase = merges
 
 [diff]
     algorithm = patience
