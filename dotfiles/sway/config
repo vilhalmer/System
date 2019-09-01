@@ -137,7 +137,7 @@ bindsym $mod+9 exec sway-focus-container-index 9
 bindsym $mod+0 exec sway-focus-container-index 0
 
 # Focus previous container (can only toggle, not the full stack)
-bindsym $mod+grave exec swaymsg "[con_id=$(swaymsg -t get_tree | jq 'recurse(.nodes[]; .nodes) | select(.nodes | any(.focused)).focus[1]')] focus"
+bindsym $mod+grave exec swaymsg "[con_id=$(swaymsg -t get_tree | jq '.. | select(.nodes[].focused)? | .focus[1]')] focus"
 
 mouse_warping none
 
