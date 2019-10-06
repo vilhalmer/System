@@ -1,3 +1,11 @@
+[mpris]
+command=playerctl metadata --format '{{ status }} {{ artist }} - {{ title }}' --follow | perl -pe '$| = 1; s/^(Playing|Paused)(  \- )?/\1/; s/^Playing/  /; s/^Paused/  /'
+interval=persist
+
+[updates]
+command=checkupdates | wc -l | awk '{ if ($1 != "0") { print "  "$1 }; }'
+interval=360
+
 [bluetooth]
 command=$HOME/System/scripts/bar/bluetooth.py
 interval=persist
