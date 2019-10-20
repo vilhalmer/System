@@ -1,5 +1,5 @@
 [mpris]
-command=playerctl metadata --format '{{ status }} {{ artist }} - {{ title }}' --follow | perl -pe '$| = 1; s/^(Playing |Paused )( \- )?/\1/; s/^Playing /  /; s/^Paused /  /'
+command=playerctl metadata --format '{{ status }} {{ artist }} - {{ title }}' --follow | perl -pe '$| = 1; s/^(Playing |Paused )( \- )?/\1/; s/^Playing /  /; s/^Paused /  /; s/https?:\/\/[\w\d\.]+ - //'
 interval=persist
 
 [updates]
