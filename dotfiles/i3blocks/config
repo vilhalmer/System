@@ -17,7 +17,7 @@ interval=persist
 format=json
 
 [memory]
-command=printf "  %s\n" "$(awk 'NR < 3 { print $2 }' /proc/meminfo | dc -f- -e 'r2k/1r-100*0k1/p')"
+command=printf "  %s\n" "$(awk 'NR == 1 || NR == 3 { print $2 }' /proc/meminfo | dc -f- -e 'r2k/1r-100*0k1/p')"
 interval=30
 
 [battery]
