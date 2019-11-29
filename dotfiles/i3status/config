@@ -2,7 +2,6 @@ order += 'external_script systemd_status'
 order += 'systemd bup_home'
 order += 'arch_updates'
 order += 'mpris'
-#order += 'volume_status'
 order += 'bluetooth'
 order += 'external_script vpn_status'
 order += 'wifi'
@@ -43,7 +42,7 @@ battery_level {
 
 sysdata {
     format = '\uf3fd\u2009 {mem_used_percent} / {load1} / {cpu_temp}°'
-    thresholds = [(0, 'good'), (75, 'degraded'), (95, 'bad')]
+    thresholds = [(0, 'good'), (75, 'degraded'), (87, 'bad')]
 }
 
 bluetooth {
@@ -63,21 +62,12 @@ wifi {
     format = '\uf1eb\u2009 {ssid}|\uf1eb'
 }
 
-volume_status {
-    command = 'amixer'
-    format = '\uf028\u2009 {percentage}'
-    format_muted = '\uf026\u2009 {percentage}'
-    thresholds = [(0, 'bad'), (1, 'good')]
-
-    # Patched to cache forever.
-    #cache_timeout = 604800
-}
-
 mpris {
-    format = '{state}\u2009 [{artist} - ]{title}'
+    format = '{state}\u2009[\?if=!state=\uf28d  [{artist} - ]{title}]'
     format_none = '\uf28d'
     state_play = '\uf144'
     state_pause = '\uf28b'
+    state_stop = '\uf28d'
     player_priority = '[mpv, *]'
 
     color_bad = '#ffffff33'
