@@ -62,7 +62,7 @@ class NetworkStatus:
     def primary_conn(self):
         try:
             return self.get(self.nm.PrimaryConnection)
-        except KeyError:
+        except (KeyError, GLib.Error):
             return None
 
     @property
@@ -72,6 +72,9 @@ class NetworkStatus:
         the connection. Typically this will be the type of the connection,
         but if connectivity is impared it may change to indicate why.
         """
+        if self.nm.State in (NM_STATE_CONNECTING, NM_STATE_CONNECTED_LOCAL):
+            return '\uf141\u2009'  # ellipsis-h
+
         try:
             conn_type = self.primary_conn.Type
         except AttributeError:
@@ -160,7 +163,6 @@ class NetworkStatus:
 
             if state in (NM_STATE_CONNECTING, NM_STATE_CONNECTED_LOCAL):
                 color = COLOR_WARN
-                text = "…"
             elif state in (NM_STATE_CONNECTED_SITE, NM_STATE_CONNECTED_GLOBAL):
                 color = COLOR_FINE
                 text = ssid
@@ -184,7 +186,6 @@ class NetworkStatus:
             }, ensure_ascii=False),
             flush=True,
         )
-        time.sleep(1)  # Rate-limit changes so they look nicer.
 
 
 def main():
