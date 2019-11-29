@@ -7,10 +7,10 @@ from gi.repository import GLib
 import pydbus
 
 
-COLOR_BAD = '#f9b381aa'
-COLOR_WARN = '#ffff00aa'
-COLOR_FINE = '#ffffffaa'
-COLOR_INACTIVE = '#888888aa'
+COLOR_BAD = '#f9b381ff'
+COLOR_WARN = '#ffff00ff'
+COLOR_FINE = '#ffffffff'
+COLOR_INACTIVE = '#ffffff55'
 
 
 class BluetoothStatus:
