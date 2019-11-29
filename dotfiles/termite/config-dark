@@ -6,6 +6,7 @@ fullscreen = false
 cursor_blink = off
 scrollback_lines = -1
 hyperlinks = true
+dynamic_title = false
 
 [colors]
 foreground = #aaaaaa
