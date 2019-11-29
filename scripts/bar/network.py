@@ -23,26 +23,23 @@ NM_STATE_CONNECTED_LOCAL = 50
 NM_STATE_CONNECTED_SITE = 60
 NM_STATE_CONNECTED_GLOBAL = 70
 
+NM_CONNECTIVITY_UNKNOWN = 0
+NM_CONNECTIVITY_NONE = 1
+NM_CONNECTIVITY_PORTAL = 2
+NM_CONNECTIVITY_LIMITED = 3
+NM_CONNECTIVITY_FULL = 4
+
 
 def dbus_bytes_to_str(byte_list):
     return array.array('B', byte_list).tobytes().decode('utf-8')
-
-
-def type_icon(conn_type):
-    if conn_type == '802-11-wireless':
-        return '\uf1eb\u2009'
-    elif conn_type == 'ethernet':
-        return '\uf796\u2009'
-    elif conn_type == 'vpn':
-        return '\uf023\u2009'
-    else:
-        return '\uf6ff\u2009'
 
 
 class NetworkStatus:
     def __init__(self):
         self.bus = pydbus.SystemBus()
         self.nm = self.bus.get('.NetworkManager')
+
+        self.ctvy = self.nm.CheckConnectivity()
         self.extra = []
 
         # Watch for NetworkManager restarts so the info doesn't remain stale
@@ -61,12 +58,50 @@ class NetworkStatus:
     def get(self, object_path):
         return self.bus.get('.NetworkManager', object_path)
 
+    @property
+    def primary_conn(self):
+        try:
+            return self.get(self.nm.PrimaryConnection)
+        except KeyError:
+            return None
+
+    @property
+    def icon(self):
+        """
+        Choose an icon that represents the most important current state of
+        the connection. Typically this will be the type of the connection,
+        but if connectivity is impared it may change to indicate why.
+        """
+        try:
+            conn_type = self.primary_conn.Type
+        except AttributeError:
+            # No connection.
+            return '\uf6ff\u2009'  # network-wired
+
+        if self.ctvy == NM_CONNECTIVITY_PORTAL:
+            return '\uf2f6\u2009'  # sign-in-alt
+
+        if conn_type == '802-11-wireless':
+            return '\uf1eb\u2009'  # wifi
+        elif conn_type == 'ethernet':
+            return '\uf796\u2009'  # ethernet
+        elif conn_type == 'vpn':
+            return '\uf023\u2009'  # lock
+        else:
+            return '\uf6ff\u2009'  # network-wired
+
     def properties_changed(self, properties):
+        print(f"{properties}", file=sys.stderr)
         for prop, value in properties.items():
             if prop == 'State':
                 self.state_changed(value)
             elif prop == 'ActiveConnections':
                 self.connections_changed(value)
+            elif prop in ('PrimaryConnection', 'PrimaryConnectionType'):
+                self.state_changed(self.nm.State)  # Redraw icon.
+            elif prop == 'Connectivity':
+                self.ctvy = value  # May override the icon and color.
+                self.state_changed(self.nm.State)  # Redraw immediately.
 
     def connections_changed(self, connections):
         """
@@ -80,7 +115,12 @@ class NetworkStatus:
             if conn_path == self.nm.PrimaryConnection:
                 continue
 
-            connection = self.get(conn_path)
+            try:
+                connection = self.get(conn_path)
+            except KeyError:
+                # Connection has no interfaces, it's probably being torn down.
+                continue
+
             if connection.Type in ('vpn',):
                 self.extra.append(connection)
 
@@ -93,7 +133,6 @@ class NetworkStatus:
         interested in.
         """
         color = COLOR_BAD
-        icon = type_icon('disconnected')
         text = ''
 
         if state in (
@@ -104,19 +143,20 @@ class NetworkStatus:
         ):
             pass
         else:
-            connection = self.get(self.nm.PrimaryConnection)
-            icon = type_icon(connection.Type)
-
             # The SpecificObject has a different interface based on the
             # connection type. If it's wifi, it'll have an ssid. If not, we
             # won't display anything. The ssid is an array of bytes (yay).
             try:
-                specific_object = self.get(connection.SpecificObject)
-                ssid = dbus_bytes_to_str(getattr(specific_object, 'Ssid', []))
+                specific_object = self.get(self.primary_conn.SpecificObject)
+            except AttributeError:
+                # No primary connection.
+                ssid = ''
             except KeyError:
                 # I've seen NM get into a state where the SpecificObject
                 # reported doesn't actually exist. No reason to crash.
                 ssid = '?'
+            else:
+                ssid = dbus_bytes_to_str(getattr(specific_object, 'Ssid', []))
 
             if state in (NM_STATE_CONNECTING, NM_STATE_CONNECTED_LOCAL):
                 color = COLOR_WARN
@@ -127,7 +167,7 @@ class NetworkStatus:
             else:
                 raise ValueError("Incorrect NM_STATE")
 
-        full_text = f"{icon}{' ' if text else ''}{text}"
+        full_text = f"{self.icon}{' ' if text else ''}{text}"
 
         for connection in self.extra:
             # Prepend each connection, since bar item priority decreases to
