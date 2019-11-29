@@ -105,6 +105,7 @@ class NetworkStatus:
             pass
         else:
             connection = self.get(self.nm.PrimaryConnection)
+            icon = type_icon(connection.Type)
 
             # The SpecificObject has a different interface based on the
             # connection type. If it's wifi, it'll have an ssid. If not, we
@@ -126,7 +127,7 @@ class NetworkStatus:
             else:
                 raise ValueError("Incorrect NM_STATE")
 
-        full_text = f"{type_icon(connection.Type)}{' ' if text else ''}{text}"
+        full_text = f"{icon}{' ' if text else ''}{text}"
 
         for connection in self.extra:
             # Prepend each connection, since bar item priority decreases to
