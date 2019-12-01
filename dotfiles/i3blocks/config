@@ -21,9 +21,9 @@ command=$HOME/System/scripts/bar/network.py
 interval=persist
 format=json
 
-[memory]
-command=printf "  %s\n" "$(awk 'NR == 1 || NR == 3 { print $2 }' /proc/meminfo | dc -f- -e 'r2k/1r-100*0k1/p')"
-interval=30
+#[memory]
+#command=printf "  %s\n" "$(awk 'NR == 1 || NR == 3 { print $2 }' /proc/meminfo | dc -f- -e 'r2k/1r-100*0k1/p')"
+#interval=30
 
 [battery]
 command=$HOME/System/scripts/bar/battery.py
