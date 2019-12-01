@@ -1,3 +1,8 @@
+[backup]
+command=$HOME/System/scripts/bar/systemd-state.py --user bup-home.service 
+interval=persist
+format=json
+
 [mpris]
 command=playerctl metadata --format '{{ status }} {{ artist }} - {{ title }}' --follow | perl -pe '$| = 1; s/^(Playing |Paused )( \- )?/\1/; s/^Playing /  /; s/^Paused /  /; s/https?:\/\/[\w\d\.]+ - //'
 interval=persist
