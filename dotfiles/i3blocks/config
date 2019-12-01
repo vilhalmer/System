@@ -26,8 +26,9 @@ command=printf "  %s\n" "$(awk 'NR == 1 || NR == 3 { print $2 }' /proc/meminf
 interval=30
 
 [battery]
-command=acpi -b | perl -ne 'if (/.*?\d+(\d:\d+):\d+ (remaining|until charged)/) { if ("$2" eq "remaining") { print "  $1\n"; } else { print "  $1\n\n#88ff88\n"; } }'
-interval=30
+command=$HOME/System/scripts/bar/battery.py
+interval=persist
+format=json
 
 [clock]
 command=date +'·   %H:%M   '
