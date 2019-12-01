@@ -78,6 +78,13 @@ class BatteryStatus:
 
         charging = discharge_rate < 0
 
+        if discharge_rate < 1.0:
+            # At the point where the system switches to the secondary battery,
+            # UPower will momentarily report that neither of them are
+            # discharging at a significant rate. Throw out that measurement.
+            # (1.0 is chosen at random, the bogus measurement is 0.0111 W.)
+            return
+
         if total_capacity == 0.0:
             # No batteries present, display nothing.
             full_text = ""
