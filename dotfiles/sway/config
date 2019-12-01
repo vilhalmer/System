@@ -29,21 +29,23 @@ exec $HOME/Code/oguri/build/oguri
 # Input configuration
 #
 
-input "2:8:AlpsPS/2_ALPS_DualPoint_Stick" {
-    pointer_accel -0.3
-    accel_profile adaptive
-}
-
-input "2:8:AlpsPS/2_ALPS_DualPoint_TouchPad" {
-    # The trackpad is currently totally fucked.
-    events disabled
-}
-
 input * xkb_options compose:caps
 
-input "1:1:AT_Translated_Set_2_keyboard" {
+set $internal_kb 1:1:AT_Translated_Set_2_keyboard
+input $internal_kb {
     xkb_options altwin:swap_alt_win,compose:caps
 }
+
+input 3389:1:USBPS2 xkb_options altwin:swap_alt_win,compose:caps
+
+set $trackpad 2:8:AlpsPS/2_ALPS_DualPoint_TouchPad
+input $trackpad {
+    accel_profile adaptive
+    dwt enabled
+    natural_scroll enabled
+}
+
+bindsym XF86TouchpadToggle input $trackpad events toggle enabled disabled
 
 #
 # Bindings
