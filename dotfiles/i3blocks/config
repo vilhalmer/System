@@ -31,5 +31,5 @@ interval=persist
 format=json
 
 [clock]
-command=date +'·   %H:%M   '
+command=date +'·   %H:%M'
 interval=1

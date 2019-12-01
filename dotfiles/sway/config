@@ -216,32 +216,31 @@ client.focused #ffffffaa #ffffffaa #222222ff #ffffffaa #ffffffaa
 client.focused_inactive #ffffff55 #ffffff55 #222222 #ffffff55 #ffffff55
 client.unfocused #22222255 #22222255 #ddddddff #22222255 #22222255
 
+#set $bar_bg #22222255
+set $bar_bg #00000000
+
 bar {
     font Noto Sans Bold 10
     status_command i3blocks
-    #status_command py3status --include $HOME/.local/share/py3status
     position top
     separator_symbol –
-    gaps 0 0 0 6
+    gaps 0 24 0 24
+    status_edge_padding 6
+    status_padding 0
     colors {
-        #statusline #cccccc
-        #background #323232
-        #inactive_workspace #323232 #323232 #cccccc
-        #separator #323232
-
-        #Foreground color is overriden by each block
-        #statusline #ffffffaa
-        background #00000000
-        separator #00000000
-        focused_workspace #00000000 #00000000 #ffffffff
-        active_workspace #00000000 #00000000 #ffffffff
-        inactive_workspace #00000000 #00000000 #ffffff55
+        statusline #ffffffff
+        background $bar_bg
+        separator $bar_bg
+        focused_workspace $bar_bg $bar_bg #ffffffff
+        active_workspace $bar_bg $bar_bg #ffffffff
+        inactive_workspace $bar_bg $bar_bg #ffffff55
     }
 }
 
 floating_minimum_size 10 x 10
 
 default_border pixel 8
+hide_edge_borders --i3 none
 gaps inner 24
 
 #
