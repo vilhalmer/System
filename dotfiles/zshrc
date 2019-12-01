@@ -8,7 +8,7 @@ mkdir -p "$XDG_CACHE_HOME"
 setopt hist_expire_dups_first hist_ignore_dups hist_ignore_space
 HISTFILE="$XDG_CACHE_HOME/zsh_history"
 HISTSIZE=1200
-SAVEHIST=1000
+SAVEHIST=10000
 setopt PROMPT_SUBST
 
 autoload -U colors && colors
