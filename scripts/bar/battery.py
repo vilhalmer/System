@@ -17,6 +17,19 @@ TIME_WARN = timedelta(seconds=60 * 60)
 TIME_BAD = timedelta(seconds=60 * 20)
 
 
+def icon(percent):
+    if percent >= 90:
+        return ' '
+    elif percent >= 75:
+        return ' '
+    elif percent >= 50:
+        return ' '
+    elif percent >= 10:
+        return ' '
+    else:
+        return ' '
+
+
 def pretty_time(delta):
     """
     String representation of `delta` ending at minute resolution.
@@ -59,11 +72,6 @@ class BatteryStatus:
 
         self.update()
 
-    @property
-    def icon(self):
-        # TODO: Change based on remaining capacity.
-        return ' '
-
     def update(self):
         color = COLOR_FINE
 
@@ -99,7 +107,7 @@ class BatteryStatus:
                 hours_remaining = remaining_capacity / abs(discharge_rate)
 
             time_remaining = timedelta(seconds=hours_remaining * 3600)
-            full_text = f"{self.icon} {pretty_time(time_remaining)}"
+            full_text = f"{icon(percent)} {pretty_time(time_remaining)}"
 
         if time_remaining < TIME_BAD:
             color = COLOR_BAD
