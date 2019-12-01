@@ -72,22 +72,21 @@ bindsym XF86AudioRaiseVolume exec volume up
 bindsym XF86AudioLowerVolume exec volume down
 bindsym XF86AudioMute exec volume mute
 
-bindsym XF86AudioPlay exec mpris-ctl pp
-bindsym XF86AudioStop exec mpris-ctl stop
-bindsym XF86AudioNext exec mpris-ctl next
-bindsym XF86AudioPrev exec mpris-ctl prev
+bindsym XF86AudioPlay exec playerctl pp
+bindsym XF86AudioStop exec playerctl stop
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
 
 # Also bind these directly (they overlap with the fn media keys)
-set $internal_kb 1:1:AT_Translated_Set_2_keyboard
-bindsym --input-device=$internal_kb f10 exec mpris-ctl prev
-bindsym --input-device=$internal_kb f11 exec mpris-ctl pp
-bindsym --input-device=$internal_kb f12 exec mpris-ctl next
+bindsym --input-device=$internal_kb f10 exec playerctl previous
+bindsym --input-device=$internal_kb f11 exec playerctl play-pause
+bindsym --input-device=$internal_kb f12 exec playerctl next
 
 # Media keys on Magic Keyboard
 set $magic_kb 76:615:Selectric
-bindsym --input-device=$magic_kb f7 exec mpris-ctl prev
-bindsym --input-device=$magic_kb f8 exec mpris-ctl pp
-bindsym --input-device=$magic_kb f9 exec mpris-ctl next
+bindsym --input-device=$magic_kb f7 exec playerctl previous
+bindsym --input-device=$magic_kb f8 exec playerctl play-pause
+bindsym --input-device=$magic_kb f9 exec playerctl next
 bindsym --input-device=$magic_kb f10 exec volume mute
 bindsym --input-device=$magic_kb f11 exec volume down
 bindsym --input-device=$magic_kb f12 exec volume up
@@ -105,7 +104,8 @@ bindsym $mod+Shift+4 exec slurp | grim -g - $(date +'screenshot_%Y-%m-%d-%H%M%S.
 
 bindsym $mod+w exec sway-workspace-candidates | rofi -dmenu -p 'workspace ' | xargs swaymsg workspace
 
-bindsym $mod+Shift+t exec mpris-ctl info | perl -pe 's/( - unknown)+$//g' | wl-copy
+# Copy playing song info
+bindsym $mod+Shift+t exec playerctl metadata --format '{{ artist }} - {{ title }}' 2>/dev/null | perl -pe '$| = 1; s/^( \- )?//; s/https?:\/\/[\w\d\.]+ - //' | wl-copy
 
 # Close tabs with the middle mouse button
 bindsym --release BTN_MIDDLE kill
@@ -117,8 +117,8 @@ bindsym $mod+Shift+d exec makoctl dismiss
 bindsym $mod+Shift+b exec bt-reconnect-audio
 
 # Use Shift+pause to kill the mpv daemon (effectively clearing the current playlist)
-bindsym --input-device=$internal_kb Shift+f11 exec pkill -P $(pgrep -f '^entr.*mpv')
-bindsym --input-device=$magic_kb Shift+f8 exec pkill -P $(pgrep -f '^entr.*mpv')
+bindsym --input-device=$internal_kb Shift+f11 exec mpvctl stop
+bindsym --input-device=$magic_kb Shift+f8 exec mpvctl stop
 
 # Move your focus around
 bindsym $mod+$left focus left
