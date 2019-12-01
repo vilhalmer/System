@@ -82,7 +82,17 @@ if __name__ == '__main__':
         is_user=args.user,
         message=args.message,
     )
+
+    loop = GLib.MainLoop()
+
+    def handle_stdin(channel, message, *data):
+        if message == GLib.IO_HUP:
+            loop.quit()
+        return True
+
+    stdin_channel = GLib.IOChannel(sys.stdin.fileno())
+    GLib.io_add_watch(stdin_channel, 0, GLib.IO_IN | GLib.IO_HUP, handle_stdin)
     try:
-        GLib.MainLoop().run()
+        loop.run()
     except KeyboardInterrupt:
        pass
