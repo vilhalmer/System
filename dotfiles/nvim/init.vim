@@ -230,6 +230,7 @@ endif
 " virtualenv "
 """"""""""""""
 let g:python3_host_prog = expand("$XDG_DATA_HOME/virtualenvs/nvim/bin/python3")
+let $PATH .= fnamemodify(g:python3_host_prog, ':h') . ':'
 
 """""""""""
 " Plugins "
