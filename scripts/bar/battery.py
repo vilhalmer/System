@@ -11,13 +11,17 @@ COLOR_BAD = '#f9b381ff'
 COLOR_WARN = '#ffff00ff'
 COLOR_FINE = '#ffffffff'
 COLOR_INACTIVE = '#fffff55'
+COLOR_GOOD = '#88ff88ff'
 
 
 TIME_WARN = timedelta(seconds=60 * 60)
 TIME_BAD = timedelta(seconds=60 * 20)
 
 
-def icon(percent):
+def icon(percent, charging):
+    if charging:
+        return ' '
+
     if percent >= 90:
         return ' '
     elif percent >= 75:
@@ -43,6 +47,7 @@ class BatteryStatus:
         self.upower = self.bus.get('.UPower')
 
         self.upower.onDeviceAdded = lambda *_: self.watch_all()
+        self.upower.onPropertiesChanged = lambda *_: self.update()  # OnBattery
 
         self.bus.watch_name(
             'org.freedesktop.UPower',
@@ -84,7 +89,7 @@ class BatteryStatus:
             remaining_capacity += batt.Energy
             discharge_rate += batt.EnergyRate
 
-        charging = discharge_rate < 0
+        charging = not self.upower.OnBattery
 
         if discharge_rate < 1.0:
             # At the point where the system switches to the secondary battery,
@@ -98,6 +103,10 @@ class BatteryStatus:
             full_text = ""
             time_remaining = timedelta.max
         else:
+            # XXX: The UPower documentation says that discharge_rate is
+            # negative when the battery is charging. This is a lie. I've left
+            # the `abs` calls in place anyway in case this is true on other
+            # systems, but we're looking at OnBattery instead.
             percent = int(remaining_capacity / total_capacity * 100)
             if charging:
                 hours_remaining = (
@@ -107,12 +116,17 @@ class BatteryStatus:
                 hours_remaining = remaining_capacity / abs(discharge_rate)
 
             time_remaining = timedelta(seconds=hours_remaining * 3600)
-            full_text = f"{icon(percent)} {pretty_time(time_remaining)}"
+            full_text = (
+                f"{icon(percent, charging)} {pretty_time(time_remaining)}"
+            )
 
         if time_remaining < TIME_BAD:
             color = COLOR_BAD
         elif time_remaining < TIME_WARN:
             color = COLOR_WARN
+
+        if charging:
+            color = COLOR_GOOD
 
         print(
             json.dumps({
