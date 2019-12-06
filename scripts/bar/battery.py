@@ -91,7 +91,7 @@ class BatteryStatus:
 
         charging = not self.upower.OnBattery
 
-        if discharge_rate < 1.0:
+        if not charging and discharge_rate < 1.0:
             # At the point where the system switches to the secondary battery,
             # UPower will momentarily report that neither of them are
             # discharging at a significant rate. Throw out that measurement.
