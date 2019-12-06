@@ -94,7 +94,6 @@ class NetworkStatus:
             return '\uf6ff\u2009'  # network-wired
 
     def properties_changed(self, properties):
-        print(f"{properties}", file=sys.stderr)
         for prop, value in properties.items():
             if prop == 'State':
                 self.state_changed(value)
