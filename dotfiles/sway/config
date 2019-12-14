@@ -72,7 +72,7 @@ bindsym XF86AudioRaiseVolume exec volume up
 bindsym XF86AudioLowerVolume exec volume down
 bindsym XF86AudioMute exec volume mute
 
-bindsym XF86AudioPlay exec playerctl pp
+bindsym XF86AudioPlay exec playerctl play-pause
 bindsym XF86AudioStop exec playerctl stop
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
