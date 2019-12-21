@@ -7,7 +7,14 @@ Environment=BUP_DIR=%h/.bup
 Environment=BUP_REMOTE_DIR=compendium:/srv/storage/pool0/backups/%H
 Nice=19
 
-Type=simple
+Type=oneshot
 ExecCondition=ssh -o ConnectTimeout=5s compendium true
-ExecStartPre=bup index --exclude=%C --xdev %h
-ExecStart=bup save --name=home-%u --commit --remote=${BUP_REMOTE_DIR} %h
+
+# Ignore all exit codes. Failures from bup-index usually indicate that some
+# files has the wrong permissions, which shouldn't stop the rest of the backup.
+# Failures from bup-save tend to be a file disappearing after indexing, which
+# shouldn't mark the unit failed since the backup completed anyway. Neither of
+# these are optimal, but bup doesn't provide any leverage over what should
+# trigger a non-zero exit.
+ExecStart=-bup index --exclude=%C --xdev %h
+ExecStart=-bup save --name=home-%u --commit --remote=${BUP_REMOTE_DIR} %h
