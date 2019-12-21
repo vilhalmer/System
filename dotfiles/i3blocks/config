@@ -30,6 +30,11 @@ command=$HOME/System/scripts/bar/battery.py
 interval=persist
 format=json
 
+[kernel-mismatch]
+command=test "$(uname -a | cut -f3 -d' ' | tr - .)" == "$(pacman -Q linux | cut -f2 -d' ' | tr - .)" || echo 
+color=#f9b381ff
+interval=300
+
 [clock]
 command=date +'·   %H:%M'
 interval=1
