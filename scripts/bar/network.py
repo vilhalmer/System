@@ -190,6 +190,17 @@ class NetworkStatus:
             flush=True,
         )
 
+    def attempt_connection(self):
+        """
+        Try to activate a connection on the first device with any available.
+        """
+        for dev_path in self.nm.AllDevices:
+            dev = self.bus.get('.NetworkManager', dev_path)
+
+            if dev.AvailableConnections:
+                self.nm.ActivateConnection('/', dev_path, '/')
+                break
+
 
 def main():
     status = NetworkStatus()
@@ -198,6 +209,15 @@ def main():
     def handle_stdin(channel, message, *data):
         if message == GLib.IO_HUP:
             loop.quit()
+        else:
+            try:
+                click = json.loads(channel.readline())
+
+                if click.get('button') == 3:
+                    status.attempt_connection()
+            except (json.JSONDecodeError, KeyError, GLib.Error):
+                pass
+
         return True
 
     stdin_channel = GLib.IOChannel(sys.stdin.fileno())
