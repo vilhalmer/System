@@ -34,6 +34,17 @@ def dbus_bytes_to_str(byte_list):
     return array.array('B', byte_list).tobytes().decode('utf-8')
 
 
+def type_icon(conn_type):
+    if conn_type == '802-11-wireless':
+        return '\uf1eb\u2009'  # wifi
+    elif conn_type == 'ethernet':
+        return '\uf796\u2009'  # ethernet
+    elif conn_type == 'vpn':
+        return '\uf023\u2009'  # lock
+    else:
+        return '\uf6ff\u2009'  # network-wired
+
+
 class NetworkStatus:
     def __init__(self):
         self.bus = pydbus.SystemBus()
@@ -84,14 +95,7 @@ class NetworkStatus:
         if self.ctvy == NM_CONNECTIVITY_PORTAL:
             return '\uf2f6\u2009'  # sign-in-alt
 
-        if conn_type == '802-11-wireless':
-            return '\uf1eb\u2009'  # wifi
-        elif conn_type == 'ethernet':
-            return '\uf796\u2009'  # ethernet
-        elif conn_type == 'vpn':
-            return '\uf023\u2009'  # lock
-        else:
-            return '\uf6ff\u2009'  # network-wired
+        return type_icon(conn_type)
 
     def properties_changed(self, properties):
         for prop, value in properties.items():
