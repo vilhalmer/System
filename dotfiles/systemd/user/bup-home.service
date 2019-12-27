@@ -8,7 +8,7 @@ Environment=BUP_REMOTE_DIR=compendium:/srv/storage/pool0/backups/%H
 Nice=19
 
 Type=oneshot
-ExecCondition=ssh -o ConnectTimeout=5s compendium true
+ExecCondition=sh -c 'ssh -o ConnectTimeout=5s compendium true || exit 1'
 
 # Ignore all exit codes. Failures from bup-index usually indicate that some
 # files has the wrong permissions, which shouldn't stop the rest of the backup.
