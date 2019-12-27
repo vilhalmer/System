@@ -50,15 +50,16 @@ class BluetoothStatus:
         self.print_status()
 
     def print_status(self):
+        count = len(list(self.connected_devices))
         if self.print_count:
-            devices = len(list(self.connected_devices)) or ''
+            devices = count if count > 1 else ''
         else:
             devices = ' + '.join(self.connected_devices)
 
         print(
             json.dumps({
                 'full_text': f"{self.icon}{' ' if devices else ''}{devices}",
-                'color': COLOR_FINE if devices else COLOR_INACTIVE,
+                'color': COLOR_FINE if count else COLOR_INACTIVE,
             }, ensure_ascii=False),
             flush=True
         )
