@@ -18,7 +18,7 @@ version_path=$(find /usr/lib/modules -maxdepth 1 -name "${version}*")
 sudo mkdir -p "$version_path/updates"
 new_path="$version_path/updates/$module_name"
 sudo cp "$module_ko" "$new_path"
-sudo gzip "$new_path"
+sudo xz "$new_path"
 
 sudo depmod "$(basename "$version_path")"
 
