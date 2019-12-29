@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+import i3ipc
+
+IGNORE = ['mpv']
+
+sway = i3ipc.Connection()
+WIDTH = 1024 + 2 * int([
+    line.split()[-1]
+    for line in
+    sway.get_config().config.splitlines()
+    if line.startswith('default_border')
+][0])
+
+
+def handle_event(sway, event):
+    focus = sway.get_tree().find_focused()
+    if not focus:  # I don't know how this can happen, but it has.
+        return
+
+    if focus in focus.parent.floating_nodes:
+        return
+
+    if focus.type == 'workspace':
+        workspace = focus
+    else:
+        workspace = focus.workspace()
+
+    # Walk down into any useless outer containers so that we get the expected
+    # effect rather than the technically correct one.
+    while len(workspace.nodes) == 1:
+        node = workspace.nodes[0]
+        if node.type == 'con' and node.name == None:  # This is a split.
+            workspace = node
+        else:
+            break
+
+    try:
+        app_id = focus.app_id
+    except AttributeError:
+        app_id = None
+
+    if len(workspace.leaves()) > 1 and 'split' in workspace.layout:
+        sway.command('gaps horizontal current set 0')
+    elif app_id in IGNORE:
+        sway.command('gaps horizontal current set 0')
+    elif workspace.rect.width != WIDTH:
+        # Clear existing gaps to make sure we get the correct base width.
+        sway.command('gaps horizontal current set 0')
+        workspace = sway.get_tree().find_by_id(workspace.id)  # Refresh data.
+        optimal_gap = (workspace.rect.width - WIDTH) // 2
+        sway.command(f'gaps horizontal current set {optimal_gap}')
+
+
+for event in (
+    i3ipc.Event.WORKSPACE,
+    i3ipc.Event.WINDOW,
+):
+    sway.on(event, handle_event)
+
+sway.main()

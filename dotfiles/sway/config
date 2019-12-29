@@ -283,6 +283,7 @@ exec udiskie
 exec_always brightness current  # Attempts to sync external display brightness
 exec $HOME/Code/python/dbus-glue/wake_brightness.py  # This machine forgets brightness when waking, so fix it
 exec /home/vil/.local/share/virtualenvs/urleport/bin/urleport  # Fruitless Handoff, extremely insecure
+exec $HOME/System/scripts/sway-loner
 
 # Attempt to connect to a nearby network, need to start our custom password agent first
 exec ~/Code/python/nm_keyring_agent/nm_keyring_agent.py
