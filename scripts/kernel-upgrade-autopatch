@@ -27,7 +27,7 @@ done
 
 clean () {
     cd
-    [[ -n $clean ]] && rm -rf "$work_dir" || exit 0
+    [[ -n $clean ]] && rm -rf "$work_dir"
 }
 trap clean EXIT
 
