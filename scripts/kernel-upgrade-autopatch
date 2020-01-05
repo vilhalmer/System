@@ -15,9 +15,6 @@ while [[ $# -gt 0 ]]; do
             work_dir="$1"
             mkdir -p "$work_dir"
             ;;
-        --clean)
-            clean=yes
-            ;;
         *)
             target="$1"
             ;;
@@ -25,31 +22,27 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-clean () {
-    cd
-    [[ -n $clean ]] && rm -rf "$work_dir"
-}
-trap clean EXIT
-
 # Read the target package from stdin if it wasn't given, since we're usually run as an alpm hook.
 [[ -z $target ]] && read target
 
-# Fetch the current remote version.
-target_version="$(pacinfo --short "$target" | perl -ne 'print if not /^(local|\s)/ and s/^.*? (.*?) .*$/\1/')"
+# Fetch the current remote version. Assume it's in core.
+target_version="$(pacinfo --short core/"$target" | perl -ne 'print if s/^.*? (.*?) .*$/\1/')"
 [[ -z $target_version ]] && printf "Unable to determine target version" && exit 2
 
 asp update "$target"
 
-# Use an existing work_dir if one is set, good for debugging.
-work_dir="${work_dir:-$(mktemp --tmpdir=$XDG_CACHE_HOME --directory --suffix=.kernel-upgrade-autopatch)}"
+work_dir="${work_dir:-/opt/kernel}"
 cd "$work_dir" && printf "\nWorking in $work_dir\n\n"
 
-asp checkout "$target" 2>/dev/null || printf "NOTE: Using existing checkout!\n"
+asp checkout "$target" 2>/dev/null && printf "WARNING: Clean checkout, this will take a while\n" || true
 cd "$target"
 
-# Releases aren't tagged, so we have to look through the log.
+# Releases aren't tagged in the package repo, so we have to look through the log.
 # Checkout quietly to avoid the giant "detached HEAD" warning, but still show where we end up.
-git checkout --quiet $(git log --fixed-strings --grep="$target_version" --max-count=1 --format=format:%H)
+target_sha="$(git log --fixed-strings --grep="$target_version" --max-count=1 --format=format:%H)"
+[[ -z $target_sha ]] && { printf "Failed to find version commit!\n"; exit 3; }
+
+git checkout --quiet "$target_sha"
 git log --oneline --max-count=1
 cd "trunk"
 
@@ -63,16 +56,15 @@ else
     MAKEPKG_USER="$USER"
 fi
 
-# Download the kernel source and apply the configuration.
+# Update the kernel source checkout (or clone it if needed, but this is slow), and apply config.
 sudo -u "$MAKEPKG_USER" makepkg --nodeps --nobuild
 
-# Extract the path that the kernel gets stored in from the PKGBUILD. This is probably overkill.
-kernel_src_dir=$(sudo -u "$MAKEPKG_USER" makepkg --printsrcinfo | perl -ne 'print $1 if /^\s+source = (.*?)::git\+.*linux\.git/')
+# We need the patch directory relative to $patch_root to pass to make later.
+patch_root="$work_dir/patches"
+patches="$(cd "$patch_root" && find . -mindepth 1 -type 'f' -printf '%P\n')"
 
-patch_root="/home/vil/Code/kernel-module-patches"
-patches=( $(cd "$patch_root" && find . -mindepth 1 -type 'f' -printf '%P\n') )
-
-cd "src/$kernel_src_dir"
+# Assume that the only directory under src is the kernel source.
+cd "$(find src -maxdepth 1 -mindepth 1 -type d)"
 
 for patch in $patches; do
     git apply --verbose --whitespace=nowarn "$patch_root/$patch"
@@ -82,26 +74,14 @@ done
 [[ -n $check_only ]] && exit 0
 
 # Otherwise, on to module building.
-kernel_version=$(git describe --exact-match | perl -ne 'print $1 if /^v(.*)-arch\d+$/')
-[[ -z $kernel_version ]] && echo "Unable to determine version from git tag!" && exit 3
+kernel_version=$(cat version)
 
-uname_r="$(basename $(cd /usr/lib/modules && find -maxdepth 1 -name "${kernel_version}*"))"
-[[ -z $uname_r ]] && echo "Kernel $kernel_version doesn't appear to be installed!" && exit 4
-echo "Building modules for kernel $uname_r"
+echo "Building modules for kernel $kernel_version"
 
 make modules_prepare
 
-exec 5>&1  # I can't remember why this is here...
 for patch in $patches; do
-    module="$(dirname "$patch")"
-
-    make "M=$module"
-
-    echo "Made the following modules:"
-    find "$module" -maxdepth 1 -name \*.ko
-
-    ko_name="$(basename "$patch" | cut -d'.' -f1).ko"
-    kernel-update-module \
-        $(find "$module" -maxdepth 1 -name "$ko_name" | head -n1) \
-        $uname_r
+    module="${patch%.*}.ko"
+    make "$module"
+    kernel-update-module "$module" "$kernel_version"
 done
