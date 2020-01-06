@@ -52,6 +52,7 @@ class NetworkStatus:
 
         self.ctvy = self.nm.CheckConnectivity()
         self.extra = []
+        self.verbose = False
 
         # Watch for NetworkManager restarts so the info doesn't remain stale
         # until it gets around to reconnecting. The arguments are incorrect, so
@@ -168,7 +169,17 @@ class NetworkStatus:
                 color = COLOR_WARN
             elif state in (NM_STATE_CONNECTED_SITE, NM_STATE_CONNECTED_GLOBAL):
                 color = COLOR_FINE
-                text = ssid
+                conn = self.get(self.primary_conn.Connection)
+                autoconnect = (
+                    conn.GetSettings()
+                    .get('connection', {})
+                    .get('autoconnect', True)
+                )
+
+                if self.verbose or not autoconnect:
+                    # We only want to see the SSID if this is a network we
+                    # aren't normally connected to.
+                    text = ssid
             else:
                 raise ValueError("Incorrect NM_STATE")
 
@@ -201,6 +212,13 @@ class NetworkStatus:
                 self.nm.ActivateConnection('/', dev_path, '/')
                 break
 
+    def toggle_verbose(self):
+        """
+        Toggle verbose and immediately redraw.
+        """
+        self.verbose = not self.verbose
+        self.state_changed(self.nm.State)
+
 
 def main():
     status = NetworkStatus()
@@ -213,7 +231,9 @@ def main():
             try:
                 click = json.loads(channel.readline())
 
-                if click.get('button') == 3:
+                if click.get('button') == 1:
+                    status.toggle_verbose()
+                elif click.get('button') == 3:
                     status.attempt_connection()
             except (json.JSONDecodeError, KeyError, GLib.Error):
                 pass
