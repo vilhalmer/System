@@ -140,6 +140,8 @@ class BatteryStatus:
                         color = COLOR_BAD
                     elif time_remaining < TIME_WARN:
                         color = COLOR_WARN
+            elif charging:
+                full_text = ""
 
         self.previous_text = full_text
         self.previous_charging = charging
