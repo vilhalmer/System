@@ -29,13 +29,23 @@ done
 target_version="$(pacinfo --short core/"$target" | perl -ne 'print if s/^.*? (.*?) .*$/\1/')"
 [[ -z $target_version ]] && printf "Unable to determine target version" && exit 2
 
-asp update "$target"
-
 work_dir="${work_dir:-/opt/kernel}"
 cd "$work_dir" && printf "\nWorking in $work_dir\n\n"
 
-asp checkout "$target" 2>/dev/null && printf "WARNING: Clean checkout, this will take a while\n" || true
+if [ -d "$target" ]; then
+    printf "Updating $target package source\n"
+    asp update "$target"
+else
+    printf "WARNING: Clean checkout, this will take a while\n"
+    asp checkout "$target"
+fi
+
 cd "$target"
+
+# Switch to the branch that contains the current commit, because the last run probably left us in detached HEAD state.
+# We can't find the commit we're looking for in the log without doing this.
+git checkout --quiet "$(git for-each-ref --contains HEAD --format '%(refname:short)' --count 1)"
+git pull --quiet
 
 # Releases aren't tagged in the package repo, so we have to look through the log.
 # Checkout quietly to avoid the giant "detached HEAD" warning, but still show where we end up.
