@@ -37,6 +37,9 @@ command=test "$(uname -a | cut -f3 -d' ' | tr - .)" == "$(pacman -Q linux | cut 
 color=#f9b381ff
 interval=300
 
+[spacer]
+full_text=·
+
 [clock]
-command=date +'·   %H:%M'
-interval=1
+command=$HOME/System/scripts/bar/clock.py
+interval=persist
