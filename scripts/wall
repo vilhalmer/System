@@ -1,0 +1,2 @@
+#!/bin/sh
+imv -c 'bind <Return> exec ogurictl output \* --image "$imv_current_file" ; quit' ~/wallpaper/*.gif
