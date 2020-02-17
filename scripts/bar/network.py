@@ -189,7 +189,7 @@ class NetworkStatus:
             # Prepend each connection, since bar item priority decreases to
             # the left.
             full_text = (
-                f"{type_icon(connection.Type)} {connection.Id}  " +
+                f"{type_icon(connection.Type)} {connection.Id}   " +
                 full_text
             )
 
