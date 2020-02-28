@@ -7,13 +7,6 @@ set $right l
 
 set $term termite
 
-set $menu termite -t termite-fzf -e fzf-launcher
-for_window [title=termite-fzf] {
-    floating enable
-    resize set width 800 px height 200 px
-    move position center
-}
-
 #
 # Output configuration
 #
@@ -52,7 +45,7 @@ bindsym XF86TouchpadToggle input $trackpad events toggle enabled disabled
 #
 
 bindsym $mod+Return exec cwd-terminal
-bindsym $mod+space exec $menu
+bindsym $mod+space exec app-menu
 
 bindsym $mod+Shift+q kill
 
