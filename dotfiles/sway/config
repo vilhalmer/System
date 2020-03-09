@@ -14,9 +14,13 @@ set $term termite
 set $internal_display LVDS-1
 output LVDS-1 position 0 0
 output HDMI-A-1 position 1367 0
+output DP-3 scale 1.5
 
-swaybg_command -
-exec $HOME/Code/oguri/build/oguri
+exec oguri
+exec_always ogurictl output '*' --image $(ls $HOME/wallpaper/*.gif | shuf -n1)
+
+bindsym $mod+Alt+1 exec ddcutil --display 1 setvcp 60 0x10
+bindsym $mod+Alt+2 exec ddcutil --display 1 setvcp 60 0x11
 
 #
 # Input configuration
@@ -39,6 +43,7 @@ input $trackpad {
 }
 
 bindsym XF86TouchpadToggle input $trackpad events toggle enabled disabled
+input $trackpad events disabled
 
 #
 # Bindings
@@ -46,6 +51,8 @@ bindsym XF86TouchpadToggle input $trackpad events toggle enabled disabled
 
 bindsym $mod+Return exec cwd-terminal
 bindsym $mod+space exec app-menu
+bindsym $mod+q exec qute
+bindsym Home exec termite -e 'journal'
 
 bindsym $mod+Shift+q kill
 
@@ -91,9 +98,12 @@ bindsym XF86MonBrightnessDown exec brightness down &
 # Make the Apple eject key useful
 bindsym XF86Eject exec udiskie-umount --all
 
-#bindsym $mod+Shift+3 exec grim $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
+# Screenshots
 bindsym $mod+Shift+3 exec grim -o $(swaymsg -t get_workspaces | jq -r 'map(select(.focused))[0].output') $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
 bindsym $mod+Shift+4 exec slurp | grim -g - $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
+
+# Color selector
+bindsym $mod+Shift+5 exec slurp -p | grim -g - -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:- | tail -n1 | cut -f4 -d' ' | wl-copy -n
 
 bindsym $mod+w exec sway-workspace-candidates | rofi -dmenu -p 'workspace ' | xargs swaymsg workspace
 
@@ -174,6 +184,8 @@ workspace_auto_back_and_forth yes
 #
 # Layout
 #
+
+workspace_layout tabbed
 
 # Split current container
 bindsym $mod+Shift+Backslash splith
@@ -265,23 +277,37 @@ bindsym $mod+p mode "passthrough"
 
 # Group qutebrowser tabs with other qutebrowser tabs, no matter where they
 # open from.
-for_window [app_id=qutebrowser] move scratchpad, exec /home/vil/System/scripts/sway-group-like
+#for_window [app_id=qutebrowser] move scratchpad, exec /home/vil/System/scripts/sway-group-like
 
 #
 # Daemons
 #
 
 exec mako
-exec udiskie
-exec_always brightness current  # Attempts to sync external display brightness
-exec $HOME/Code/python/dbus-glue/wake_brightness.py  # This machine forgets brightness when waking, so fix it
-exec /home/vil/.local/share/virtualenvs/urleport/bin/urleport  # Fruitless Handoff, extremely insecure
+#exec udiskie
 exec $HOME/System/scripts/sway-loner
 
-# Attempt to connect to a nearby network, need to start our custom password agent first
-exec ~/Code/python/nm_keyring_agent/nm_keyring_agent.py
+# Attempts to sync external display brightness
+exec_always brightness current
+
+# This machine forgets brightness when waking so fix it
+exec $HOME/Code/python/dbus-glue/wake_brightness.py
+
+# iOS-style handoff using bookmarklets
+exec /home/vil/.local/share/virtualenvs/urleport/bin/urleport
+
+# Attempt to connect to a nearby network
 exec [[ $(nmcli -g state general) == "connected" ]] || nmcli connection up ifname wlp2s0
 
 # Start a daemonic mpv that listens for playlists downloaded from subsonic. If qutebrowser
 # ever gets per-site download config, the location will move to somewhere less generic.
 exec_always pgrep -f '^entr.*mpv' || ls $HOME/Downloads/play.m3u | entr -napr mpv --input-ipc-server=$XDG_RUNTIME_DIR/mpv-daemon /_ &>/dev/null
+
+# Redshift will have crashed since sway wasn't running when it started. Eventually I should fix this properly.
+exec systemctl --user restart redshift
+
+# Workaround for 1.4 fractional scaling looking truly awful.
+exec swaymsg output DP-3 scale_filter linear
+
+# Workaround for 1.4 keys being forwarded even when bound
+seat * keyboard_grouping none
