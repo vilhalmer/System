@@ -3,27 +3,35 @@
 # https://github.com/Cloudef/bemenu/pull/96
 # https://github.com/vivien/i3blocks/pull/415
 # https://github.com/swaywm/sway/pull/5046
+#
+# dot-desktop is https://github.com/kennylevinsen/dot-desktop
+
+# Prevent multiple instances
+test -f $XDG_RUNTIME_DIR/app-menu && exit
+touch $XDG_RUNTIME_DIR/app-menu
 
 export BEMENU_OPTS=""
+export DOTDESKTOP_APP="swaymsg exec"
 
 swaymsg bar bar-0 workspace_buttons no
 pkill -USR1 -f i3blocks
 
-find \
-    /usr/share/applications $HOME/.local/share/applications/ \
-    -name '*.desktop' \
-    -print0 \
-| xargs -0 basename -s .desktop \
-| bemenu \
-    --prompt='        apps' \
+
+selection=$(
+dot-desktop | bemenu \
+    --ignorecase \
+    --prompt='        run' \
     --fn='Noto Sans Bold 10' \
     --tb=#00000000 --tf=#ffffffff \
     --fb=#00000000 --ff=#ffffffff \
-    --nb=#00000000 --nf=#ffffffff \
+    --nb=#00000000 --nf=#ffffffaa \
     --hb=#00000000 --hf=#ffffffff \
-    --sb=#00000000 --sf=#ffffffff \
-| tail -n1 \
-| xargs -I% swaymsg "exec sh -c \"gtk-launch '%' || %\""
+    --sb=#00000000 --sf=#ffffffff
+)
+
+test -n "$selection" && eval "$(dot-desktop "$selection" 2>/dev/null || echo -n "$selection")" & disown
 
 swaymsg bar bar-0 workspace_buttons yes
 pkill -USR2 -f i3blocks
+
+rm $XDG_RUNTIME_DIR/app-menu
