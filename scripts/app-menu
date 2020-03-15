@@ -16,10 +16,15 @@ export DOTDESKTOP_APP="swaymsg exec"
 swaymsg bar bar-0 workspace_buttons no
 pkill -USR1 -f i3blocks
 
+# I don't know if this actually works as I only have two outputs and it might
+# just be defaulting back to the correct one. OTOH, it is working so whatever.
+output=$(swaymsg -t get_workspaces | jq -r '.[] | select(.focused).output')
+output_idx=$(swaymsg -t get_outputs | jq --arg output "$output" 'index(.[] | select(.name == $output)) + 1')
 
 selection=$(
 dot-desktop | bemenu \
     --ignorecase \
+    --monitor="$output_idx" \
     --prompt='        run' \
     --fn='Noto Sans Bold 10' \
     --tb=#00000000 --tf=#ffffffff \
