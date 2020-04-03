@@ -25,7 +25,7 @@ selection=$(
 dot-desktop | bemenu \
     --ignorecase \
     --monitor="$output_idx" \
-    --prompt='        run' \
+    --prompt='        >>' \
     --fn='Noto Sans Bold 10' \
     --tb=#00000000 --tf=#ffffffff \
     --fb=#00000000 --ff=#ffffffff \
