@@ -3,7 +3,7 @@
 url=$(awk -v "station=$1" '$1 == station { print $2 }' "$HOME/notes/radio.txt")
 
 if [ -z "$url" ]; then
-    printf "No station named '%s'\n" "$url"
+    printf "No station named '%s'\n" "$1"
     exit 1
 fi
 
