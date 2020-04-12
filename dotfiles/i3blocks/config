@@ -6,7 +6,7 @@ format=json
 [mpris]
 # Lately this has been getting stuck when the updates happen in extremely rapid
 # succession. So I added a sleep. I have no idea what changed. Computers!
-command=playerctl metadata --format '{{ status }} {{ artist }} - {{ title }}' --follow | perl -pe '$| = 1; s/^(Playing |Paused )( \- )?/\1/; s/^Playing /  /; s/^Paused /  /; s/https?:\/\/[\w\d\.]+ - //' | while read l; do printf "$l\n"; sleep 0.1; done
+command=playerctl metadata --format '{{ status }} {{ artist }} - {{ title }}' --follow | perl -pe '$| = 1; s/^(Playing |Paused )( \- )?/\1/; s/^Playing /  /; s/^Paused /  /; s/https?:\/\/[\w\d\.]+ - //' | while read l; do printf "%s\n" "$l"; sleep 0.1; done
 interval=persist
 
 [updates]
