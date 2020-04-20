@@ -16,5 +16,9 @@ ExecCondition=sh -c 'ssh -o ConnectTimeout=5s compendium true || exit 1'
 # shouldn't mark the unit failed since the backup completed anyway. Neither of
 # these are optimal, but bup doesn't provide any leverage over what should
 # trigger a non-zero exit.
+# This has already bitten me once with a corrupt index file that was preventing
+# bup from running at all, so now we run an index check first which we can
+# trust the exit code of.
+ExecStart=bup index --check
 ExecStart=-bup index --exclude=%C --xdev %h
 ExecStart=-bup save --name=home-%u --commit --remote=${BUP_REMOTE_DIR} %h
