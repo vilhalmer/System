@@ -51,7 +51,7 @@ endfun
 " Vim Highlighting
 call <SID>Color("Normal", s:foreground, "", "")
 call <SID>Color("LineNr", s:bright_black, "", "")
-call <SID>Color("NonText", s:selection, "", "")
+call <SID>Color("NonText", s:bright_black, "", "")
 call <SID>Color("SpecialKey", s:selection, "", "")
 call <SID>Color("Search", s:background, s:yellow, "")
 call <SID>Color("TabLine", s:window, s:foreground, "reverse")

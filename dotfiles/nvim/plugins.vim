@@ -27,23 +27,13 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'mhinz/vim-startify'
     Plug 'majutsushi/tagbar'
-    Plug 'neomake/neomake'
     Plug 'vilhalmer/nvim-corral', {'do': ':UpdateRemotePlugins'}
     Plug 'tpope/vim-sleuth'
     Plug 'editorconfig/editorconfig-vim'
-
-    " Completion
-    Plug 'roxma/nvim-yarp'
-    Plug 'ncm2/ncm2'
-    Plug 'ncm2/ncm2-bufword'
-    Plug 'ncm2/ncm2-tmux'
-    Plug 'ncm2/ncm2-path'
-    Plug 'ncm2/ncm2-jedi'
-    Plug 'ncm2/ncm2-pyclang'
+    Plug 'neoclide/coc.nvim', {'tag': 'v0.0.77'}
 
     " Text objects
     Plug 'PeterRincker/vim-argumentative'
-    Plug 'Raimondi/delimitMate'
     Plug 'tpope/vim-surround'
     Plug 'ntpeters/vim-better-whitespace'
     Plug 'easymotion/vim-easymotion', {'tag': '*'}
@@ -71,72 +61,12 @@ call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
     Plug 'ap/vim-css-color',           {'for': 'css'}
     Plug 'dzeban/vim-log-syntax',      {'for': 'log'}
     Plug 'nathangrigg/vim-beancount',  {'for': 'beancount'}
-    Plug 'hashivim/vim-terraform',     {'for': 'terraform'}
+    Plug 'jvirtanen/vim-hcl',          {'for': ['hcl', 'nomad']}
     Plug 'chr4/nginx.vim',             {'for': 'nginx'}
 
 call plug#end()
 
 if s:plugins_ready
-
-""""""""
-" ncm2 "
-""""""""
-let g:ncm2#matcher = 'substrfuzzy'
-set completeopt=noinsert,menuone,noselect
-autocmd BufEnter * call ncm2#enable_for_buffer()
-
-let g:ncm2_pyclang#library_path = '/usr/lib/libclang.so'
-let g:ncm2_pyclang#database_path = ['build/compile_commands.json']
-
-"""""""""""
-" vim-lsp "
-"""""""""""
-"if executable('pyls')
-"    au User lsp_setup call lsp#register_server({
-"        \ 'name': 'pyls',
-"        \ 'cmd': {server_info->['pyls']},
-"        \ 'whitelist': ['python'],
-"        \ })
-"endif
-"
-"if executable('clangd')
-"    au User lsp_setup call lsp#register_server({
-"        \ 'name': 'clangd',
-"        \ 'cmd': {server_info->['clangd']},
-"        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-"        \ })
-"endif
-
-"""""""""""
-" neomake "
-"""""""""""
-let g:neomake_python_enabled_makers = ['flake8']
-"let g:neomake_python_pylint_args = [
-"    \ "--init-hook", "import sys; sys.path.append('".g:pipenv_site_packages_path."')"] +
-"    \ neomake#makers#ft#python#pylint()['args']
-
-let g:neomake_rust_enabled_makers = ['cargo']
-
-let g:neomake_c_enabled_makers = ['clangcheck', 'clangtidy']
-let g:neomake_c_clangcheck_args = ['-p', 'build', '%']
-let g:neomake_c_clangtidy_args = ['-p', 'build', '%']
-
-augroup neomake_onsave | au!
-    autocmd! BufWritePost * Neomake
-    autocmd BufWritePost *.rs Neomake cargo
-augroup end
-
-function BeanCheckWarningToError(entry)
-    let a:entry.type = 'E'
-endfunction
-
-let g:neomake_beancheck_maker = {
-    \ 'exe': 'bean-check',
-    \ 'args': [],
-    \ 'errorformat': '%f:%l: %m',
-    \ 'postprocess': function('BeanCheckWarningToError')
-    \ }
-let g:neomake_beancount_enabled_makers = ['beancheck']
 
 """"""""""""
 " Startify "
@@ -264,20 +194,127 @@ let g:riv_disable_folding = 1
 """"""""""""""
 let g:instant_rst_localhost_only = 1
 
-"""""""""""""
-" beancount "
-"""""""""""""
-" Register the omnifunc as an nvim-completion-manager source.
-au User CmSetup call cm#register_source({
-        \ 'name' : 'cm-beancount',
-        \ 'priority': 9,
-        \ 'scoping': 1,
-        \ 'scopes': ['beancount'],
-        \ 'abbreviation': 'bean',
-        \ 'word_pattern': '[\w\-]+',
-        \ 'cm_refresh_patterns':['[\w\-]+\s*:\s+'],
-        \ 'cm_refresh': {'omnifunc': 'beancount#complete'},
-        \ })
+""""""""""""""
+" colorcoder "
+""""""""""""""
+let g:colorcoder_enable_filetypes = ['c', 'cpp', 'python']
+
+""""""""""""
+" coc.nvim "
+""""""""""""
+set updatetime=300
+
+" Use tab for trigger completion with characters ahead and navigate.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current line.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Introduce function text object
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap if <Plug>(coc-funcobj-i)
+omap af <Plug>(coc-funcobj-a)
+
+" Use <TAB> for selections ranges.
+" NOTE: Requires 'textDocument/selectionRange' support from the language server.
+" coc-tsserver, coc-python are the examples of servers that support it.
+nmap <silent> <TAB> <Plug>(coc-range-select)
+xmap <silent> <TAB> <Plug>(coc-range-select)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" Add (Neo)Vim's native statusline support.
+set statusline+=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Mappings using CoCList:
+" Show all diagnostics.
+nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
 
 """""""""""
 " Cleanup "

@@ -58,6 +58,8 @@ set noshowcmd
 
 " Wrapping stuff
 set showbreak=↪\ 
+set cpoptions+=n
+
 set linebreak
 set sidescroll=5
 set listchars+=precedes:<
@@ -100,10 +102,6 @@ autocmd VimResized * wincmd =
 
 " Force syntax highlighting to always analyze the entire file for Python.
 autocmd BufEnter *.py :syntax sync fromstart
-
-" Update the editor state more frequently when the cursor isn't moving around,
-" this makes Tagbar jump to the current tag faster.
-set updatetime=1000
 
 """"""""""""
 " Commands "
@@ -192,13 +190,6 @@ map <RightRelease> <Nop>
 " Make Y act like all the other capital variants.
 nnoremap Y y$
 
-" Fix the completion popup:
-" Insert a newline on enter even when it's open…
-inoremap <expr><CR> pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
-" …and use Tab for selection.
-inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
 """""""""""""""""
 " Abbreviations "
 """""""""""""""""
@@ -230,7 +221,7 @@ endif
 " virtualenv "
 """"""""""""""
 let g:python3_host_prog = expand("$XDG_DATA_HOME/virtualenvs/nvim/bin/python3")
-let $PATH .= fnamemodify(g:python3_host_prog, ':h') . ':'
+let $PATH = fnamemodify(g:python3_host_prog, ':h') . ':' . $PATH
 
 """""""""""
 " Plugins "
