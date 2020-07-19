@@ -37,7 +37,7 @@ class BluetoothStatus:
     @property
     def connected_devices(self):
         return (
-            dev['Name'] for dev in self.tracked_devices.values()
+            dev.get('Name', dev['Address']) for dev in self.tracked_devices.values()
             if dev['Connected']
         )
 
