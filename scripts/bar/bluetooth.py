@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import json
-import signal
 import sys
 
 from gi.repository import GLib
@@ -19,25 +18,47 @@ class BluetoothStatus:
     def __init__(self):
         self.tracked_devices = {}
         self.print_count = True
+        self.recent_change = None
 
         self.bus = pydbus.SystemBus()
         self.manager = self.bus.get('org.bluez', '/')
 
+    @staticmethod
+    def _dev_name(device):
+        return device.get('Name', device['Address'])
+
+    def clear_recent(self):
+        self.recent_change = None
+        self.print_status()
+        return False  # Don't reschedule this timer.
+
     def update_devices(self):
         for path, interfaces in self.manager.GetManagedObjects().items():
             if 'org.bluez.Device1' in interfaces:
+                device_info = interfaces['org.bluez.Device1']
+
                 if path not in self.tracked_devices:
                     # Only set up a handler the first time we see a device.
                     device = self.bus.get('org.bluez', path)
                     device.onPropertiesChanged = self.handle_event
+                    previously_connected = False
+                else:
+                    previously_connected = (
+                        self.tracked_devices[path]['Connected']
+                    )
+
+                if device_info['Connected'] and not previously_connected:
+                    # Display the newly connected device name for a moment.
+                    self.recent_change = self._dev_name(device_info)
+                    GLib.timeout_add_seconds(3, self.clear_recent)
 
                 # But always update device properties.
-                self.tracked_devices[path] = interfaces['org.bluez.Device1']
+                self.tracked_devices[path] = device_info
 
     @property
     def connected_devices(self):
         return (
-            dev.get('Name', dev['Address']) for dev in self.tracked_devices.values()
+            self._dev_name(dev) for dev in self.tracked_devices.values()
             if dev['Connected']
         )
 
@@ -51,7 +72,9 @@ class BluetoothStatus:
 
     def print_status(self):
         count = len(list(self.connected_devices))
-        if self.print_count:
+        if self.recent_change:
+            devices = self.recent_change
+        elif self.print_count:
             devices = count if count > 1 else ''
         else:
             devices = ' + '.join(self.connected_devices)
