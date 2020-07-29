@@ -20,5 +20,5 @@ ExecCondition=sh -c 'ssh -o ConnectTimeout=5s compendium true || exit 1'
 # bup from running at all, so now we run an index check first which we can
 # trust the exit code of.
 ExecStart=bup index --check
-ExecStart=-bup index --exclude=%C --xdev %h
+ExecStart=-bup index --exclude=%C --exclude-from=%h/.bup-exclude --xdev %h
 ExecStart=-bup save --name=home-%u --commit --remote=${BUP_REMOTE_DIR} %h
