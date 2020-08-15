@@ -27,9 +27,11 @@ class BluetoothStatus:
     def _dev_name(device):
         return device.get('Name', device['Address'])
 
-    def clear_recent(self):
-        self.recent_change = None
-        self.print_status()
+    def clear_recent(self, expected_recent):
+        if self.recent_change == expected_recent:
+            self.recent_change = None
+            self.print_status()
+
         return False  # Don't reschedule this timer.
 
     def update_devices(self):
@@ -50,7 +52,9 @@ class BluetoothStatus:
                 if device_info['Connected'] and not previously_connected:
                     # Display the newly connected device name for a moment.
                     self.recent_change = self._dev_name(device_info)
-                    GLib.timeout_add_seconds(3, self.clear_recent)
+                    GLib.timeout_add_seconds(
+                        3, self.clear_recent, self.recent_change
+                    )
 
                 # But always update device properties.
                 self.tracked_devices[path] = device_info
