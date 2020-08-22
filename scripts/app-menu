@@ -13,7 +13,7 @@ touch $XDG_RUNTIME_DIR/app-menu
 export BEMENU_OPTS=""
 export DOTDESKTOP_APP="swaymsg exec"
 
-swaymsg bar bar-0 workspace_buttons no
+swaymsg bar bar-0 workspace_buttons no > /dev/null
 pkill -USR1 -f i3blocks
 
 # I don't know if this actually works as I only have two outputs and it might
@@ -36,7 +36,7 @@ dot-desktop | bemenu \
 
 test -n "$selection" && eval "$(dot-desktop "$selection" 2>/dev/null || echo -n "exec sh -c '$selection'")" & disown
 
-swaymsg bar bar-0 workspace_buttons yes
+swaymsg bar bar-0 workspace_buttons yes > /dev/null
 pkill -USR2 -f i3blocks
 
 rm $XDG_RUNTIME_DIR/app-menu
