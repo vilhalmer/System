@@ -1,6 +1,7 @@
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-export PATH="$HOME/.cargo/bin:$HOME/System/scripts:$PATH"
+export CODPATH=/opt/cod
+export PATH="$HOME/System/scripts:$HOME/go/bin:$HOME/.cargo/bin:$CODPATH/bin:$PATH"
 
 which nvim > /dev/null 2>&1 && export EDITOR=nvim || export EDITOR=vim
 
@@ -13,51 +14,22 @@ export XDG_CACHE_HOME="$HOME/.cache"
 # The shell or some other element of the environment should then prompt once it is capable of accepting input.
 eval $(keychain --absolute --quiet --dir $XDG_CACHE_HOME/keychain --agents ssh --eval --systemd --noask)
 
-# If we have a custom terminfo for $TERM, use it
-maybe_terminfo="$XDG_CONFIG_HOME/terminfo/$(uname)/$TERM.ti"
-[[ -f $maybe_terminfo ]] && export TERMINFO="$maybe_terminfo"
-
-export TIGRC_USER="$XDG_CONFIG_HOME/tig/tigrc"
-export VIMINIT="let \$MYVIMRC=\"$XDG_CONFIG_HOME/nvim/init.vim\" | source \$MYVIMRC"
-# This will override nvim's search path, but does the same thing.
 export HISTFILE="$XDG_DATA_HOME/$(basename $SHELL)/history"
 
-export HOMEBREW_NO_AUTO_UPDATE=1
-
-export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/src/
-
 export WEECHAT_HOME="$XDG_CONFIG_HOME/weechat"
+export MPD_HOST=10.145.1.201
 
-export SDL_VIDEODRIVER=wayland
-export QT_QPA_PLATFORM=wayland-egl
+export QT_QPA_PLATFORMTHEME=qt5ct  # Makes QT5 Settings tool work
+export QT_QPA_PLATFORM=wayland
 export QT_WAYLAND_SHELL_INTEGRATION=xdg-shell  # Default is -v6
+export SDL_VIDEODRIVER=wayland
 export QUTE_SKIP_WAYLAND_CHECK=1
-
-export XCURSOR_THEME=retrosmart-xcursors-black
+export MOZ_ENABLE_WAYLAND=1
 
 stty -ixon # Keep Ctrl-s from freezing the terminal
 
-if [ -n "$SSH_CONNECTION" ] && \
-   [ -z "$TMUX" ] && \
-   [ -n "$SSH_TTY" ] && \
-   [ -z "$NO_TMUX" ] && \
-   [ "$TERM" != "mobile" ];
-then
-    if [ -n "$TMUX_SESSION" ]; then
-        session="$TMUX_SESSION"
-    else
-        session="$USER"
-    fi
-
-    which tmux >/dev/null 2>/dev/null
-    if [ $? -eq 0 ]; then
-        tmux new-session -A -s "$session" # Create or attach to existing session.
-        exit
-    fi
-fi
-
-# The "mobile" terminal type apparently exists, and is incredibly useless.
-if [ "$TERM" = "mobile" ]; then
-    export TERM=xterm-256color
-    clear # Yay even more hacky. This fixes the visual corruption that happens right after mobile connect.
+if [ "$(tty)" = '/dev/tty1' ]; then
+    export XDG_SESSION_TYPE=wayland
+    export XDG_CURRENT_DESKTOP=sway
+    exec systemd-cat --identifier=sway-session sway
 fi
