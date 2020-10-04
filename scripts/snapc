@@ -1,0 +1,3 @@
+#!/bin/sh -ex
+port=$(dig +short +search snapcast srv | awk '{ print $3 }')
+/bin/snapclient -h snapcast -p "$port" | grep -v '(Stream) Chunk:'
