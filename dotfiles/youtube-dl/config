@@ -1,0 +1,8 @@
+--output '%(uploader)s - %(title)s.%(ext)s'
+--xattrs
+--netrc
+--audio-format mp3
+--all-subs
+--embed-subs
+--sub-lang en
+--mark-watched
