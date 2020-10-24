@@ -8,71 +8,55 @@
 " the plugins exist, s:plugins_ready is set to zero the first time through.
 
 let s:plugins_ready = 0
-let g:plug_window = 'topleft new' " Make sure the window shows up in a good spot the first run.
+let g:plug_window = 'topleft new'
 
-if empty(glob('$XDG_DATA_HOME/nvim/autoload/plug.vim'))
+let s:vimplug = stdpath('data') . '/site/autoload/plug.vim'
+if empty(glob(s:vimplug))
     echo "Installing vim-plug…"
-    silent exec '!curl -fLo '.expand('$XDG_DATA_HOME/nvim/autoload/plug.vim').' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-    autocmd VimEnter * PlugInstall | runtime plugins.vim
+    exec '!curl -fLo ' . s:vimplug . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    autocmd VimEnter * ++once PlugInstall | q | runtime plugins.vim
 else
     let s:plugins_ready = 1
 endif
 
-" This must use expand(), glob returns empty string if the directory doesn't exist.
-" We know the variable is non-empty by now, so no need to worry about that.
-call plug#begin(expand('$XDG_DATA_HOME/nvim/plugged'))
+call plug#begin(stdpath('data') . '/plugged')
 
-    " Core environment
     Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
-    Plug 'christoomey/vim-tmux-navigator'
     Plug 'mhinz/vim-startify'
     Plug 'majutsushi/tagbar'
-    Plug 'vilhalmer/nvim-corral', {'do': ':UpdateRemotePlugins'}
     Plug 'tpope/vim-sleuth'
     Plug 'editorconfig/editorconfig-vim'
-    Plug 'neoclide/coc.nvim', {'tag': 'v0.0.77'}
-
-    " Text objects
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'wesQ3/vim-windowswap'
+    Plug 'kana/vim-scratch'
     Plug 'PeterRincker/vim-argumentative'
     Plug 'tpope/vim-surround'
     Plug 'ntpeters/vim-better-whitespace'
-    Plug 'easymotion/vim-easymotion', {'tag': '*'}
     Plug 'chaoren/vim-wordmotion'
-    Plug 'junegunn/vim-easy-align'
 
-    " Layout + views
-    Plug 'wesQ3/vim-windowswap'
-    Plug 'kana/vim-scratch'
-    Plug 'junegunn/limelight.vim'
-    Plug 'junegunn/goyo.vim'
-
-    " Language-specific
-    Plug 'k4nar/braceless.vim',        {'for': 'python', 'branch': 'async-syntax'}
-    Plug 'racer-rust/vim-racer',       {'for': 'rust'}
-    Plug 'Rykka/riv.vim',              {'for': 'rst'}
-    Plug 'Rykka/InstantRst',           {'for': 'rst'}
-    Plug 'dhruvasagar/vim-table-mode', {'for': ['rst', 'markdown']}
-    Plug 'avakhov/vim-yaml',           {'for': 'yaml'}
-
-    " Syntax highlighting
-    Plug 'rust-lang/rust.vim',         {'for': 'rust'}
-    Plug 'keith/tmux.vim',             {'for': 'tmux'}
-    Plug 'othree/html5.vim',           {'for': 'html'}
-    Plug 'ap/vim-css-color',           {'for': 'css'}
-    Plug 'dzeban/vim-log-syntax',      {'for': 'log'}
-    Plug 'nathangrigg/vim-beancount',  {'for': 'beancount'}
-    Plug 'jvirtanen/vim-hcl',          {'for': ['hcl', 'nomad']}
-    Plug 'chr4/nginx.vim',             {'for': 'nginx'}
+    Plug 'k4nar/braceless.vim', {'branch': 'async-syntax'}
+    Plug 'Rykka/riv.vim'
+    Plug 'Rykka/InstantRst'
+    Plug 'keith/tmux.vim'
+    Plug 'othree/html5.vim'
+    Plug 'ap/vim-css-color'
+    Plug 'dzeban/vim-log-syntax'
+    Plug 'nathangrigg/vim-beancount'
+    Plug 'jvirtanen/vim-hcl'
+    Plug 'chr4/nginx.vim'
 
 call plug#end()
 
-if s:plugins_ready
+if !s:plugins_ready
+    finish
+end
 
 """"""""""""
 " Startify "
 """"""""""""
 let g:startify_change_to_vcs_root = 1
 let g:startify_update_oldfiles = 1
+let g:startify_fortune_use_unicode = 1
 let g:startify_list_order = [['   Recent in project'], 'dir',
                            \ ['   Recent globally'], 'files', ]
 
@@ -84,8 +68,6 @@ let s:moose = ['   \',
              \ '               ||------|',
              \ '               ||     ||']
 let g:startify_custom_header = map(startify#fortune#boxed() + s:moose, '"   ". v:val')
-
-let g:startify_custom_footer = map(split(system('figlet -f lean neovim'), '\n'), '"   ". v:val')
 
 autocmd User Startified ToggleWhitespace " figlet likes to leave space behind.
 
@@ -106,42 +88,6 @@ nmap <Leader>sc :ScratchOpen<CR>
 """"""""""""""""""
 let g:windowswap_map_keys = 0
 nnoremap <silent> <Leader>sw :call WindowSwap#EasyWindowSwap()<CR>
-
-"""""""""""""
-" Limelight "
-"""""""""""""
-let g:limelight_conceal_ctermfg = 'black'
-
-" Default: 0.5
-let g:limelight_default_coefficient = 1.0
-
-" Number of preceding/following paragraphs to include (default: 0)
-let g:limelight_paragraph_span = 1
-
-" Beginning/end of paragraph
-"   When there's no empty line between the paragraphs
-"   and each paragraph starts with indentation
-let g:limelight_bop = '^\s'
-let g:limelight_eop = '\ze\n^\s'
-
-" Highlighting priority (default: 10)
-"   Set it to -1 not to overrule hlsearch
-let g:limelight_priority = -1
-
-""""""""""""""
-" easymotion "
-""""""""""""""
-map  \ <Plug>(easymotion-prefix)
-
-" Replace vim search and highlighting.
-map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
-
-let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
-
-set nohlsearch " easymotion handles this
 
 """"""""""
 " Tagbar "
@@ -169,21 +115,6 @@ nnoremap <silent> <Leader><Space> :Lines<CR>
 
 let g:fzf_layout = { 'window': 'enew' }
 
-""""""""""""""""""
-" vim-table-mode "
-""""""""""""""""""
-let g:table_mode_verbose = 1
-let g:table_mode_corner_corner = '+'
-let g:table_mode_header_fillchar = '='
-
-autocmd! FileType markdown silent TableModeEnable
-autocmd! FileType rst silent TableModeEnable
-
-""""""""
-" Goyo "
-""""""""
-let g:goyo_width = 82
-
 """""""
 " riv "
 """""""
@@ -194,14 +125,12 @@ let g:riv_disable_folding = 1
 """"""""""""""
 let g:instant_rst_localhost_only = 1
 
-""""""""""""""
-" colorcoder "
-""""""""""""""
-let g:colorcoder_enable_filetypes = ['c', 'cpp', 'python']
-
 """"""""""""
 " coc.nvim "
 """"""""""""
+let g:coc_data_home = stdpath('data') . '/coc'
+let g:coc_global_extensions = ["coc-json", "coc-python"]
+
 set updatetime=300
 
 " Use tab for trigger completion with characters ahead and navigate.
@@ -320,5 +249,3 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " Cleanup "
 """""""""""
 syntax on " Reenable syntax highlighting in case we loaded a plugin that changes it.
-
-endif
