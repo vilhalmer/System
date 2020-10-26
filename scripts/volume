@@ -1,19 +1,22 @@
-#!/usr/bin/env bash
+#!/bin/sh -e
 
-[[ $1 == up ]] || [[ $1 == down ]] || [[ $1 == mute ]] || exit 1
-
-BASE_STEP=5
-
-if [[ $1 == up ]]; then
-    amixer -q set Master ${BASE_STEP}%+
-elif [[ $1 == down ]]; then
-    amixer -q set Master ${BASE_STEP}%-
-elif [[ $1 == mute ]]; then
-    amixer -q set Master toggle
+if [ "$1" = up ]; then
+    pavc up
+elif [ "$1" = down ]; then
+    pavc down
+elif [ "$1" = mute ]; then
+    pavc toggle
+else
+    echo "usage: volume (up|down|mute)"
+    exit 1
 fi
 
-current=( $(amixer get Master | perl -ne 'print if s/.*\[(\d+)%\] \[(\w+)\]/\1 \2/' | head -n 1) )
-if [[ ${current[1]} == on ]]; then
+# Can't pipe, it runs in a subshell…
+read volume mute <<EOF
+$(pavc)
+EOF
+
+if [ -z "$mute" ]; then
     icon=
 else
     icon=" "
@@ -21,8 +24,6 @@ fi
 
 $HOME/System/scripts/notify-send \
     --app-name=hud \
-    --replace-file=/run/user/$UID/hud-id \
-    --hint=int:value:${current[0]} \
-    "$icon ${current[0]}%"
-
-# vim: syntax=sh
+    --replace-file=$XDG_RUNTIME_DIR/hud-id \
+    --hint=int:value:"${volume%%%}" \
+    "$icon $volume"
