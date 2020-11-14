@@ -1,0 +1,15 @@
+#!/bin/sh -e
+remove=""
+if [ "$1" == "-r" ]; then
+    remove="--remove-source-files"
+    shift
+fi
+
+test $# -ge 2 || {
+    echo "Usage: store [-r] TARGET FILES..."
+    exit 1
+}
+
+target="$1"
+shift
+rsync $remove -aPXz "$@" "compendium:/srv/storage/pool0/$target"
