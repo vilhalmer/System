@@ -1,13 +1,57 @@
 {
-  "languageserver": {
-    "clangd": {
-      "command": "clangd",
-      "args": ["--compile-commands-dir=build"],
-      "rootPatterns": ["compile_flags.txt", "compile_commands.json"],
-      "filetypes": ["c", "cpp", "objc", "objcpp"]
-    }
-  },
+    "suggest.triggerAfterInsertEnter": true,
+    "diagnostic.refreshOnInsertMode": true,
+    "diagnostic.filetypeMap": {"default": "bufferType"},
+    "diagnostic.enableSign": true,
+    "diagnostic.infoSign": "?",
+    "diagnostic.hintSign": "~",
+    "diagnostic.warningSign": "⚑",
+    "diagnostic.errorSign": "✖",
 
-  "python.linting.pylintEnabled": false,
-  "python.linting.flake8Enabled": true
+    "languageserver": {
+        "clangd": {
+            "command": "clangd",
+            "args": ["--compile-commands-dir=build"],
+            "rootPatterns": ["compile_flags.txt", "compile_commands.json"],
+            "filetypes": ["c", "cpp", "objc", "objcpp"]
+        }
+    },
+
+    "diagnostic-languageserver.filetypes": {
+        "python": ["flake8"]
+    },
+    "diagnostic-languageserver.linters": {
+        "flake8": {
+            "sourceName": "flake8",
+            "command": "flake8",
+            "args": [
+                "--format",
+                "%(row)d:%(col)d:%(code)s:[%(code)s] %(text)s",
+                "-"
+            ],
+            "formatPattern": [
+                "^(\\d+?):(\\d+?):([EFW]\\d+):(.*)$",
+                {
+                    "line": 1,
+                    "column": 2,
+                    "security": 3,
+                    "message": 4
+                }
+            ],
+            "rootPatterns": [".git", "pyproject.toml", "setup.py", "requirements.txt"],
+            "securities": {
+                "E": "error",
+                "F": "error",
+                "W": "warning"
+            },
+            "offsetColumn": 0
+        }
+    },
+
+    "jedi.executable.command": "jedi-language-server",
+    "jedi.diagnostics.enable": true,
+    "jedi.diagnostics.didChange": true,
+    "jedi.diagnostics.didSave": true
 }
+
+

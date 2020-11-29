@@ -107,10 +107,13 @@ nnoremap Y y$
 """""""""""""""""
 cabbr <expr> %% expand('%:p:h')
 
-""""""""""""""
-" virtualenv "
-""""""""""""""
-let g:python3_host_prog = expand("$XDG_DATA_HOME/virtualenvs/nvim/bin/python3")
+"""""""""""""""
+" virtualenvs "
+"""""""""""""""
+" Use systemlist because it strips off the newline.
+let g:neovim_virtualenv = systemlist('cd $XDG_CONFIG_HOME/nvim && venv-locate')[0]
+let g:python3_host_prog = g:neovim_virtualenv.'/bin/python3'
+
 let $PATH = fnamemodify(g:python3_host_prog, ':h') . ':' . $PATH
 
 """""""""""
