@@ -34,7 +34,9 @@ if [[ $1 != current ]]; then
         " ${current}%"
 fi
 
-xbacklight -fps 30 -time 200 $current
-ddcutil --display=1 --noverify --maxtries=5,5,5 setvcp 10 $current
+which xbacklight 2>/dev/null && xbacklight -fps 30 -time 200 $current
+for sn in $(ddcutil --terse detect | awk -F: '$1 == "   Monitor" { print $4 }' | sort | uniq); do
+    ddcutil --sn $sn --noverify --maxtries=5,5,5 setvcp 10 $current &
+done
 
 # vim: syntax=sh
