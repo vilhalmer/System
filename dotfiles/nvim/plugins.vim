@@ -21,7 +21,7 @@ endif
 
 call plug#begin(stdpath('data') . '/plugged')
 
-    Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim'
+    Plug 'junegunn/fzf' | Plug 'junegunn/fzf.vim', { 'do': { -> fzf#install() } }
     Plug 'mhinz/vim-startify'
     Plug 'majutsushi/tagbar'
     Plug 'tpope/vim-sleuth'
