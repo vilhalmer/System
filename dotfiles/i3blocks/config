@@ -1,10 +1,10 @@
-[media]
-command=$HOME/System/scripts/bar/media.py
+[backup]
+command=$HOME/System/scripts/bar/systemd-state.py --user bup-home.service 
 interval=persist
 format=json
 
-[backup]
-command=$HOME/System/scripts/bar/systemd-state.py --user bup-home.service 
+[media]
+command=$HOME/System/scripts/bar/media.py
 interval=persist
 format=json
 
