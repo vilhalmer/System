@@ -25,6 +25,7 @@ export QT_WAYLAND_SHELL_INTEGRATION=xdg-shell  # Default is -v6
 export SDL_VIDEODRIVER=wayland
 export QUTE_SKIP_WAYLAND_CHECK=1
 export MOZ_ENABLE_WAYLAND=1
+export AUR_PAGER=nvim
 
 source ~/.profile.local
 
