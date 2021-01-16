@@ -116,6 +116,18 @@ let g:python3_host_prog = g:neovim_virtualenv.'/bin/python3'
 
 let $PATH = fnamemodify(g:python3_host_prog, ':h') . ':' . $PATH
 
+""""""""""""""
+" autocommit "
+""""""""""""""
+augroup AutoCommit | au!
+    autocmd VimEnter,DirChanged * let g:commit_on_save = systemlist(
+        \ 'git config --local --get --default false nvim.commitonsave')[0]
+    autocmd BufWritePost,FileWritePost *
+        \ if g:commit_on_save == 'true' && expand('%:h:t') != '.git' |
+        \     silent call system('git add -A && git commit -a -m "autocommit '.expand('<afile>').'"') |
+        \ fi
+augroup end
+
 """""""""""
 " Plugins "
 """""""""""
