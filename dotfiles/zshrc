@@ -62,6 +62,10 @@ alias f='find . -name'
 alias browse='fzf --bind="enter:execute(echo -n {} | pbcopy)" --preview="pygmentize {} 2>/dev/null || cat {}" --preview-window=up'
 alias ipy="ipython"
 
+ssh () {
+    TERM=xterm command ssh "$@"
+}
+
 is_available nvim && alias view='nvim -R' # nvim doesn't provide `view`, which means it will run vim unless I override it when nvim is around.
 
 # Colorful ls!
