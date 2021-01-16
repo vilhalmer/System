@@ -84,6 +84,10 @@ class MediaStatus:
         else:
             icon = STOP
 
+        # If nothing changed, don't change players.
+        if self.player_metadata[player].status == icon:
+            return
+
         self.player_metadata[player].status = icon
         self.recent_player = player
         self.print_status()
@@ -92,6 +96,10 @@ class MediaStatus:
         artist = player.get_artist()
         title = player.get_title() or 'Unknown Track'
         info = ' - '.join(i for i in (artist, title) if i)
+
+        # If nothing changed, don't change players.
+        if self.player_metadata[player].metadata == info:
+            return
 
         self.player_metadata[player].metadata = info
         self.recent_player = player
