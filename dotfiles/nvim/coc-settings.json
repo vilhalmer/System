@@ -8,14 +8,7 @@
     "diagnostic.warningSign": "⚑",
     "diagnostic.errorSign": "✖",
 
-    "languageserver": {
-        "clangd": {
-            "command": "clangd",
-            "args": ["--compile-commands-dir=build"],
-            "rootPatterns": ["compile_flags.txt", "compile_commands.json"],
-            "filetypes": ["c", "cpp", "objc", "objcpp"]
-        }
-    },
+    "clangd.semanticHighlighting": true,
 
     "diagnostic-languageserver.filetypes": {
         "python": ["flake8"]

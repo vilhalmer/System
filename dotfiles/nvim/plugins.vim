@@ -44,6 +44,7 @@ call plug#begin(stdpath('data') . '/plugged')
     Plug 'nathangrigg/vim-beancount'
     Plug 'jvirtanen/vim-hcl'
     Plug 'chr4/nginx.vim'
+    Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 call plug#end()
 
@@ -129,7 +130,7 @@ let g:instant_rst_localhost_only = 1
 " coc.nvim "
 """"""""""""
 let g:coc_data_home = stdpath('data') . '/coc'
-let g:coc_global_extensions = ["coc-json", "coc-diagnostic", "coc-jedi"]
+let g:coc_global_extensions = ["coc-json", "coc-diagnostic", "coc-jedi", "coc-clangd"]
 
 " Weird things happen if this isn't low, like files being compiled with munged content.
 set updatetime=300
@@ -203,7 +204,6 @@ nnoremap <silent> <leader>co :<C-u>CocList outline<cr>
 nnoremap <silent> <leader>cs :<C-u>CocList -I symbols<cr>
 nnoremap <silent> <leader>cj :<C-u>CocNext<cr>
 nnoremap <silent> <leader>ck :<C-u>CocPrev<cr>
-
 
 """""""""""
 " Cleanup "
