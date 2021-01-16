@@ -26,6 +26,8 @@ export SDL_VIDEODRIVER=wayland
 export QUTE_SKIP_WAYLAND_CHECK=1
 export MOZ_ENABLE_WAYLAND=1
 
+source ~/.profile.local
+
 stty -ixon # Keep Ctrl-s from freezing the terminal
 
 if [ "$(tty)" = '/dev/tty1' ]; then
