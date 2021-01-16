@@ -19,13 +19,19 @@ class UnitMonitor:
 
         self.bus = pydbus.SessionBus() if is_user else pydbus.SystemBus()
         self.sd = self.bus.get('.systemd1')
-        self.sd.Subscribe()  # Enable signals.
 
-        unit_path = self.sd.GetUnit(name)
+        try:
+            unit_path = self.sd.GetUnit(name)
+        except GLib.Error:
+            # Unit doesn't exist, become idle.
+            return
+
         self.unit = self.get(unit_path)
         self.unit.onPropertiesChanged = self.properties_changed
 
         self.last_state_time = sd_time(self.unit.StateChangeTimestamp)
+
+        self.sd.Subscribe()  # Enable signals.
         self.update()
 
     def get(self, path):
