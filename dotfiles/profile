@@ -27,7 +27,7 @@ export QUTE_SKIP_WAYLAND_CHECK=1
 export MOZ_ENABLE_WAYLAND=1
 export AUR_PAGER=nvim
 
-source ~/.profile.local
+test -f ~/.profile.local && source ~/.profile.local
 
 stty -ixon # Keep Ctrl-s from freezing the terminal
 
