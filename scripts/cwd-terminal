@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 pid=$(cat /proc/*/stat 2>/dev/null | awk '{if ($4 == focused_pid) { print $1 }}' focused_pid="$(swaymsg -t get_tree | jq 'recurse(.nodes[]?) | select(.focused).pid')")
 directory=$(readlink "/proc/$pid/cwd")
-swaymsg "exec 'cd $directory; exec \$term'"
+swaymsg "exec 'cd $directory; exec \$term'" &>/dev/null
